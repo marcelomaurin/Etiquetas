@@ -6,17 +6,20 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Grids,
-  ComCtrls, ExtCtrls, DBGrids, DBCtrls, relticket, DB, ZConnection, dmbase;
+  ComCtrls, ExtCtrls, DBGrids, DBCtrls, Buttons, Menus, relticket, DB,
+  ZConnection, dmbase;
 
 type
 
   { TfrmTicket }
 
   TfrmTicket = class(TForm)
+    DBGrid2: TDBGrid;
+    dsselproduct: TDataSource;
     DBNavigator1: TDBNavigator;
+    DBNavigator2: TDBNavigator;
     dsproduct: TDataSource;
     DBGrid1: TDBGrid;
-    DrawGrid2: TDrawGrid;
     edcode: TEdit;
     edDescription: TEdit;
     edFamily: TEdit;
@@ -30,7 +33,11 @@ type
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
+    mnInsert: TMenuItem;
     PageControl1: TPageControl;
+    Panel1: TPanel;
+    popInsert: TPopupMenu;
+    SpeedButton2: TSpeedButton;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
@@ -41,6 +48,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure Image2Click(Sender: TObject);
     procedure Label7Click(Sender: TObject);
+    procedure mnInsertClick(Sender: TObject);
+    procedure TabSheet1Show(Sender: TObject);
   private
 
   public
@@ -57,6 +66,16 @@ implementation
 { TfrmTicket }
 
 procedure TfrmTicket.Label7Click(Sender: TObject);
+begin
+
+end;
+
+procedure TfrmTicket.mnInsertClick(Sender: TObject);
+begin
+  Fdmbase.newsel();
+end;
+
+procedure TfrmTicket.TabSheet1Show(Sender: TObject);
 begin
 
 end;

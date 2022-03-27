@@ -81,4 +81,10 @@ object dmBase: TdmBase
       Required = False
     end
   end
+  object zselproduct: TZTable
+    Connection = zcon
+    TableName = 'selproduct'
+    Left = 107
+    Top = 88
+  end
 end
