@@ -97,7 +97,7 @@ begin
   aSocket.GetMessage(retorno);
 
   //ShowMessage(retorno);
-  frmlog.Log('Recebeu retorno do socket:'+copy(retorno,1,10));
+  //frmlog.Log('Recebeu retorno do socket:'+copy(retorno,1,10));
 end;
 
 procedure TfrmRegistrar.Memo1Change(Sender: TObject);
@@ -118,7 +118,7 @@ begin
        sleep(1000);
   end;
 
-  INFO :=  'GET /ws/register/iconfila.php HTTP/1.0'+#13+#10+
+  INFO :=  'GET /ws/register/iconfila.php? HTTP/1.0'+#13+#10+
            'Connection: close'+#13+#10+
             #13+#10;
 
