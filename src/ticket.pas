@@ -93,12 +93,12 @@ end;
 procedure TfrmTicket.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   fdmBase.closedb;
-  fdmbase.Free();
+  //fdmbase.Free();
 end;
 
 procedure TfrmTicket.FormCreate(Sender: TObject);
 begin
-  fdmbase := TdmBase.create(self);
+  //fdmbase := TdmBase.create(self);
   fdmBase.opendb;
 end;
 

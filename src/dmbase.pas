@@ -5,7 +5,7 @@ unit dmbase;
 interface
 
 uses
-  Classes, SysUtils, DB, ZConnection, ZDataset;
+  Classes, SysUtils, DB, ZConnection, ZDataset, setmain, dialogs,Interfaces;
 
 type
 
@@ -50,10 +50,29 @@ end;
 procedure TdmBase.opendb();
 begin
   zcon.Disconnect;
-  //zcon.Database:= ExtractFileDir(ApplicationName)+'\db\etiqueta.db';
-  //zcon.LibraryLocation:= ExtractFileDir(ApplicationName)+'\win32\sqlite3.dll';
-  zcon.Connect;
-  selproduct();
+  //zcon.Database:= ExtractFilePath(ApplicationName)+'\db\etiqueta.db';
+  zcon.Database:= FSetMain.DB;
+
+  //zcon.LibraryLocation:= ExtractFilePath(ApplicationName)+'\sqlite\win64\sqlite3.dll';
+  zcon.LibraryLocation:= FSetMain.SQLLITEDLL;
+  if FileExists(zcon.LibraryLocation) then
+  begin
+    zcon.Connect;
+    if zcon.Connected then
+    begin
+        selproduct();
+    end
+     else
+    begin
+      ShowMessage('Fail to connect in database');
+    end;
+
+  end
+  else
+  begin
+    ShowMessage('Not found lib sqllite');
+
+  end;
 end;
 
 procedure TdmBase.closedb();
@@ -74,11 +93,12 @@ end;
 
 procedure TdmBase.selproduct();
 begin
-  if zcon.Connected then
+  if zselproduct.Active then
   begin
     zselproduct.Close;
-    zselproduct.open;
   end;
+  zselproduct.open;
+
 
 end;
 

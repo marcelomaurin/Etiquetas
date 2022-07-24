@@ -1,0 +1,52 @@
+object frmconfig: Tfrmconfig
+  Left = 632
+  Height = 240
+  Top = 326
+  Width = 320
+  Caption = 'Configuration'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnShow = FormShow
+  LCLVersion = '2.2.2.0'
+  object Label1: TLabel
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 62
+    Caption = 'DLL Library:'
+    ParentColor = False
+  end
+  object edDLL: TEdit
+    Left = 8
+    Height = 23
+    Top = 24
+    Width = 256
+    TabOrder = 0
+    Text = 'edDLL'
+  end
+  object btSalvar: TButton
+    Left = 224
+    Height = 25
+    Top = 200
+    Width = 75
+    Caption = 'Save'
+    OnClick = btSalvarClick
+    TabOrder = 1
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 15
+    Top = 56
+    Width = 54
+    Caption = 'Data Base:'
+    ParentColor = False
+  end
+  object edDB: TEdit
+    Left = 8
+    Height = 23
+    Top = 72
+    Width = 256
+    TabOrder = 2
+    Text = 'edDB'
+  end
+end

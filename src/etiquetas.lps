@@ -2,9 +2,9 @@
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
-    <Version Value="11"/>
+    <Version Value="12"/>
     <BuildModes Active="Default"/>
-    <Units Count="5">
+    <Units Count="12">
       <Unit0>
         <Filename Value="etiquetas.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -12,7 +12,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="31"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -21,9 +21,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="18"/>
-        <CursorPos X="23" Y="24"/>
-        <UsageCount Value="27"/>
+        <TopLine Value="34"/>
+        <CursorPos Y="49"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -33,10 +33,10 @@
         <ComponentName Value="frmTicket"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="65"/>
-        <CursorPos Y="80"/>
-        <UsageCount Value="27"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="77"/>
+        <CursorPos X="5" Y="96"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit2>
@@ -46,10 +46,10 @@
         <ComponentName Value="frmrelticket"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="68"/>
         <CursorPos X="16" Y="72"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="31"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit3>
@@ -59,139 +59,231 @@
         <ComponentName Value="dmBase"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="45"/>
-        <CursorPos X="21" Y="61"/>
-        <UsageCount Value="25"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="81"/>
+        <CursorPos Y="96"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="registro.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmRegistrar"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="10"/>
+        <TopLine Value="91"/>
+        <CursorPos X="5" Y="100"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\plain\ZPlainLoader.pas"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="238"/>
+        <CursorPos Y="252"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="funcoes.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="7"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="setmain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="173"/>
+        <CursorPos Y="194"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="config.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmconfig"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="14"/>
+        <CursorPos X="9" Y="48"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="479"/>
+        <CursorPos Y="495"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="C:\lazarus\lcl\include\customform.inc"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="910"/>
+        <CursorPos Y="925"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit11>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="51" Column="17" TopLine="41"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="50" Column="3" TopLine="14"/>
       </Position1>
       <Position2>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="43" Column="10" TopLine="41"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="58" Column="68" TopLine="43"/>
       </Position2>
       <Position3>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="52" TopLine="41"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="35" Column="75" TopLine="23"/>
       </Position3>
       <Position4>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="62" TopLine="41"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="14"/>
       </Position4>
       <Position5>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="73" Column="9" TopLine="61"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="27" Column="57"/>
       </Position5>
       <Position6>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="75" Column="9" TopLine="63"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="64" Column="41" TopLine="40"/>
       </Position6>
       <Position7>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="74" Column="9" TopLine="62"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="60" Column="3" TopLine="43"/>
       </Position7>
       <Position8>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="80" Column="51" TopLine="63"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="50" Column="17" TopLine="43"/>
       </Position8>
       <Position9>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="81" Column="51" TopLine="64"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="21" Column="75" TopLine="5"/>
       </Position9>
       <Position10>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="62" TopLine="41"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="61" Column="28" TopLine="46"/>
       </Position10>
       <Position11>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="82" Column="51" TopLine="65"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="45" Column="35" TopLine="39"/>
       </Position11>
       <Position12>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="75" Column="52" TopLine="66"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="61" Column="3" TopLine="31"/>
       </Position12>
       <Position13>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="76" Column="52" TopLine="67"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="9" Column="44"/>
       </Position13>
       <Position14>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="83" Column="52" TopLine="69"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="85" Column="18" TopLine="58"/>
       </Position14>
       <Position15>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="74" Column="23" TopLine="61"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="67" Column="31" TopLine="57"/>
       </Position15>
       <Position16>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="37" Column="24" TopLine="19"/>
+        <Caret Line="60" TopLine="55"/>
       </Position16>
       <Position17>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="85" Column="20" TopLine="59"/>
+        <Caret Line="61" TopLine="55"/>
       </Position17>
       <Position18>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="84" Column="20" TopLine="58"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
+        <Caret Line="494" TopLine="479"/>
       </Position18>
       <Position19>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="83" Column="20" TopLine="57"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
+        <Caret Line="495" TopLine="479"/>
       </Position19>
       <Position20>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="82" Column="20" TopLine="56"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
+        <Caret Line="496" TopLine="479"/>
       </Position20>
       <Position21>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="81" Column="20" TopLine="55"/>
+        <Caret Line="100" TopLine="78"/>
       </Position21>
       <Position22>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="80" Column="20" TopLine="54"/>
+        <Caret Line="96" Column="24" TopLine="81"/>
       </Position22>
       <Position23>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="74" Column="19" TopLine="61"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="61" TopLine="45"/>
       </Position23>
       <Position24>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="75" Column="19" TopLine="62"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
+        <Caret Line="494" TopLine="479"/>
       </Position24>
       <Position25>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="74" Column="19" TopLine="61"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
+        <Caret Line="495" TopLine="479"/>
       </Position25>
       <Position26>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="75" Column="19" TopLine="62"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="96" TopLine="81"/>
       </Position26>
       <Position27>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="74" Column="19" TopLine="61"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="100" TopLine="81"/>
       </Position27>
       <Position28>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="28" Column="21" TopLine="14"/>
+        <Caret Line="51" TopLine="36"/>
       </Position28>
       <Position29>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="31" Column="5" TopLine="11"/>
+        <Caret Line="60" TopLine="36"/>
       </Position29>
       <Position30>
-        <Filename Value="ticket.pas"/>
-        <Caret Line="42" Column="21" TopLine="35"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="96" TopLine="81"/>
       </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
-      <Modes Count="0" ActiveMode=""/>
+      <Modes ActiveMode=""/>
     </RunParams>
   </ProjectSession>
+  <Debugging>
+    <BreakPoints>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="main.pas"/>
+        <Line Value="49"/>
+      </Item>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="dmbase.pas"/>
+        <Line Value="60"/>
+      </Item>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="dmbase.pas"/>
+        <Line Value="96"/>
+      </Item>
+    </BreakPoints>
+  </Debugging>
 </CONFIG>

@@ -1,0 +1,90 @@
+object dmBase: TdmBase
+  OnCreate = DataModuleCreate
+  OldCreateOrder = False
+  Height = 356
+  HorizontalOffset = 997
+  VerticalOffset = 265
+  Width = 313
+  object zcon: TZConnection
+    ControlsCodePage = cCP_UTF8
+    AutoEncodeStrings = True
+    Properties.Strings = (
+      'AutoEncodeStrings=True'
+      'controls_cp=CP_UTF8'
+    )
+    Connected = True
+    Port = 0
+    Database = 'D:\projetos\maurinsoft\Etiquetas\db\etiqueta.db'
+    Protocol = 'sqlite-3'
+    LibraryLocation = 'D:\projetos\maurinsoft\Etiquetas\sqlite\win64\sqlite3.dll'
+    Left = 48
+    Top = 16
+  end
+  object zproduct: TZTable
+    Connection = zcon
+    TableName = 'product'
+    Left = 107
+    Top = 17
+    object zproductidproduto: TLongintField
+      FieldKind = fkData
+      FieldName = 'idproduto'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object zproductproductDesc: TStringField
+      FieldKind = fkData
+      FieldName = 'productDesc'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object zproductproductDetail: TStringField
+      FieldKind = fkData
+      FieldName = 'productDetail'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 40
+    end
+    object zproductDetail01: TStringField
+      FieldKind = fkData
+      FieldName = 'Detail01'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object zproductDetail02: TStringField
+      FieldKind = fkData
+      FieldName = 'Detail02'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object zproductprice: TStringField
+      FieldKind = fkData
+      FieldName = 'price'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+  end
+  object zselproduct: TZTable
+    Connection = zcon
+    TableName = 'selproduct'
+    Left = 107
+    Top = 88
+  end
+end
