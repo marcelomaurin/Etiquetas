@@ -20,9 +20,8 @@
         <ComponentName Value="frmmain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
         <TopLine Value="34"/>
-        <CursorPos Y="49"/>
+        <CursorPos X="12" Y="52"/>
         <UsageCount Value="31"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -101,7 +100,7 @@
         <EditorIndex Value="2"/>
         <TopLine Value="173"/>
         <CursorPos Y="194"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit8>
       <Unit9>
@@ -109,10 +108,11 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmconfig"/>
         <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <TopLine Value="14"/>
-        <CursorPos X="9" Y="48"/>
-        <UsageCount Value="21"/>
+        <CursorPos X="53" Y="18"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit9>
