@@ -6,7 +6,7 @@
 #define MyAppPublisher "MAURINSOFT"
 #define MyAppURL "http://maurinsoft.com.br"
 #define MyAppExeName "etiquetas.exe"
-#define MyInstallExeName "setup_etiquetas_0102.exe"
+#define MyInstallExeName "setup_etiquetas_0102"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
