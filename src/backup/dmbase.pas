@@ -104,13 +104,13 @@ end;
 
 procedure TdmBase.NewSel();
 begin
-  zselproduct.Insert();
-  zselproduct.fieldbyname('productDesc').asstring := 'New product';
-  zselproduct.fieldbyname('productDetail').asstring := 'Product Detail';
-  zselproduct.fieldbyname('Detail01').asstring := 'Detail 01';
-  zselproduct.fieldbyname('Detail02').asstring := 'Detail 02';
-  zselproduct.fieldbyname('price').asstring := 'R$ 1.00';
-  zselproduct.Post;
+  zproduct.Insert();
+  zproduct.fieldbyname('productDesc').asstring := 'New product';
+  zproduct.fieldbyname('productDetail').asstring := 'Product Detail';
+  zproduct.fieldbyname('Detail01').asstring := 'Detail 01';
+  zproduct.fieldbyname('Detail02').asstring := 'Detail 02';
+  zproduct.fieldbyname('price').asstring := 'R$ 1.00';
+  zproduct.Post;
 end;
 
 end.

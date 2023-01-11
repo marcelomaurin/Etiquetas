@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, RLReport, RLBarcode,
-  ubarcodes;
+  ubarcodes, dmbase;
 
 type
 
@@ -83,13 +83,13 @@ end;
 
 procedure Tfrmrelticket.PrintItem();
 begin
-   RLProductDesc.Caption:= FProductDesc;
-   RLDetailProd.Caption:= FDetailProd;
-   RLDetail01.Caption:= FDetail01;
-   RLDetail02.Caption:= FDetail02;
-   rlPrice.Caption:= FPrice;
-   RLReport1.PrintDialog := false;
-   RLReport1.Print;
+    RLProductDesc.Caption:= FProductDesc;
+    RLDetailProd.Caption:= FDetailProd;
+    RLDetail01.Caption:= FDetail01;
+    RLDetail02.Caption:= FDetail02;
+    rlPrice.Caption:= FPrice;
+    RLReport1.PrintDialog := false;
+    RLReport1.Print;
 end;
 
 end.

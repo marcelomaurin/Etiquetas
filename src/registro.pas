@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  lNetComponents, lNet;
+  lNetComponents, lNet, dmbase;
 
 type
 
@@ -122,8 +122,8 @@ begin
            'Connection: close'+#13+#10+
             #13+#10;
 
-
-  LTCPComponent1.Connect('maurinsoft.com.br',80);
+  //LTCPComponent1.Connect('maurinsoft.com.br',80);
+  LTCPComponent1.Connect('maurinsoft.com.br',8082);
 end;
 
 end.

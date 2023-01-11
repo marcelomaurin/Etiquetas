@@ -118,12 +118,12 @@ begin
        sleep(1000);
   end;
 
-  INFO :=  'GET /ws/register/iconfila.php? HTTP/1.0'+#13+#10+
+  INFO :=  'GET /ws/register/iconfila.php?tipo=7 HTTP/1.0'+#13+#10+
            'Connection: close'+#13+#10+
             #13+#10;
 
-
-  LTCPComponent1.Connect('maurinsoft.com.br',80);
+  //LTCPComponent1.Connect('maurinsoft.com.br',80);
+  LTCPComponent1.Connect('maurinsoft.com.br',8082);
 end;
 
 end.

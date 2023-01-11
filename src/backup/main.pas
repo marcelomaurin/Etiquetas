@@ -6,17 +6,17 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ticket, registro, setmain, config, dmbase;
+  Buttons, ticket, registro, setmain, config, dmbase;
 
 const
-  versao = 1.1 ;
+  versao = 1.2 ;
 
 type
 
   { Tfrmmain }
 
   Tfrmmain = class(TForm)
-    btconfig: TButton;
+    btConfig: TBitBtn;
     Image1: TImage;
     Image2: TImage;
     Label1: TLabel;
@@ -46,6 +46,10 @@ implementation
 procedure Tfrmmain.Image1Click(Sender: TObject);
 begin
   frmTicket := TfrmTicket.create(self);
+  frmTicket.lbVersao.Caption:= floattostr(versao);
+  frmticket.ShowModal;
+  frmTicket.free;   frmTicket := TfrmTicket.create(self);
+  frmTicket.lbVersao.Caption:= floattostr(versao);
   frmticket.ShowModal;
   frmTicket.free;
 end;
@@ -82,7 +86,7 @@ begin
   FSetMain.posx :=   left ;
   FSetMain.posy := top;
   frmRegistrar.free;
-  fdmBase.fre
+  fdmBase.free();
   FSetMain.SalvaContexto(false);
   FSetMain.free;
 

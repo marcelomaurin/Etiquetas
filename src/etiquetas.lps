@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="12"/>
     <BuildModes Active="Default"/>
-    <Units Count="12">
+    <Units Count="15">
       <Unit0>
         <Filename Value="etiquetas.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -12,7 +12,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="45"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -20,9 +20,9 @@
         <ComponentName Value="frmmain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="34"/>
-        <CursorPos X="12" Y="52"/>
-        <UsageCount Value="31"/>
+        <TopLine Value="42"/>
+        <CursorPos X="36" Y="56"/>
+        <UsageCount Value="45"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -33,9 +33,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="77"/>
-        <CursorPos X="5" Y="96"/>
-        <UsageCount Value="31"/>
+        <TopLine Value="82"/>
+        <CursorPos Y="111"/>
+        <UsageCount Value="45"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit2>
@@ -45,10 +45,11 @@
         <ComponentName Value="frmrelticket"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="9"/>
-        <TopLine Value="68"/>
-        <CursorPos X="16" Y="72"/>
-        <UsageCount Value="31"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="48"/>
+        <CursorPos X="97" Y="65"/>
+        <UsageCount Value="45"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit3>
@@ -60,8 +61,8 @@
         <ResourceBaseClass Value="DataModule"/>
         <EditorIndex Value="4"/>
         <TopLine Value="81"/>
-        <CursorPos Y="96"/>
-        <UsageCount Value="29"/>
+        <CursorPos X="91" Y="113"/>
+        <UsageCount Value="43"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit4>
@@ -71,28 +72,29 @@
         <ComponentName Value="frmRegistrar"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="10"/>
-        <TopLine Value="100"/>
-        <CursorPos X="49" Y="121"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="73"/>
+        <CursorPos X="31" Y="9"/>
+        <UsageCount Value="38"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="funcoes.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="7"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="21"/>
+        <CursorPos Y="59"/>
+        <UsageCount Value="38"/>
         <Loaded Value="True"/>
       </Unit6>
       <Unit7>
         <Filename Value="setmain.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="173"/>
-        <CursorPos Y="194"/>
-        <UsageCount Value="23"/>
+        <TopLine Value="175"/>
+        <CursorPos X="101" Y="191"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -102,159 +104,180 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="14"/>
-        <CursorPos X="53" Y="18"/>
-        <UsageCount Value="22"/>
+        <TopLine Value="77"/>
+        <CursorPos X="88" Y="99"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit8>
       <Unit9>
         <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\plain\ZPlainLoader.pas"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="238"/>
         <CursorPos Y="252"/>
-        <UsageCount Value="12"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="11"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit9>
       <Unit10>
         <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="5"/>
         <TopLine Value="479"/>
-        <CursorPos Y="495"/>
-        <UsageCount Value="10"/>
+        <CursorPos Y="496"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit10>
       <Unit11>
         <Filename Value="C:\lazarus\lcl\include\customform.inc"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="910"/>
         <CursorPos Y="925"/>
+        <UsageCount Value="9"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="C:\lazarus\lcl\include\menuitem.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="276"/>
+        <CursorPos Y="301"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="C:\lazarus\lcl\interfaces\win32\win32callback.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2167"/>
+        <CursorPos Y="2190"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <UnitName Value="RLReport"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="6721"/>
+        <CursorPos X="74" Y="6736"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
-      </Unit11>
+      </Unit14>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="main.pas"/>
-        <Caret Line="50" Column="3" TopLine="14"/>
+        <Filename Value="ticket.pas"/>
+        <Caret Line="109" Column="88" TopLine="81"/>
       </Position1>
       <Position2>
-        <Filename Value="main.pas"/>
-        <Caret Line="58" Column="68" TopLine="43"/>
+        <Filename Value="ticket.pas"/>
+        <Caret Line="106" Column="35" TopLine="82"/>
       </Position2>
       <Position3>
-        <Filename Value="main.pas"/>
-        <Caret Line="35" Column="75" TopLine="23"/>
+        <Filename Value="ticket.pas"/>
+        <Caret Line="103" TopLine="82"/>
       </Position3>
       <Position4>
-        <Filename Value="main.pas"/>
-        <Caret Line="14"/>
+        <Filename Value="ticket.pas"/>
+        <Caret Line="105" Column="44" TopLine="82"/>
       </Position4>
       <Position5>
-        <Filename Value="main.pas"/>
-        <Caret Line="27" Column="57"/>
+        <Filename Value="relticket.pas"/>
+        <Caret Line="86" TopLine="48"/>
       </Position5>
       <Position6>
-        <Filename Value="main.pas"/>
-        <Caret Line="64" Column="41" TopLine="40"/>
+        <Filename Value="ticket.pas"/>
+        <Caret Line="111" TopLine="82"/>
       </Position6>
       <Position7>
-        <Filename Value="main.pas"/>
-        <Caret Line="60" Column="3" TopLine="43"/>
+        <Filename Value="relticket.pas"/>
+        <Caret Line="85" TopLine="48"/>
       </Position7>
       <Position8>
-        <Filename Value="main.pas"/>
-        <Caret Line="50" Column="17" TopLine="43"/>
+        <Filename Value="relticket.pas"/>
+        <Caret Line="83" Column="49" TopLine="48"/>
       </Position8>
       <Position9>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="21" Column="75" TopLine="5"/>
+        <Filename Value="ticket.pas"/>
+        <Caret Line="111" TopLine="82"/>
       </Position9>
       <Position10>
-        <Filename Value="main.pas"/>
-        <Caret Line="61" Column="28" TopLine="46"/>
+        <Filename Value="relticket.pas"/>
+        <Caret Line="86" TopLine="48"/>
       </Position10>
       <Position11>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="45" Column="35" TopLine="39"/>
+        <Filename Value="ticket.pas"/>
+        <Caret Line="111" TopLine="82"/>
       </Position11>
       <Position12>
-        <Filename Value="main.pas"/>
-        <Caret Line="61" Column="3" TopLine="31"/>
+        <Filename Value="relticket.pas"/>
+        <Caret Line="87" TopLine="48"/>
       </Position12>
       <Position13>
-        <Filename Value="main.pas"/>
-        <Caret Line="9" Column="44"/>
+        <Filename Value="relticket.pas"/>
+        <Caret Line="86" TopLine="48"/>
       </Position13>
       <Position14>
-        <Filename Value="main.pas"/>
-        <Caret Line="85" Column="18" TopLine="58"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="7388" TopLine="7364"/>
       </Position14>
       <Position15>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="67" Column="31" TopLine="57"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="7391" TopLine="7364"/>
       </Position15>
       <Position16>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="60" TopLine="55"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="7392" TopLine="7364"/>
       </Position16>
       <Position17>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="61" TopLine="55"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="7479" TopLine="7455"/>
       </Position17>
       <Position18>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
-        <Caret Line="494" TopLine="479"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="6756" TopLine="6732"/>
       </Position18>
       <Position19>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
-        <Caret Line="495" TopLine="479"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="6757" TopLine="6732"/>
       </Position19>
       <Position20>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
-        <Caret Line="496" TopLine="479"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="6758" TopLine="6732"/>
       </Position20>
       <Position21>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="100" TopLine="78"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="6757" TopLine="6732"/>
       </Position21>
       <Position22>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="96" Column="24" TopLine="81"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="6759" TopLine="6732"/>
       </Position22>
       <Position23>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="61" TopLine="45"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="6760" TopLine="6732"/>
       </Position23>
       <Position24>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
-        <Caret Line="494" TopLine="479"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="7480" TopLine="7456"/>
       </Position24>
       <Position25>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
-        <Caret Line="495" TopLine="479"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="7481" TopLine="7456"/>
       </Position25>
       <Position26>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="96" TopLine="81"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="7393" TopLine="7369"/>
       </Position26>
       <Position27>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="100" TopLine="81"/>
+        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Caret Line="6745" TopLine="6721"/>
       </Position27>
       <Position28>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="51" TopLine="36"/>
+        <Filename Value="relticket.pas"/>
+        <Caret Line="87" TopLine="48"/>
       </Position28>
       <Position29>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="60" TopLine="36"/>
+        <Filename Value="relticket.pas"/>
+        <Caret Line="86" TopLine="48"/>
       </Position29>
       <Position30>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="96" TopLine="81"/>
+        <Filename Value="relticket.pas"/>
+        <Caret Line="87" TopLine="48"/>
       </Position30>
     </JumpHistory>
     <RunParams>
@@ -262,29 +285,4 @@
       <Modes ActiveMode=""/>
     </RunParams>
   </ProjectSession>
-  <Debugging>
-    <BreakPoints>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="main.pas"/>
-        <Line Value="49"/>
-      </Item>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="dmbase.pas"/>
-        <Line Value="60"/>
-      </Item>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="dmbase.pas"/>
-        <Line Value="96"/>
-      </Item>
-    </BreakPoints>
-  </Debugging>
 </CONFIG>

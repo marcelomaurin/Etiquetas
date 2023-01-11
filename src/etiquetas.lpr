@@ -7,8 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, fortes324forlaz, rxnew, lnetvisual, main, ticket, relticket,
-  zcomponent, dmbase, registro, funcoes, setmain, config
+  Forms, printer4lazarus, rxnew, fortes324forlaz, lnetvisual, main, ticket,
+  relticket, zcomponent, dmbase, registro, funcoes, setmain, config
   { you can add units after this };
 
 {$R *.res}

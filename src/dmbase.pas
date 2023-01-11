@@ -30,6 +30,7 @@ type
     procedure product();
     procedure selproduct();
     procedure NewSel();
+    procedure NewIns();
 
   end;
 
@@ -105,12 +106,23 @@ end;
 procedure TdmBase.NewSel();
 begin
   zselproduct.Insert();
-  zselproduct.fieldbyname('productDesc').asstring := 'New product';
-  zselproduct.fieldbyname('productDetail').asstring := 'Product Detail';
-  zselproduct.fieldbyname('Detail01').asstring := 'Detail 01';
-  zselproduct.fieldbyname('Detail02').asstring := 'Detail 02';
-  zselproduct.fieldbyname('price').asstring := 'R$ 1.00';
+  zselproduct.fieldbyname('productDesc').asstring := zproduct.fieldbyname('productDesc').asstring;
+  zselproduct.fieldbyname('productDetail').asstring := zproduct.fieldbyname('productDetail').asstring;
+  zselproduct.fieldbyname('Detail01').asstring := zproduct.fieldbyname('Detail01').asstring;
+  zselproduct.fieldbyname('Detail02').asstring := zproduct.fieldbyname('Detail02').asstring;
+  zselproduct.fieldbyname('price').asstring := zproduct.fieldbyname('price').asstring;
   zselproduct.Post;
+end;
+
+procedure TdmBase.NewIns;
+begin
+  zproduct.Insert();
+  zproduct.fieldbyname('productDesc').asstring := 'New product';
+  zproduct.fieldbyname('productDetail').asstring := 'Product Detail';
+  zproduct.fieldbyname('Detail01').asstring := 'Detail 01';
+  zproduct.fieldbyname('Detail02').asstring := 'Detail 02';
+  zproduct.fieldbyname('price').asstring := 'R$ 1.00';
+  zproduct.Post;
 end;
 
 end.
