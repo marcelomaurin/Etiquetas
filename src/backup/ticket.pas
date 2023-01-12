@@ -103,7 +103,7 @@ begin
   while not fdmBase.zselproduct.EOF do
   begin
         frmrelticket.ProductDesc  := fdmBase.zselproduct.FieldByName('productDesc').asstring;
-        frmrelticket.productDetail:= fdmBase.zselproduct.FieldByName('productDetail').asstring;
+        frmrelticket.DetailProd   := fdmBase.zselproduct.FieldByName('productDetail').asstring;
         frmrelticket.Detail01     := fdmBase.zselproduct.FieldByName('Detail01').asstring;
         frmrelticket.Detail02     :=  fdmBase.zselproduct.FieldByName('Detail02').asstring;
         frmrelticket.price        :=  fdmBase.zselproduct.FieldByName('price').asstring;

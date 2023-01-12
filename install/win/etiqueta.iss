@@ -2,11 +2,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Etiquetas"
-#define MyAppVersion "1.2"
+#define MyAppVersion "1.3"
 #define MyAppPublisher "MAURINSOFT"
 #define MyAppURL "http://maurinsoft.com.br"
 #define MyAppExeName "etiquetas.exe"
-#define MyInstallExeName "setup_etiquetas_0102"
+#define MyInstallExeName "setup_etiquetas_0103"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.

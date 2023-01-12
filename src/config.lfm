@@ -7,6 +7,7 @@ object frmconfig: Tfrmconfig
   ClientHeight = 339
   ClientWidth = 320
   OnShow = FormShow
+  Position = poOwnerFormCenter
   LCLVersion = '2.2.2.0'
   object Label1: TLabel
     Left = 8

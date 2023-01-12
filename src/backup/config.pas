@@ -6,13 +6,14 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, EditBtn,
-  Buttons, rxfolderlister, rxtoolbar, setmain, fileutil;
+  Buttons, rxfolderlister, rxtoolbar, setmain, fileutil, PrintersDlgs;
 
 type
 
   { Tfrmconfig }
 
   Tfrmconfig = class(TForm)
+    btDelete1: TBitBtn;
     btSave: TBitBtn;
     btDelete: TBitBtn;
     edDLL: TFileNameEdit;
@@ -20,6 +21,9 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
+    PrinterSetupDialog1: TPrinterSetupDialog;
+    procedure btDelete1Click(Sender: TObject);
     procedure btDeleteClick(Sender: TObject);
     procedure btSaveClick(Sender: TObject);
     procedure btSalvarClick(Sender: TObject);
@@ -110,6 +114,11 @@ begin
     showmessage('Database not exist!');
   end;
 
+end;
+
+procedure Tfrmconfig.btDelete1Click(Sender: TObject);
+begin
+  PrinterSetupDialog1.Execute;
 end;
 
 end.

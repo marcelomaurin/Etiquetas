@@ -1,33 +1,46 @@
 unit main;
 
-{$mode objfpc}{$H+}
+{$mode ObjFPC}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Buttons, ticket, registro, setmain, config, dmbase;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, StdCtrls,
+  ExtCtrls, ComCtrls, setmain, dmbase, registro, config, gondola;
 
 const
-  versao = 1.2 ;
+  versao = 1.3 ;
 
 type
 
-  { Tfrmmain }
+  { TfrmMain }
 
-  Tfrmmain = class(TForm)
-    btConfig: TBitBtn;
-    Image1: TImage;
+  TfrmMain = class(TForm)
     Image2: TImage;
+    imgZebra: TImage;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    lbver: TLabel;
-    procedure btconfigClick(Sender: TObject);
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    lbVersion: TLabel;
+    MainMenu1: TMainMenu;
+    miconfig: TMenuItem;
+    misetup: TMenuItem;
+    miexit: TMenuItem;
+    PageControl1: TPageControl;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    TabSheet1: TTabSheet;
+    tbZebra: TTabSheet;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
+    procedure imgZebraClick(Sender: TObject);
+    procedure miexitClick(Sender: TObject);
+    procedure misetupClick(Sender: TObject);
   private
 
   public
@@ -35,61 +48,58 @@ type
   end;
 
 var
-  frmmain: Tfrmmain;
+  frmMain: TfrmMain;
 
 implementation
 
 {$R *.lfm}
 
-{ Tfrmmain }
+{ TfrmMain }
 
-procedure Tfrmmain.Image1Click(Sender: TObject);
-begin
-  frmTicket := TfrmTicket.create(self);
-  frmTicket.lbVersao.Caption:= floattostr(versao);
-  frmticket.ShowModal;
-  frmTicket.free;   frmTicket := TfrmTicket.create(self);
-  frmTicket.lbVersao.Caption:= floattostr(versao);
-  frmticket.ShowModal;
-  frmTicket.free;
-end;
-
-procedure Tfrmmain.Image2Click(Sender: TObject);
-begin
-  showmessage('Not yet');
-end;
-
-procedure Tfrmmain.FormCreate(Sender: TObject);
+procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FSetMain := TSetMain.create();
   fdmBase := TdmBase.create(self);
-
   left := FSetMain.posx;
   top := FSetMain.posy;
   //FSetMain.CarregaContexto();
   frmRegistrar := TfrmRegistrar.Create(self);
   frmRegistrar.Identifica();
-  lbver.Caption := 'Version '+FloatToStr(versao);
-
-
+  lbVersion.Caption:= floattostr(versao);
 end;
 
-procedure Tfrmmain.btconfigClick(Sender: TObject);
+procedure TfrmMain.FormDestroy(Sender: TObject);
+begin
+  frmRegistrar.free;
+  fdmBase.free();
+  FSetMain.posx := left ;
+  FSetMain.posy := top;
+  FSetMain.SalvaContexto(false);
+  FSetMain.free;
+end;
+
+procedure TfrmMain.Image2Click(Sender: TObject);
+begin
+  frmgondola := tfrmgondola.create(self);
+  frmgondola.showmodal();
+  frmgondola.Free;
+end;
+
+procedure TfrmMain.imgZebraClick(Sender: TObject);
+begin
+   tbZebra.Show;
+end;
+
+procedure TfrmMain.miexitClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure TfrmMain.misetupClick(Sender: TObject);
 begin
   frmconfig := Tfrmconfig.create(self);
   frmconfig.showmodal();
   frmconfig.free;
-end;
-
-procedure Tfrmmain.FormDestroy(Sender: TObject);
-begin
-  FSetMain.posx :=   left ;
-  FSetMain.posy := top;
-  frmRegistrar.free;
-  fdmBase.free();
-  FSetMain.SalvaContexto(false);
-  FSetMain.free;
-
 end;
 
 end.
