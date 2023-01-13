@@ -34,6 +34,7 @@ type
         FHeight : integer;
         FWidth : integer;
         FSQLLITEDLL : string;
+        FCSVFOLDER : String;
         FDB : string;
         //filename : String;
         procedure SetDevice(const Value : Boolean);
@@ -56,6 +57,7 @@ type
         property Height: integer read FHeight write FHeight;
         property Width : integer read FWidth write FWidth;
         property SQLLITEDLL: String read FSQLLITEDLL write FSQLLITEDLL;
+        property CSVFOLDER: String read FCSVFOLDER write FCSVFOLDER;
         property db: String read Fdb write Fdb;
   end;
 
@@ -81,6 +83,7 @@ begin
     fposy := 0;
     FSQLLITEDLL := ExtractFilePath(ApplicationName)+'\sqlite\win64\sqlite3.dll';
     FDB := ExtractFilePath(ApplicationName)+'\db\etiqueta.db';
+    FCSVFOLDER := ExtractFilePath(ApplicationName)+'\csv\etiquetas.csv';
 
 end;
 
@@ -154,6 +157,10 @@ begin
     begin
       FDB := RetiraInfo(arquivo.Strings[posicao]);
     end;
+    if  BuscaChave(arquivo,'CSVFOLDER:',posicao) then
+    begin
+      FCSVFOLDER := RetiraInfo(arquivo.Strings[posicao]);
+    end;
 end;
 
 
@@ -220,6 +227,7 @@ begin
   arquivo.Append('HEIGHT:'+inttostr(FHEIGHT));
   arquivo.Append('WIDTH:'+inttostr(FWIDTH));
   arquivo.Append('SQLLITEDLL:'+FSQLLITEDLL);
+  arquivo.Append('CSVFOLDER:'+FCSVFOLDER);
   arquivo.Append('DB:'+FDB);
 
 

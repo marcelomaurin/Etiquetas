@@ -8,7 +8,8 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, printer4lazarus, rxnew, fortes324forlaz, lnetvisual, gondola, ticket,
-  relticket, zcomponent, dmbase, registro, funcoes, setmain, config, main
+  relticket, zcomponent, dmbase, registro, funcoes, setmain, config, main, 
+Import, csvproducts
   { you can add units after this };
 
 {$R *.res}

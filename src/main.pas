@@ -6,27 +6,35 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, StdCtrls,
-  ExtCtrls, ComCtrls, setmain, dmbase, registro, config, gondola;
+  ExtCtrls, ComCtrls, setmain, dmbase, registro, config, gondola, import;
 
 const
-  versao = 1.3 ;
+  versao = 1.4 ;
 
 type
 
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    Image1: TImage;
     Image2: TImage;
+    Image3: TImage;
+    imgProducts: TImage;
     imgZebra: TImage;
     Label1: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
     lbVersion: TLabel;
     MainMenu1: TMainMenu;
+    miImport: TMenuItem;
     miconfig: TMenuItem;
     misetup: TMenuItem;
     miexit: TMenuItem;
@@ -34,12 +42,16 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     TabSheet1: TTabSheet;
+    tsProducts: TTabSheet;
     tbZebra: TTabSheet;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
+    procedure imgProductsClick(Sender: TObject);
     procedure imgZebraClick(Sender: TObject);
     procedure miexitClick(Sender: TObject);
+    procedure miImportClick(Sender: TObject);
     procedure misetupClick(Sender: TObject);
   private
 
@@ -78,11 +90,21 @@ begin
   FSetMain.free;
 end;
 
+procedure TfrmMain.Image1Click(Sender: TObject);
+begin
+   tsProducts.Show;
+end;
+
 procedure TfrmMain.Image2Click(Sender: TObject);
 begin
   frmgondola := tfrmgondola.create(self);
   frmgondola.showmodal();
   frmgondola.Free;
+end;
+
+procedure TfrmMain.imgProductsClick(Sender: TObject);
+begin
+  showmessage('Not yet!');
 end;
 
 procedure TfrmMain.imgZebraClick(Sender: TObject);
@@ -93,6 +115,14 @@ end;
 procedure TfrmMain.miexitClick(Sender: TObject);
 begin
   close;
+end;
+
+procedure TfrmMain.miImportClick(Sender: TObject);
+begin
+  frmImport := tfrmimport.create(self);
+  frmImport.showmodal();
+  frmImport.free;
+  frmImport := nil;
 end;
 
 procedure TfrmMain.misetupClick(Sender: TObject);

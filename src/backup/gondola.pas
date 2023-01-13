@@ -17,10 +17,8 @@ type
   Tfrmgondola = class(TForm)
     btConfig: TBitBtn;
     Image1: TImage;
-    Image2: TImage;
     Label1: TLabel;
     Label2: TLabel;
-    Label3: TLabel;
     lbver: TLabel;
     procedure btconfigClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);

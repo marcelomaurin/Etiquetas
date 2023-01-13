@@ -87,4 +87,21 @@ object dmBase: TdmBase
     Left = 107
     Top = 88
   end
+  object tbcsv: TCSVDataset
+    FieldDefs = <>
+    CSVOptions.FirstLineAsFieldNames = False
+    CSVOptions.DefaultFieldLength = 255
+    CSVOptions.Delimiter = ','
+    CSVOptions.QuoteChar = '"'
+    CSVOptions.LineEnding = #13#10
+    CSVOptions.IgnoreOuterWhitespace = False
+    CSVOptions.QuoteOuterWhitespace = True
+    Left = 248
+    Top = 152
+  end
+  object dsCSV: TDataSource
+    DataSet = tbcsv
+    Left = 201
+    Top = 152
+  end
 end

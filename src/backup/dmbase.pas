@@ -5,13 +5,18 @@ unit dmbase;
 interface
 
 uses
-  Classes, SysUtils, DB, ZConnection, ZDataset, setmain, dialogs,Interfaces;
+  Classes, SysUtils, DB, csvdataset, ZConnection, ZDataset, setmain, dialogs,
+  Interfaces;
+
+type TCSVLayout = ( csv_Nada, csv_Produtos);
 
 type
 
   { TdmBase }
 
   TdmBase = class(TDataModule)
+    tbcsv: TCSVDataset;
+    dsCSV: TDataSource;
     zcon: TZConnection;
     zproduct: TZTable;
     zselproduct: TZTable;
@@ -23,6 +28,7 @@ type
     zproductproductDetail: TStringField;
     procedure DataModuleCreate(Sender: TObject);
   private
+    function ImportReportDS(): boolean;
 
   public
     procedure opendb();
@@ -30,6 +36,10 @@ type
     procedure product();
     procedure selproduct();
     procedure NewSel();
+    procedure NewIns();
+    function ImportCVSReport( filename: string) : boolean;
+    function csvValidaLayout( tipo : TCSVLayout) : boolean;
+    function dropproducts(): boolean;
 
   end;
 
@@ -45,6 +55,37 @@ implementation
 procedure TdmBase.DataModuleCreate(Sender: TObject);
 begin
 
+end;
+
+function TdmBase.ImportReportDS: boolean;
+var
+  resultado :boolean;
+begin
+    resultado := true;
+    tbcsv.first;
+    //zproduct.open;
+    product();
+    while not tbcsv.EOF do
+    begin
+      try
+        zproduct.Append();
+        zproduct.FieldByName('productDesc').asstring := tbcsv.Fields[0].asstring;
+        zproduct.FieldByName('productDetail').asstring := tbcsv.Fields[1].asstring;
+        zproduct.FieldByName('Detail01').asstring := tbcsv.Fields[2].asstring;
+        zproduct.FieldByName('Detail02').asstring := tbcsv.Fields[3].asstring;
+        zproduct.FieldByName('price').asstring := tbcsv.Fields[4].asstring;
+
+        zproduct.Post;
+        tbcsv.next();
+
+      except
+        resultado := false;
+      end;
+    end;
+    if resultado then ShowMessage('Success in CSV Import ');
+    zproduct.Prior;
+    zproduct.close;
+    result := resultado;
 end;
 
 procedure TdmBase.opendb();
@@ -104,6 +145,17 @@ end;
 
 procedure TdmBase.NewSel();
 begin
+  zselproduct.Insert();
+  zselproduct.fieldbyname('productDesc').asstring := zproduct.fieldbyname('productDesc').asstring;
+  zselproduct.fieldbyname('productDetail').asstring := zproduct.fieldbyname('productDetail').asstring;
+  zselproduct.fieldbyname('Detail01').asstring := zproduct.fieldbyname('Detail01').asstring;
+  zselproduct.fieldbyname('Detail02').asstring := zproduct.fieldbyname('Detail02').asstring;
+  zselproduct.fieldbyname('price').asstring := zproduct.fieldbyname('price').asstring;
+  zselproduct.Post;
+end;
+
+procedure TdmBase.NewIns;
+begin
   zproduct.Insert();
   zproduct.fieldbyname('productDesc').asstring := 'New product';
   zproduct.fieldbyname('productDetail').asstring := 'Product Detail';
@@ -112,6 +164,80 @@ begin
   zproduct.fieldbyname('price').asstring := 'R$ 1.00';
   zproduct.Post;
 end;
+
+function TdmBase.ImportCVSReport(filename: string): boolean;
+var resultado: boolean;
+begin
+   resultado := false;
+   if FileExists(filename) then
+   begin
+       try
+        tbcsv.LoadFromCSVFile(filename);
+        tbcsv.Open;
+        if (csvValidaLayout(csv_Produtos)) then
+        begin
+          if ImportReportDS() then
+          begin
+
+          end
+          else
+          begin
+
+          end;
+        end
+        else
+        begin
+          showmessage('Layout CSV not valid!');
+        end;
+
+        tbcsv.close;
+
+        resultado := true;
+
+       finally
+       end;
+
+   end
+   else
+   begin
+     showmessage('File not exist');
+   end;
+   result := resultado;
+end;
+
+function TdmBase.csvValidaLayout(tipo: TCSVLayout): boolean;
+var
+   resultado : boolean;
+begin
+    resultado := false;
+    //ShowMessage(inttostr(tbcsv.Fields.Count));
+    if  (tbcsv.Fields.Count = 5) then
+    begin
+
+      resultado := true;
+    end
+    else
+    begin
+      showmessage('Invalid CSV fields number');
+    end;
+    result := resultado;
+end;
+
+function TdmBase.dropproducts: boolean;
+var
+   resultado : boolean;
+begin
+  resultado := false;
+  try
+    zproduct.Delete;
+
+  finally;
+    resultado := true;
+  end;
+
+  result := resultado;
+end;
+
 
 end.
 
