@@ -7,7 +7,7 @@ object frmrelticket: Tfrmrelticket
   ClientHeight = 144
   ClientWidth = 408
   LCLVersion = '2.2.2.0'
-  object RLReport1: TRLReport
+  object RLRepGondola02: TRLReport
     Left = 0
     Height = 117
     Top = 10
@@ -40,7 +40,7 @@ object frmrelticket: Tfrmrelticket
     object RLProductDesc: TRLLabel
       Left = 8
       Height = 32
-      Top = 35
+      Top = 43
       Width = 386
       Alignment = taCenter
       AutoSize = False
@@ -54,7 +54,7 @@ object frmrelticket: Tfrmrelticket
     object RLDetailProd: TRLLabel
       Left = 8
       Height = 16
-      Top = 59
+      Top = 67
       Width = 386
       AutoSize = False
       Caption = 'Detail this product'

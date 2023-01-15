@@ -13,12 +13,12 @@ type
   { Tfrmrelticket }
 
   Tfrmrelticket = class(TForm)
-    RLProductDesc: TRLLabel;
-    RLDetailProd: TRLLabel;
     RLDetail01: TRLLabel;
     RLDetail02: TRLLabel;
+    RLDetailProd: TRLLabel;
     rlPrice: TRLLabel;
-    RLReport1: TRLReport;
+    RLProductDesc: TRLLabel;
+    RLRepGondola02: TRLReport;
     procedure rlproductnameAfterPrint(Sender: TObject);
   private
     FProductDesc : string;
@@ -83,13 +83,13 @@ end;
 
 procedure Tfrmrelticket.PrintItem();
 begin
-    RLProductDesc.Caption:= FProductDesc;
-    RLDetailProd.Caption:= FDetailProd;
-    RLDetail01.Caption:= FDetail01;
-    RLDetail02.Caption:= FDetail02;
-    rlPrice.Caption:= FPrice;
-    RLReport1.PrintDialog := false;
-    RLReport1.Print;
+   RLProductDesc.Caption:= FProductDesc;
+   RLDetailProd.Caption:= FDetailProd;
+   RLDetail01.Caption:= FDetail01;
+   RLDetail02.Caption:= FDetail02;
+   rlPrice.Caption:= FPrice;
+   RLRepGondola02.PrintDialog := false;
+   RLRepGondola02.Print;
 end;
 
 end.

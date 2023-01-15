@@ -1,0 +1,85 @@
+object frmrelticket02: Tfrmrelticket02
+  Left = 566
+  Height = 164
+  Top = 385
+  Width = 404
+  Caption = 'frmrelticket02'
+  ClientHeight = 164
+  ClientWidth = 404
+  LCLVersion = '2.2.2.0'
+  object RLRepGondola02: TRLReport
+    Left = 0
+    Height = 151
+    Top = 10
+    Width = 401
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'Arial'
+    Margins.LeftMargin = 0
+    Margins.TopMargin = 5
+    Margins.RightMargin = 0
+    Margins.BottomMargin = 0
+    PageSetup.PaperSize = fpCustom
+    PageSetup.PaperWidth = 106
+    PageSetup.PaperHeight = 40
+    RealBounds.UsedUnit = buMilimeters
+    object rlPrice: TRLLabel
+      Left = 184
+      Height = 56
+      Top = 83
+      Width = 210
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'R$ 1,79'
+      Font.Color = clBlack
+      Font.Height = -40
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object RLProductDesc: TRLLabel
+      Left = 8
+      Height = 32
+      Top = 43
+      Width = 386
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Product Description'
+      Font.Color = clBlack
+      Font.Height = -24
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object RLDetailProd: TRLLabel
+      Left = 8
+      Height = 16
+      Top = 67
+      Width = 386
+      AutoSize = False
+      Caption = 'Detail this product'
+      Color = clMedGray
+      ParentColor = False
+      Transparent = False
+    end
+    object RLDetail01: TRLLabel
+      Left = 8
+      Height = 16
+      Top = 83
+      Width = 162
+      AutoSize = False
+      Caption = 'Detail 01'
+    end
+    object RLDetail02: TRLBarcode
+      Left = 8
+      Height = 40
+      Top = 99
+      Width = 168
+      Alignment = taCenter
+      Caption = '0123456'
+      Margins.LeftMargin = 1
+      Margins.RightMargin = 1
+      ShowText = boCode
+    end
+  end
+end

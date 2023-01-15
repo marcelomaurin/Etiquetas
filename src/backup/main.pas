@@ -9,7 +9,7 @@ uses
   ExtCtrls, ComCtrls, setmain, dmbase, registro, config, gondola, import;
 
 const
-  versao = 1.4 ;
+  versao = 1.5 ;
 
 type
 

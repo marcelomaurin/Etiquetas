@@ -30,33 +30,30 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="8">
+    <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="Printer4Lazarus"/>
+        <PackageName Value="fortes324forlaz"/>
       </Item1>
       <Item2>
-        <PackageName Value="fortes324forlaz"/>
+        <PackageName Value="rxnew"/>
       </Item2>
       <Item3>
-        <PackageName Value="rxnew"/>
+        <PackageName Value="lnetvisual"/>
       </Item3>
       <Item4>
-        <PackageName Value="lnetvisual"/>
+        <PackageName Value="FCL"/>
       </Item4>
       <Item5>
-        <PackageName Value="FCL"/>
+        <PackageName Value="zcomponent"/>
       </Item5>
       <Item6>
-        <PackageName Value="zcomponent"/>
+        <PackageName Value="lazbarcodes"/>
       </Item6>
       <Item7>
-        <PackageName Value="lazbarcodes"/>
-      </Item7>
-      <Item8>
         <PackageName Value="LCL"/>
-      </Item8>
+      </Item7>
     </RequiredPackages>
-    <Units Count="12">
+    <Units Count="13">
       <Unit0>
         <Filename Value="etiquetas.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -76,9 +73,9 @@
         <ResourceBaseClass Value="Form"/>
       </Unit2>
       <Unit3>
-        <Filename Value="relticket.pas"/>
+        <Filename Value="relticket02.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="frmrelticket"/>
+        <ComponentName Value="frmrelticket02"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit3>
@@ -122,6 +119,7 @@
         <Filename Value="import.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmImport"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Import"/>
       </Unit10>
@@ -129,8 +127,16 @@
         <Filename Value="csvproducts.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmcsvproducts"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit11>
+      <Unit12>
+        <Filename Value="relticket.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmrelticket"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit12>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

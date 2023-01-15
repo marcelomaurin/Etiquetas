@@ -2,11 +2,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Etiquetas"
-#define MyAppVersion "1.4"
+#define MyAppVersion "1.5"
 #define MyAppPublisher "MAURINSOFT"
 #define MyAppURL "http://maurinsoft.com.br"
 #define MyAppExeName "etiquetas.exe"
-#define MyInstallExeName "setup_etiquetas_0104"
+#define MyInstallExeName "setup_etiquetas_0105"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -57,7 +57,8 @@ TD_ETIQUETA=Install demo ETIQUETA
 [Files]
 Source: "D:\projetos\maurinsoft\Etiquetas\src\etiquetas.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\projetos\maurinsoft\Etiquetas\db\etiqueta.db"; DestDir: "{app}\db\"; Flags: ignoreversion
-Source: "D:\projetos\maurinsoft\Etiquetas\csv\etiquetas.csv"; DestDir: "{app}\csv\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\csv\gondola01.csv"; DestDir: "{app}\csv\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\csv\gondola02.csv"; DestDir: "{app}\csv\"; Flags: ignoreversion
 Source: "D:\projetos\maurinsoft\Etiquetas\sqlite\win64\sqlite3.def"; DestDir: "{app}\sqlite\win64\"; Flags: ignoreversion
 Source: "D:\projetos\maurinsoft\Etiquetas\sqlite\win64\sqlite3.dll"; DestDir: "{app}\sqlite\win64\"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files

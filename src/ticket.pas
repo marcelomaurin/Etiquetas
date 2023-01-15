@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Grids,
   ComCtrls, ExtCtrls, DBGrids, DBCtrls, Buttons, Menus, PrintersDlgs, relticket,
-  DB, csvdataset, ZConnection, dmbase;
+  relticket02, DB, csvdataset, ZConnection, dmbase;
 
 type
 
@@ -25,6 +25,7 @@ type
     edFamily: TEdit;
     Image1: TImage;
     Image2: TImage;
+    Image3: TImage;
     Label1: TLabel;
     Label10: TLabel;
     lbVersao: TLabel;
@@ -54,6 +55,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
+    procedure Image3Click(Sender: TObject);
     procedure Label7Click(Sender: TObject);
     procedure miSelClick(Sender: TObject);
     procedure mnInsertClick(Sender: TObject);
@@ -113,6 +115,28 @@ begin
   end;
   frmrelticket.Free;
   frmrelticket := nil
+end;
+
+procedure TfrmTicket.Image3Click(Sender: TObject);
+begin
+  if (frmrelticket02 = nil) then
+  begin
+    frmrelticket02 := Tfrmrelticket02.create(self);
+  end;
+  fdmBase.zselproduct.First;
+  while not fdmBase.zselproduct.EOF do
+  begin
+        frmrelticket02.ProductDesc  := fdmBase.zselproduct.FieldByName('productDesc').asstring;
+        frmrelticket02.DetailProd   := fdmBase.zselproduct.FieldByName('productDetail').asstring;
+        frmrelticket02.Detail01     := fdmBase.zselproduct.FieldByName('Detail01').asstring;
+        frmrelticket02.Detail02     :=  fdmBase.zselproduct.FieldByName('Detail02').asstring;
+        frmrelticket02.price        :=  fdmBase.zselproduct.FieldByName('price').asstring;
+
+        frmrelticket02.PrintItem();
+        fdmBase.zselproduct.Next;
+  end;
+  frmrelticket02.Free;
+  frmrelticket02 := nil
 end;
 
 procedure TfrmTicket.btSearchChange(Sender: TObject);

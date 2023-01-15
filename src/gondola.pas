@@ -47,9 +47,6 @@ begin
   frmTicket := TfrmTicket.create(self);
   frmTicket.lbVersao.Caption:= floattostr(versao);
   frmticket.ShowModal;
-  frmTicket.free;   frmTicket := TfrmTicket.create(self);
-  frmTicket.lbVersao.Caption:= floattostr(versao);
-  frmticket.ShowModal;
   frmTicket.free;
 end;
 

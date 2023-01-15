@@ -7,7 +7,7 @@ object frmrelticket: Tfrmrelticket
   ClientHeight = 144
   ClientWidth = 408
   LCLVersion = '2.2.2.0'
-  object RLReport1: TRLReport
+  object RLRepGondola02: TRLReport
     Left = 0
     Height = 117
     Top = 10
