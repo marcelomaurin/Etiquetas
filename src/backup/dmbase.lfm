@@ -104,4 +104,97 @@ object dmBase: TdmBase
     Left = 201
     Top = 152
   end
+  object zendereco: TZTable
+    Connection = zcon
+    TableName = 'Endereco'
+    Left = 192
+    Top = 17
+    object zenderecoInd: TLargeintField
+      FieldKind = fkData
+      FieldName = 'Ind'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object zenderecoNome: TStringField
+      FieldKind = fkData
+      FieldName = 'Nome'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+      Size = 40
+    end
+    object zenderecoTipoPessoa: TLargeintField
+      FieldKind = fkData
+      FieldName = 'TipoPessoa'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object zenderecoDocumento: TStringField
+      FieldKind = fkData
+      FieldName = 'Documento'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 40
+    end
+    object zenderecoLogradouro: TStringField
+      FieldKind = fkData
+      FieldName = 'Logradouro'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 40
+    end
+    object zenderecoBairro: TStringField
+      FieldKind = fkData
+      FieldName = 'Bairro'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 40
+    end
+    object zenderecoCidade: TStringField
+      FieldKind = fkData
+      FieldName = 'Cidade'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 40
+    end
+    object zenderecoCEP: TStringField
+      FieldKind = fkData
+      FieldName = 'CEP'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object zenderecoReferencia: TStringField
+      FieldKind = fkData
+      FieldName = 'Referencia'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 40
+    end
+  end
 end

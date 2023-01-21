@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Buttons, dmbase, funcoes, csvproducts;
+  Buttons, dmbase, funcoes, csvproducts, csvendereco;
 
 type
 
@@ -15,8 +15,11 @@ type
   TfrmImport = class(TForm)
     btclose: TBitBtn;
     imgImportProducts: TImage;
+    imgImportProducts1: TImage;
     Label1: TLabel;
+    Label2: TLabel;
     procedure btcloseClick(Sender: TObject);
+    procedure imgImportProducts1Click(Sender: TObject);
     procedure imgImportProductsClick(Sender: TObject);
   private
 
@@ -38,9 +41,19 @@ begin
   close;
 end;
 
+procedure TfrmImport.imgImportProducts1Click(Sender: TObject);
+begin
+  self.Cursor:= crHourGlass;
+  frmcsvendereco := TfrmcsvEndereco.create(self);
+  self.Cursor:=  crArrow
+  frmcsvendereco.showmodal;
+  frmcsvendereco.free;
+  frmcsvendereco := nil;
+end;
+
 procedure TfrmImport.imgImportProductsClick(Sender: TObject);
 begin
-  frmcsvproducts := Tcsvproducts.create(self);
+  frmcsvproducts := Tfrmcsvproducts.create(self);
   frmcsvproducts.showmodal;
   frmcsvproducts.free;
   frmcsvproducts := nil;

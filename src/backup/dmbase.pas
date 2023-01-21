@@ -18,7 +18,17 @@ type
     tbcsv: TCSVDataset;
     dsCSV: TDataSource;
     zcon: TZConnection;
+    zenderecoBairro: TStringField;
+    zenderecoCEP: TStringField;
+    zenderecoCidade: TStringField;
+    zenderecoDocumento: TStringField;
+    zenderecoInd: TLargeintField;
+    zenderecoLogradouro: TStringField;
+    zenderecoNome: TStringField;
+    zenderecoReferencia: TStringField;
+    zenderecoTipoPessoa: TLargeintField;
     zproduct: TZTable;
+    zendereco: TZTable;
     zselproduct: TZTable;
     zproductDetail01: TStringField;
     zproductDetail02: TStringField;
@@ -29,16 +39,20 @@ type
     procedure DataModuleCreate(Sender: TObject);
   private
     function ImportReportDS(): boolean;
+    function ImportEderecoDS(): boolean;
 
   public
     procedure opendb();
     procedure closedb();
     procedure product();
+    procedure Endereco();
     procedure selproduct();
     procedure NewSel();
     procedure NewIns();
     function ImportCVSReport( filename: string) : boolean;
+    function ImportCVSEndereco( filename: string) : boolean;
     function csvValidaLayout( tipo : TCSVLayout) : boolean;
+    function csvValidaLayoutEndereco( tipo : TCSVLayout) : boolean;
     function dropproducts(): boolean;
 
   end;
@@ -54,6 +68,8 @@ implementation
 
 procedure TdmBase.DataModuleCreate(Sender: TObject);
 begin
+  zcon.Database :=  FSetMain.db;
+  zcon.LibraryLocation:= FSetMain.SQLLITEDLL;
 
 end;
 
@@ -87,6 +103,40 @@ begin
     zproduct.close;
     result := resultado;
 end;
+
+function TdmBase.ImportEderecoDS: boolean;
+var
+  resultado :boolean;
+begin
+    resultado := true;
+    tbcsv.first;
+    //zproduct.open;
+    Endereco();
+    while not tbcsv.EOF do
+    begin
+      try
+        zendereco.Append();
+        zendereco.FieldByName('Nome').asstring := tbcsv.Fields[0].asstring;
+        zendereco.FieldByName('TipoPessoa').asstring := tbcsv.Fields[1].asstring;
+        zendereco.FieldByName('Documento').asstring := tbcsv.Fields[2].asstring;
+        zendereco.FieldByName('Logradouro').asstring := tbcsv.Fields[3].asstring;
+        zendereco.FieldByName('Bairro').asstring := tbcsv.Fields[4].asstring;
+        zendereco.FieldByName('Cidade').asstring := tbcsv.Fields[5].asstring;
+        zendereco.FieldByName('CEP').asstring := tbcsv.Fields[6].asstring;
+        zendereco.FieldByName('Referencia').asstring := tbcsv.Fields[7].asstring;
+        zendereco.Post;
+        tbcsv.next();
+
+      except
+        resultado := false;
+      end;
+    end;
+    if resultado then ShowMessage('Success in CSV Import ');
+    zendereco.Prior;
+    zendereco.close;
+    result := resultado;
+end;
+
 
 procedure TdmBase.opendb();
 begin
@@ -132,6 +182,17 @@ begin
   end;
 end;
 
+procedure TdmBase.Endereco;
+begin
+  if zcon.Connected then
+  begin
+    zendereco.Close;
+    zendereco.open;
+
+  end;
+
+end;
+
 procedure TdmBase.selproduct();
 begin
   if zselproduct.Active then
@@ -174,7 +235,7 @@ begin
        try
         tbcsv.LoadFromCSVFile(filename);
         tbcsv.Open;
-        if (csvValidaLayout(csv_Produtos)) then
+        if (csvValidaLayoutEndereco(csv_Produtos)) then
         begin
           if ImportReportDS() then
           begin
@@ -205,6 +266,46 @@ begin
    result := resultado;
 end;
 
+function TdmBase.ImportCVSEndereco(filename: string): boolean;
+var resultado: boolean;
+begin
+resultado := false;
+if FileExists(filename) then
+begin
+    try
+     tbcsv.LoadFromCSVFile(filename);
+     tbcsv.Open;
+     if (csvValidaLayout(csv_Produtos)) then
+     begin
+       if ImportReportDS() then
+       begin
+
+       end
+       else
+       begin
+
+       end;
+     end
+     else
+     begin
+       showmessage('Layout CSV not valid!');
+     end;
+
+     tbcsv.close;
+
+     resultado := true;
+
+    finally
+    end;
+
+end
+else
+begin
+  showmessage('File not exist');
+end;
+result := resultado;
+end;
+
 function TdmBase.csvValidaLayout(tipo: TCSVLayout): boolean;
 var
    resultado : boolean;
@@ -213,8 +314,7 @@ begin
     //ShowMessage(inttostr(tbcsv.Fields.Count));
     if  (tbcsv.Fields.Count = 5) then
     begin
-
-      resultado := true;
+       resultado := true;
     end
     else
     begin
@@ -222,6 +322,24 @@ begin
     end;
     result := resultado;
 end;
+
+function TdmBase.csvValidaLayoutEndereco(tipo: TCSVLayout): boolean;
+var
+   resultado : boolean;
+begin
+    resultado := false;
+    //ShowMessage(inttostr(tbcsv.Fields.Count));
+    if  (tbcsv.Fields.Count = 5) then
+    begin
+       resultado := true;
+    end
+    else
+    begin
+      showmessage('Invalid CSV fields number');
+    end;
+    result := resultado;
+end;
+
 
 function TdmBase.dropproducts: boolean;
 var

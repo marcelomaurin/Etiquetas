@@ -1,0 +1,197 @@
+object frmMalaDireta: TfrmMalaDireta
+  Left = 410
+  Height = 422
+  Top = 243
+  Width = 772
+  Caption = 'Print Direct Mail'
+  ClientHeight = 422
+  ClientWidth = 772
+  Position = poMainFormCenter
+  LCLVersion = '2.2.2.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 50
+    Top = 0
+    Width = 772
+    Align = alTop
+    ClientHeight = 50
+    ClientWidth = 772
+    TabOrder = 0
+    object SpeedButton1: TSpeedButton
+      Left = 640
+      Height = 32
+      Top = 8
+      Width = 119
+      Caption = 'Close'
+      OnClick = SpeedButton1Click
+    end
+    object Label3: TLabel
+      Left = 16
+      Height = 28
+      Top = 8
+      Width = 142
+      Caption = 'Wizzard Mailing'
+      Font.Height = -20
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+  object pcMalaDireta: TPageControl
+    Left = 0
+    Height = 372
+    Top = 50
+    Width = 772
+    ActivePage = Wizzard
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object Wizzard: TTabSheet
+      Caption = 'Database'
+      ClientHeight = 344
+      ClientWidth = 764
+      object Panel2: TPanel
+        Left = 0
+        Height = 82
+        Top = 0
+        Width = 764
+        Align = alTop
+        ClientHeight = 82
+        ClientWidth = 764
+        TabOrder = 0
+        object SpeedButton2: TSpeedButton
+          Left = 624
+          Height = 32
+          Top = 24
+          Width = 119
+          Caption = 'Next'
+          OnClick = SpeedButton1Click
+        end
+      end
+      object Panel3: TPanel
+        Left = 0
+        Height = 262
+        Top = 82
+        Width = 392
+        Align = alLeft
+        ClientHeight = 262
+        ClientWidth = 392
+        TabOrder = 1
+        object Panel5: TPanel
+          Left = 1
+          Height = 64
+          Top = 1
+          Width = 390
+          Align = alTop
+          ClientHeight = 64
+          ClientWidth = 390
+          TabOrder = 0
+          object Label1: TLabel
+            Left = 144
+            Height = 15
+            Top = 8
+            Width = 51
+            Caption = 'Data Base'
+            ParentColor = False
+          end
+          object DBNavigator1: TDBNavigator
+            Left = 64
+            Height = 25
+            Top = 32
+            Width = 241
+            BevelOuter = bvNone
+            ChildSizing.EnlargeHorizontal = crsScaleChilds
+            ChildSizing.EnlargeVertical = crsScaleChilds
+            ChildSizing.ShrinkHorizontal = crsScaleChilds
+            ChildSizing.ShrinkVertical = crsScaleChilds
+            ChildSizing.Layout = cclLeftToRightThenTopToBottom
+            ChildSizing.ControlsPerLine = 100
+            ClientHeight = 25
+            ClientWidth = 241
+            Options = []
+            TabOrder = 0
+          end
+        end
+        object DBGrid1: TDBGrid
+          Left = 1
+          Height = 196
+          Top = 65
+          Width = 390
+          Align = alClient
+          Color = clWindow
+          Columns = <>
+          TabOrder = 1
+        end
+      end
+      object Splitter1: TSplitter
+        Left = 392
+        Height = 262
+        Top = 82
+        Width = 5
+      end
+      object Panel4: TPanel
+        Left = 397
+        Height = 262
+        Top = 82
+        Width = 367
+        Align = alClient
+        ClientHeight = 262
+        ClientWidth = 367
+        TabOrder = 3
+        object Panel6: TPanel
+          Left = 1
+          Height = 64
+          Top = 1
+          Width = 365
+          Align = alTop
+          ClientHeight = 64
+          ClientWidth = 365
+          TabOrder = 0
+          object Label2: TLabel
+            Left = 144
+            Height = 15
+            Top = 8
+            Width = 73
+            Caption = 'Selected TAGs'
+            ParentColor = False
+          end
+          object DBNavigator2: TDBNavigator
+            Left = 56
+            Height = 25
+            Top = 32
+            Width = 241
+            BevelOuter = bvNone
+            ChildSizing.EnlargeHorizontal = crsScaleChilds
+            ChildSizing.EnlargeVertical = crsScaleChilds
+            ChildSizing.ShrinkHorizontal = crsScaleChilds
+            ChildSizing.ShrinkVertical = crsScaleChilds
+            ChildSizing.Layout = cclLeftToRightThenTopToBottom
+            ChildSizing.ControlsPerLine = 100
+            ClientHeight = 25
+            ClientWidth = 241
+            Options = []
+            TabOrder = 0
+          end
+        end
+        object DBGrid2: TDBGrid
+          Left = 1
+          Height = 196
+          Top = 65
+          Width = 365
+          Align = alClient
+          Color = clWindow
+          Columns = <>
+          TabOrder = 1
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'TAG Type'
+    end
+    object TabSheet1: TTabSheet
+      Caption = 'Setup Printer'
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Printer'
+    end
+  end
+end

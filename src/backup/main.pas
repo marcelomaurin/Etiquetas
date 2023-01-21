@@ -6,10 +6,11 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, StdCtrls,
-  ExtCtrls, ComCtrls, setmain, dmbase, registro, config, gondola, import;
+  ExtCtrls, ComCtrls, setmain, dmbase, registro, config, gondola, import,
+  maladireta;
 
 const
-  versao = 1.5 ;
+  versao = 1.6 ;
 
 type
 
@@ -19,11 +20,13 @@ type
     Image1: TImage;
     Image2: TImage;
     Image3: TImage;
+    imgMalaDireta: TImage;
     imgProducts: TImage;
     imgZebra: TImage;
     Label1: TLabel;
     Label10: TLabel;
     Label11: TLabel;
+    Label12: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -42,12 +45,14 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
     tsProducts: TTabSheet;
     tbZebra: TTabSheet;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
+    procedure imgMalaDiretaClick(Sender: TObject);
     procedure imgProductsClick(Sender: TObject);
     procedure imgZebraClick(Sender: TObject);
     procedure miexitClick(Sender: TObject);
@@ -100,6 +105,14 @@ begin
   frmgondola := tfrmgondola.create(self);
   frmgondola.showmodal();
   frmgondola.Free;
+end;
+
+procedure TfrmMain.imgMalaDiretaClick(Sender: TObject);
+begin
+  frmmaladireta := tfrmgondola.create(self);
+  frmmaladireta.showmodal();
+  frmmaladireta.Free;
+
 end;
 
 procedure TfrmMain.imgProductsClick(Sender: TObject);

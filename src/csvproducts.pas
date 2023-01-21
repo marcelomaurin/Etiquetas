@@ -35,6 +35,7 @@ implementation
 
 procedure Tfrmcsvproducts.Image1Click(Sender: TObject);
 begin
+  self.Cursor:= crHourGlass;
   if (fdmBase = nil) then
   begin
     fdmBase := TdmBase.create(self);
@@ -43,7 +44,7 @@ begin
   fdmBase.ImportCVSReport(edCSV.text);
   FSetMain.CSVFOLDER := edCSV.text;
   fdmBase.closedb();
-
+  self.Cursor:=  crArrow;
   FSetMain.SalvaContexto(false);
   close;
 end;

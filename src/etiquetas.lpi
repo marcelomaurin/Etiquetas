@@ -30,30 +30,33 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="7">
+    <RequiredPackages Count="8">
       <Item1>
-        <PackageName Value="fortes324forlaz"/>
+        <PackageName Value="AnchorDocking"/>
       </Item1>
       <Item2>
-        <PackageName Value="rxnew"/>
+        <PackageName Value="fortes324forlaz"/>
       </Item2>
       <Item3>
-        <PackageName Value="lnetvisual"/>
+        <PackageName Value="rxnew"/>
       </Item3>
       <Item4>
-        <PackageName Value="FCL"/>
+        <PackageName Value="lnetvisual"/>
       </Item4>
       <Item5>
-        <PackageName Value="zcomponent"/>
+        <PackageName Value="FCL"/>
       </Item5>
       <Item6>
-        <PackageName Value="lazbarcodes"/>
+        <PackageName Value="zcomponent"/>
       </Item6>
       <Item7>
-        <PackageName Value="LCL"/>
+        <PackageName Value="lazbarcodes"/>
       </Item7>
+      <Item8>
+        <PackageName Value="LCL"/>
+      </Item8>
     </RequiredPackages>
-    <Units Count="13">
+    <Units Count="15">
       <Unit0>
         <Filename Value="etiquetas.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -137,6 +140,20 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit12>
+      <Unit13>
+        <Filename Value="csvendereco.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmcsvEndereco"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="maladireta.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmMalaDireta"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="MalaDireta"/>
+      </Unit14>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
