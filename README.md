@@ -22,3 +22,8 @@ Software de gestión de etiquetas Gondola para impresoras Zebra
 
 ## Documentación del proyecto
 <a href="http://maurinsoft.com.br:8082/index.php/etiqueta/">Documentación del proyecto</a>
+
+
+# Screens
+<img src="https://github.com/marcelomaurin/Etiquetas/blob/main/img/screens/main.png">
+<img src="https://github.com/marcelomaurin/Etiquetas/blob/main/img/screens/tags.png">
