@@ -44,7 +44,7 @@ begin
   fdmBase.ImportCVSReport(edCSV.text);
   FSetMain.CSVFOLDER := edCSV.text;
   fdmBase.closedb();
-
+  self.Cursor:=  crArrow;
   FSetMain.SalvaContexto(false);
   close;
 end;

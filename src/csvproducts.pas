@@ -41,7 +41,7 @@ begin
     fdmBase := TdmBase.create(self);
   end;
   fdmBase.opendb;
-  fdmBase.ImportCVSReport(edCSV.text);
+  fdmBase.ImportCVSReport(csv_Produtos,edCSV.text);
   FSetMain.CSVFOLDER := edCSV.text;
   fdmBase.closedb();
   self.Cursor:=  crArrow;

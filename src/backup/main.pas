@@ -77,6 +77,7 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FSetMain := TSetMain.create();
   fdmBase := TdmBase.create(self);
+  fdmB
   left := FSetMain.posx;
   top := FSetMain.posy;
   //FSetMain.CarregaContexto();
@@ -109,7 +110,7 @@ end;
 
 procedure TfrmMain.imgMalaDiretaClick(Sender: TObject);
 begin
-  frmmaladireta := tfrmgondola.create(self);
+  frmmaladireta := tfrmmaladireta.create(self);
   frmmaladireta.showmodal();
   frmmaladireta.Free;
 

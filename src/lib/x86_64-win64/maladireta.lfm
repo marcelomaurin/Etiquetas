@@ -1,8 +1,319 @@
 object frmMalaDireta: TfrmMalaDireta
   Left = 410
-  Height = 240
+  Height = 542
   Top = 243
-  Width = 320
+  Width = 898
   Caption = 'Print Direct Mail'
+  ClientHeight = 542
+  ClientWidth = 898
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  Position = poMainFormCenter
   LCLVersion = '2.2.2.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 50
+    Top = 0
+    Width = 898
+    Align = alTop
+    ClientHeight = 50
+    ClientWidth = 898
+    TabOrder = 0
+    object SpeedButton1: TSpeedButton
+      Left = 640
+      Height = 32
+      Top = 8
+      Width = 119
+      Caption = 'Close'
+      OnClick = SpeedButton1Click
+    end
+    object Label3: TLabel
+      Left = 16
+      Height = 28
+      Top = 8
+      Width = 142
+      Caption = 'Wizzard Mailing'
+      Font.Height = -20
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+  object pcMalaDireta: TPageControl
+    Left = 0
+    Height = 492
+    Top = 50
+    Width = 898
+    ActivePage = Wizzard
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 1
+    object Wizzard: TTabSheet
+      Caption = 'Database'
+      ClientHeight = 464
+      ClientWidth = 890
+      object Panel2: TPanel
+        Left = 0
+        Height = 82
+        Top = 0
+        Width = 890
+        Align = alTop
+        ClientHeight = 82
+        ClientWidth = 890
+        TabOrder = 0
+        object SpeedButton2: TSpeedButton
+          Left = 624
+          Height = 32
+          Top = 24
+          Width = 119
+          Caption = 'Next'
+          OnClick = SpeedButton1Click
+        end
+        object Panel6: TPanel
+          Left = 1
+          Height = 64
+          Top = 1
+          Width = 888
+          Align = alTop
+          ClientHeight = 64
+          ClientWidth = 888
+          TabOrder = 0
+          object Label2: TLabel
+            Left = 144
+            Height = 15
+            Top = 8
+            Width = 73
+            Caption = 'Selected TAGs'
+            ParentColor = False
+          end
+          object DBNavigator2: TDBNavigator
+            Left = 56
+            Height = 25
+            Top = 32
+            Width = 241
+            BevelOuter = bvNone
+            ChildSizing.EnlargeHorizontal = crsScaleChilds
+            ChildSizing.EnlargeVertical = crsScaleChilds
+            ChildSizing.ShrinkHorizontal = crsScaleChilds
+            ChildSizing.ShrinkVertical = crsScaleChilds
+            ChildSizing.Layout = cclLeftToRightThenTopToBottom
+            ChildSizing.ControlsPerLine = 100
+            ClientHeight = 25
+            ClientWidth = 241
+            DataSource = dsendsel
+            Options = []
+            TabOrder = 0
+          end
+        end
+      end
+      object Panel3: TPanel
+        Left = 0
+        Height = 382
+        Top = 82
+        Width = 392
+        Align = alLeft
+        ClientHeight = 382
+        ClientWidth = 392
+        TabOrder = 1
+        object Panel5: TPanel
+          Left = 1
+          Height = 64
+          Top = 1
+          Width = 390
+          Align = alTop
+          ClientHeight = 64
+          ClientWidth = 390
+          TabOrder = 0
+          object Label1: TLabel
+            Left = 144
+            Height = 15
+            Top = 8
+            Width = 51
+            Caption = 'Data Base'
+            ParentColor = False
+          end
+          object DBNavigator1: TDBNavigator
+            Left = 64
+            Height = 25
+            Top = 32
+            Width = 241
+            BevelOuter = bvNone
+            ChildSizing.EnlargeHorizontal = crsScaleChilds
+            ChildSizing.EnlargeVertical = crsScaleChilds
+            ChildSizing.ShrinkHorizontal = crsScaleChilds
+            ChildSizing.ShrinkVertical = crsScaleChilds
+            ChildSizing.Layout = cclLeftToRightThenTopToBottom
+            ChildSizing.ControlsPerLine = 100
+            ClientHeight = 25
+            ClientWidth = 241
+            DataSource = dsendereco
+            Options = []
+            TabOrder = 0
+          end
+        end
+        object DBGrid1: TDBGrid
+          Left = 1
+          Height = 316
+          Top = 65
+          Width = 390
+          Align = alClient
+          Color = clWindow
+          Columns = <          
+            item
+              Title.Caption = 'Nome'
+              FieldName = 'Nome'
+            end          
+            item
+              PickList.Strings = (
+                'Nao setado'
+                'Pessoa Física'
+                'Pessoa Juridica'
+              )
+              Title.Caption = 'TipoPessoa'
+              FieldName = 'TipoPessoa'
+            end          
+            item
+              Title.Caption = 'Documento'
+              FieldName = 'Documento'
+            end          
+            item
+              Title.Caption = 'Logradouro'
+              FieldName = 'Logradouro'
+            end          
+            item
+              Title.Caption = 'Bairro'
+              FieldName = 'Bairro'
+            end          
+            item
+              Title.Caption = 'Cidade'
+              FieldName = 'Cidade'
+            end          
+            item
+              Title.Caption = 'CEP'
+              FieldName = 'CEP'
+            end          
+            item
+              Title.Caption = 'Referencia'
+              FieldName = 'Referencia'
+            end>
+          DataSource = dsendereco
+          TabOrder = 1
+        end
+      end
+      object Splitter1: TSplitter
+        Left = 392
+        Height = 382
+        Top = 82
+        Width = 5
+      end
+      object Panel4: TPanel
+        Left = 397
+        Height = 382
+        Top = 82
+        Width = 51
+        Align = alLeft
+        ClientHeight = 382
+        ClientWidth = 51
+        TabOrder = 3
+        object SpeedButton3: TSpeedButton
+          Left = 3
+          Height = 32
+          Top = 168
+          Width = 40
+          Caption = '>'
+        end
+        object SpeedButton4: TSpeedButton
+          Left = 3
+          Height = 32
+          Top = 216
+          Width = 40
+          Caption = '<'
+        end
+      end
+      object Panel7: TPanel
+        Left = 448
+        Height = 382
+        Top = 82
+        Width = 442
+        Align = alClient
+        ClientHeight = 382
+        ClientWidth = 442
+        TabOrder = 4
+        object Panel8: TPanel
+          Left = 1
+          Height = 63
+          Top = 1
+          Width = 440
+          Align = alTop
+          ClientHeight = 63
+          ClientWidth = 440
+          TabOrder = 0
+          object DBNavigator3: TDBNavigator
+            Left = 120
+            Height = 25
+            Top = 32
+            Width = 241
+            BevelOuter = bvNone
+            ChildSizing.EnlargeHorizontal = crsScaleChilds
+            ChildSizing.EnlargeVertical = crsScaleChilds
+            ChildSizing.ShrinkHorizontal = crsScaleChilds
+            ChildSizing.ShrinkVertical = crsScaleChilds
+            ChildSizing.Layout = cclLeftToRightThenTopToBottom
+            ChildSizing.ControlsPerLine = 100
+            ClientHeight = 25
+            ClientWidth = 241
+            DataSource = dsendsel
+            Options = []
+            TabOrder = 0
+          end
+          object Label4: TLabel
+            Left = 192
+            Height = 15
+            Top = 8
+            Width = 86
+            Caption = 'Selected to print'
+            ParentColor = False
+          end
+        end
+        object Panel9: TPanel
+          Left = 1
+          Height = 317
+          Top = 64
+          Width = 440
+          Align = alClient
+          ClientHeight = 317
+          ClientWidth = 440
+          TabOrder = 1
+          object DBGrid2: TDBGrid
+            Left = 1
+            Height = 315
+            Top = 1
+            Width = 438
+            Align = alClient
+            Color = clWindow
+            Columns = <>
+            DataSource = dsendsel
+            TabOrder = 0
+          end
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'TAG Type'
+    end
+    object TabSheet1: TTabSheet
+      Caption = 'Setup Printer'
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Printer'
+    end
+  end
+  object dsendereco: TDataSource
+    Left = 51
+    Top = 261
+  end
+  object dsendsel: TDataSource
+    Left = 440
+    Top = 264
+  end
 end

@@ -46,10 +46,10 @@ begin
     fdmBase := TdmBase.create(self);
   end;
   fdmBase.opendb;
-  fdmBase.ImportCVSReport(edCSV.text);
+  fdmBase.ImportCVSReport(cs edCSV.text);
   FSetMain.CSVFOLDER := edCSV.text;
   fdmBase.closedb();
-  self.Cursor:= crHourGlass;
+  self.Cursor:=  crArrow;
   FSetMain.SalvaContexto(false);
   close;
 end;

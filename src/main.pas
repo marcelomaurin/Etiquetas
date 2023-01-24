@@ -77,6 +77,7 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FSetMain := TSetMain.create();
   fdmBase := TdmBase.create(self);
+
   left := FSetMain.posx;
   top := FSetMain.posy;
   //FSetMain.CarregaContexto();
