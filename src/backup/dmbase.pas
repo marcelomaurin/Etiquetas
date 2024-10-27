@@ -246,7 +246,7 @@ begin
   zqryaux.close;
   zqryaux.sql.Text := 'delete from selproduct ';
   zqryaux.ExecSQL;
-  zselproduct.re;
+  zselproduct.Refresh;
 end;
 
 procedure TdmBase.NewSel();
