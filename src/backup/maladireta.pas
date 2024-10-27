@@ -80,7 +80,9 @@ end;
 procedure TfrmMalaDireta.FormShow(Sender: TObject);
 begin
   if not fdmbase.zendereco.Active then
+  begin
     fdmbase.zendereco.Open;
+  end;
 end;
 
 end.

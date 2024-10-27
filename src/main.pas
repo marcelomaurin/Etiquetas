@@ -61,6 +61,7 @@ type
   private
 
   public
+    aplicacao : string;
     procedure Config();
   end;
 
@@ -75,8 +76,10 @@ implementation
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  aplicacao := Application.ExeName;
   FSetMain := TSetMain.create();
   fdmBase := TdmBase.create(self);
+
 
   left := FSetMain.posx;
   top := FSetMain.posy;

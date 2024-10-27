@@ -10,7 +10,7 @@ object frmMalaDireta: TfrmMalaDireta
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '2.2.2.0'
+  LCLVersion = '3.4.0.0'
   object Panel1: TPanel
     Left = 0
     Height = 50
@@ -44,9 +44,9 @@ object frmMalaDireta: TfrmMalaDireta
     Height = 492
     Top = 50
     Width = 898
-    ActivePage = Wizzard
+    ActivePage = TabSheet1
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 1
     object Wizzard: TTabSheet
       Caption = 'Database'
@@ -309,10 +309,12 @@ object frmMalaDireta: TfrmMalaDireta
     end
   end
   object dsendereco: TDataSource
+    DataSet = dmBase.zEndereco
     Left = 51
     Top = 261
   end
   object dsendsel: TDataSource
+    DataSet = dmBase.zselproduct
     Left = 440
     Top = 264
   end

@@ -11,11 +11,13 @@ object dmBase: TdmBase
     Properties.Strings = (
       'AutoEncodeStrings=True'
       'controls_cp=CP_UTF8'
+      'RawStringEncoding=DB_CP'
     )
     DisableSavepoints = False
     Port = 0
-    Database = 'D:\banco\etiqueta.db'
-    Protocol = 'sqlite-3'
+    Database = 'C:\ProgramData\Etiquetas\db\etiqueta.db'
+    Protocol = 'sqlite'
+    LibraryLocation = 'C:\Program Files (x86)\Etiquetas\sqlite\win64\sqlite3.dll'
     Left = 48
     Top = 16
   end
@@ -108,5 +110,11 @@ object dmBase: TdmBase
     TableName = 'Endereco'
     Left = 87
     Top = 264
+  end
+  object zqryaux: TZQuery
+    Connection = zcon
+    Params = <>
+    Left = 264
+    Top = 296
   end
 end

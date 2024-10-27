@@ -89,7 +89,8 @@ begin
    RLDetail02.Caption:= FDetail02;
    rlPrice.Caption:= FPrice;
    RLRepGondola02.PrintDialog := false;
-   RLRepGondola02.Print;
+   //RLRepGondola02.Print;
+   RLRepGondola02.Preview();
 end;
 
 end.

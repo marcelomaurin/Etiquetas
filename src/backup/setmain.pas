@@ -11,7 +11,7 @@ interface
 uses
   Classes, SysUtils, funcoes;
 
-const filename = 'etique.cfg';
+const filename = 'etiqueta.cfg';
 
 
 type
@@ -85,11 +85,13 @@ begin
     fposy := 0;
     ProgramDataPath := GetAppConfigDir(False); // Define a pasta global de dados
     //FSQLLITEDLL := ExtractFilePath(ApplicationName)+'\sqlite\win64\sqlite3.dll';
-    FSQLLITEDLL := 'C:\Windows\System32\sqlite3.dll' ;
+    //FSQLLITEDLL := 'C:\Windows\System32\sqlite3.dll' ;
+    FSQLLITEDLL := ExtractFilePath(ApplicationName)+'\sqlite\win64\sqlite3.dll' ;
     //FDB := ExtractFilePath(ApplicationName)+'\db\etiqueta.db';
     //FCSVFOLDER := ExtractFilePath(ApplicationName)+'\csv\etiquetas.csv';
-    FDB := ProgramDataPath + 'db\etiqueta.db';
-    FCSVFOLDER := ProgramDataPath + 'csv\etiquetas.csv';
+    //FDB := ProgramDataPath + '\db\etiqueta.db';
+    FDB := ExtractFilePath(ApplicationName)+
+    FCSVFOLDER := ProgramDataPath + '\csv\etiquetas.csv';
 
 end;
 

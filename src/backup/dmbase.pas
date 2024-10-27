@@ -19,6 +19,7 @@ type
     dsCSV: TDataSource;
     zcon: TZConnection;
     zproduct: TZTable;
+    zqryaux: TZQuery;
     zselproduct: TZTable;
     zproductDetail01: TStringField;
     zproductDetail02: TStringField;
@@ -39,12 +40,14 @@ type
     procedure product();
     procedure Endereco();
     procedure selproduct();
+    procedure delallselectproducts();
     procedure NewSel();
     procedure NewIns();
     function ImportCVSReport( tipo: TCSVLayout; filename: string) : boolean;
     function csvValidaLayout( tipo : TCSVLayout) : boolean;
     function dropproducts(): boolean;
     procedure config();
+
   end;
 
 var
@@ -56,12 +59,31 @@ implementation
 
 { TdmBase }
 
-uses mai
+uses main;
 
 procedure TdmBase.DataModuleCreate(Sender: TObject);
 begin
   zcon.Database :=  FSetMain.db;
-  zcon.LibraryLocation:= FSetMain.SQLLITEDLL;
+
+  if(FileExists(FSetMain.SQLLITEDLL)) then
+  begin
+    zcon.LibraryLocation:= FSetMain.SQLLITEDLL;
+  end
+  else
+  begin
+    ShowMessage('Library path invalid!');
+    frmmain.config();
+  end;
+
+  if(FileExists(FSetMain.DB)) then
+  begin
+    zcon.LibraryLocation:= FSetMain.DB;
+  end
+  else
+  begin
+    ShowMessage('Database path invalid!');
+    frmmain.config();
+  end;
 
 end;
 
@@ -217,6 +239,14 @@ begin
   zselproduct.open;
 
 
+end;
+
+procedure TdmBase.delallselectproducts();
+begin
+  zqryaux.close;
+  zqryaux.sql.Text := 'delete from selproduct ';
+  zqryaux.ExecSQL;
+  zselproduct.re;
 end;
 
 procedure TdmBase.NewSel();

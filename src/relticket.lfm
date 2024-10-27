@@ -6,12 +6,13 @@ object frmrelticket: Tfrmrelticket
   Caption = 'frmrelticket'
   ClientHeight = 144
   ClientWidth = 408
-  LCLVersion = '2.2.2.0'
+  LCLVersion = '3.4.0.0'
   object RLRepGondola02: TRLReport
     Left = 0
     Height = 117
     Top = 10
     Width = 401
+    DataSource = frmMalaDireta.dsendsel
     Font.Color = clBlack
     Font.Height = -13
     Font.Name = 'Arial'

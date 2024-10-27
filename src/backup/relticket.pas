@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, RLReport, RLBarcode,
-  ubarcodes;
+  ubarcodes, dmbase;
 
 type
 
@@ -89,7 +89,8 @@ begin
    RLDetail02.Caption:= FDetail02;
    rlPrice.Caption:= FPrice;
    RLRepGondola02.PrintDialog := false;
-   RLRepGondola02.Print;
+   //RLRepGondola02.Print;
+   RLRepGondola02.pre
 end;
 
 end.

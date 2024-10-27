@@ -14,6 +14,8 @@ type
   { TfrmTicket }
 
   TfrmTicket = class(TForm)
+    btDelAll1: TSpeedButton;
+    btPrint: TSpeedButton;
     DBGrid2: TDBGrid;
     dsselproduct: TDataSource;
     DBNavigator1: TDBNavigator;
@@ -38,17 +40,20 @@ type
     Label8: TLabel;
     Label9: TLabel;
     miSel: TMenuItem;
-    mnInsert: TMenuItem;
     PageControl1: TPageControl;
     Panel1: TPanel;
     popInsert: TPopupMenu;
     PrinterSetupDialog1: TPrinterSetupDialog;
-    SpeedButton2: TSpeedButton;
+    btAddtoPrint: TSpeedButton;
+    btDelAll: TSpeedButton;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
-    TabSheet3: TTabSheet;
+    tsPrint: TTabSheet;
     TabSheet4: TTabSheet;
     btSearch: TToggleBox;
+    procedure btDelAll1Click(Sender: TObject);
+    procedure btDelAllClick(Sender: TObject);
+    procedure btPrintClick(Sender: TObject);
     procedure btSearchChange(Sender: TObject);
     procedure DBNavigator1Click(Sender: TObject; Button: TDBNavButtonType);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -59,11 +64,15 @@ type
     procedure Label7Click(Sender: TObject);
     procedure miSelClick(Sender: TObject);
     procedure mnInsertClick(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
+    procedure btAddtoPrintClick(Sender: TObject);
     procedure TabSheet1Show(Sender: TObject);
   private
 
   public
-
+    procedure AddtoPrint();
+    procedure DelAllSelect();
+    procedure printing();
   end;
 
 var
@@ -87,7 +96,16 @@ end;
 
 procedure TfrmTicket.mnInsertClick(Sender: TObject);
 begin
-  Fdmbase.NewIns();
+end;
+
+procedure TfrmTicket.SpeedButton2Click(Sender: TObject);
+begin
+
+end;
+
+procedure TfrmTicket.btAddtoPrintClick(Sender: TObject);
+begin
+  Fdmbase.NewSel();
 end;
 
 procedure TfrmTicket.TabSheet1Show(Sender: TObject);
@@ -95,7 +113,18 @@ begin
 
 end;
 
-procedure TfrmTicket.Image2Click(Sender: TObject);
+procedure TfrmTicket.AddtoPrint();
+begin
+  //Fdmbase.NewIns();
+  dsselproduct.DataSet.Insert;
+end;
+
+procedure TfrmTicket.DelAllSelect();
+begin
+  fdmbase.delallselectproducts();
+end;
+
+procedure TfrmTicket.printing();
 begin
   if (frmrelticket = nil) then
   begin
@@ -114,7 +143,13 @@ begin
         fdmBase.zselproduct.Next;
   end;
   frmrelticket.Free;
-  frmrelticket := nil
+  frmrelticket := nil;
+  DelAllSelect();
+end;
+
+procedure TfrmTicket.Image2Click(Sender: TObject);
+begin
+     printing();
 end;
 
 procedure TfrmTicket.Image3Click(Sender: TObject);
@@ -142,6 +177,21 @@ end;
 procedure TfrmTicket.btSearchChange(Sender: TObject);
 begin
   fdmBase.product();
+end;
+
+procedure TfrmTicket.btDelAllClick(Sender: TObject);
+begin
+  DelAllSelect();
+end;
+
+procedure TfrmTicket.btPrintClick(Sender: TObject);
+begin
+  printing();
+end;
+
+procedure TfrmTicket.btDelAll1Click(Sender: TObject);
+begin
+  PageControl1.ActivePage := tsPrint;
 end;
 
 procedure TfrmTicket.DBNavigator1Click(Sender: TObject; Button: TDBNavButtonType
