@@ -44,7 +44,7 @@ type
     function ImportCVSReport( tipo: TCSVLayout; filename: string) : boolean;
     function csvValidaLayout( tipo : TCSVLayout) : boolean;
     function dropproducts(): boolean;
-
+    procedure config();
   end;
 
 var
@@ -55,6 +55,8 @@ implementation
 {$R *.lfm}
 
 { TdmBase }
+
+uses main;
 
 procedure TdmBase.DataModuleCreate(Sender: TObject);
 begin
@@ -141,37 +143,43 @@ procedure TdmBase.opendb();
 begin
   if zcon.Connected then
     zcon.Disconnect;
-  //zcon.Database:= ExtractFilePath(ApplicationName)+'\db\etiqueta.db';
-  zcon.Database:= FSetMain.DB;
 
-  //zcon.LibraryLocation:= ExtractFilePath(ApplicationName)+'\sqlite\win64\sqlite3.dll';
-  zcon.LibraryLocation:= FSetMain.SQLLITEDLL;
+  // Define os caminhos do banco de dados e da biblioteca SQLite
+  zcon.Database := FSetMain.DB;
+  zcon.LibraryLocation := FSetMain.SQLLITEDLL;
+
+  // Verifica se o arquivo do banco de dados e a biblioteca SQLite existem
+  if not FileExists(zcon.Database) or not FileExists(zcon.LibraryLocation) then
+  begin
+    ShowMessage('Arquivo de banco de dados ou biblioteca SQLite não encontrados. Configurando...');
+    config; // Chama a função de configuração se os arquivos não existirem
+    Exit;   // Sai do procedimento para evitar erros na conexão
+  end;
+
+  // Conexão com o banco de dados se os arquivos existirem
   if FileExists(zcon.LibraryLocation) then
   begin
     try
-    zcon.Connect;
-    if zcon.Connected then
-    begin
+      zcon.Connect;
+      if zcon.Connected then
+      begin
         selproduct();
         Endereco();
-    end
-     else
-    begin
-      ShowMessage('Fail to connect in database');
-    end;
-
+      end
+      else
+      begin
+        ShowMessage('Falha ao conectar ao banco de dados');
+      end;
     except
-        ShowMessage('Fail to connect in database');
-
+      ShowMessage('Falha ao conectar ao banco de dados');
     end;
-
   end
   else
   begin
-    ShowMessage('Not found lib sqllite');
-
+    ShowMessage('Biblioteca SQLite não encontrada');
   end;
 end;
+
 
 procedure TdmBase.closedb();
 begin
@@ -346,6 +354,11 @@ begin
   end;
 
   result := resultado;
+end;
+
+procedure TdmBase.config();
+begin
+  frmmain.config();
 end;
 
 

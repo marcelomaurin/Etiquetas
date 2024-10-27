@@ -8,15 +8,14 @@ object dmBase: TdmBase
   Width = 313
   object zcon: TZConnection
     ControlsCodePage = cCP_UTF8
-    AutoEncodeStrings = True
     Properties.Strings = (
       'AutoEncodeStrings=True'
       'controls_cp=CP_UTF8'
     )
+    DisableSavepoints = False
     Port = 0
     Database = 'D:\banco\etiqueta.db'
     Protocol = 'sqlite-3'
-    LibraryLocation = 'D:\projetos\maurinsoft\Etiquetas\sqlite\win64\sqlite3.dll'
     Left = 48
     Top = 16
   end

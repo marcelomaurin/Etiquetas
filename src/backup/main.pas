@@ -10,7 +10,7 @@ uses
   maladireta;
 
 const
-  versao = 1.6 ;
+  versao = 1. ;
 
 type
 
@@ -61,7 +61,7 @@ type
   private
 
   public
-
+    procedure Config();
   end;
 
 var
@@ -77,7 +77,7 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FSetMain := TSetMain.create();
   fdmBase := TdmBase.create(self);
-  fdmB
+
   left := FSetMain.posx;
   top := FSetMain.posy;
   //FSetMain.CarregaContexto();
@@ -140,6 +140,11 @@ begin
 end;
 
 procedure TfrmMain.misetupClick(Sender: TObject);
+begin
+     config();
+end;
+
+procedure TfrmMain.Config();
 begin
   frmconfig := Tfrmconfig.create(self);
   frmconfig.showmodal();

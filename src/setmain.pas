@@ -11,7 +11,7 @@ interface
 uses
   Classes, SysUtils, funcoes;
 
-const filename = 'Setmain.cfg';
+const filename = 'etiqueta.cfg';
 
 
 type
@@ -75,15 +75,21 @@ end;
 
 //Valores default do codigo
 procedure TSetMain.Default();
+var
+  ProgramDataPath: String;
 begin
     ckdevice := false;
     fixar:=false;
     stay:=false;
     fposx := 0;
     fposy := 0;
-    FSQLLITEDLL := ExtractFilePath(ApplicationName)+'\sqlite\win64\sqlite3.dll';
-    FDB := ExtractFilePath(ApplicationName)+'\db\etiqueta.db';
-    FCSVFOLDER := ExtractFilePath(ApplicationName)+'\csv\etiquetas.csv';
+    ProgramDataPath := GetAppConfigDir(False); // Define a pasta global de dados
+    //FSQLLITEDLL := ExtractFilePath(ApplicationName)+'\sqlite\win64\sqlite3.dll';
+    FSQLLITEDLL := 'C:\Windows\System32\sqlite3.dll' ;
+    //FDB := ExtractFilePath(ApplicationName)+'\db\etiqueta.db';
+    //FCSVFOLDER := ExtractFilePath(ApplicationName)+'\csv\etiquetas.csv';
+    FDB := ProgramDataPath + 'db\etiqueta.db';
+    FCSVFOLDER := ProgramDataPath + 'csv\etiquetas.csv';
 
 end;
 
