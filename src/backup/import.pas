@@ -13,11 +13,12 @@ type
   { TfrmImport }
 
   TfrmImport = class(TForm)
-    btclose: TBitBtn;
+    btAddtoPrint1: TSpeedButton;
     imgImportProducts: TImage;
     imgImportProducts1: TImage;
     Label1: TLabel;
     Label2: TLabel;
+    procedure btAddtoPrint1Click(Sender: TObject);
     procedure btcloseClick(Sender: TObject);
     procedure imgImportProducts1Click(Sender: TObject);
     procedure imgImportProductsClick(Sender: TObject);
@@ -38,14 +39,19 @@ implementation
 
 procedure TfrmImport.btcloseClick(Sender: TObject);
 begin
-  close;
+
+end;
+
+procedure TfrmImport.btAddtoPrint1Click(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TfrmImport.imgImportProducts1Click(Sender: TObject);
 begin
   self.Cursor:= crHourGlass;
   frmcsvendereco := TfrmcsvEndereco.create(self);
-  self.Cursor:=  crArrow
+  self.Cursor:=  crArrow;
   frmcsvendereco.showmodal;
   frmcsvendereco.free;
   frmcsvendereco := nil;

@@ -13,7 +13,6 @@ object dmBase: TdmBase
       'controls_cp=CP_UTF8'
       'RawStringEncoding=DB_CP'
     )
-    Connected = True
     DisableSavepoints = False
     Port = 0
     Database = 'C:\banco\etiqueta.db'

@@ -6,24 +6,29 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  Buttons, DBCtrls, StdCtrls, DBGrids, AnchorDockPanel, rxduallist, dmbase, DB;
+  Buttons, DBCtrls, StdCtrls, DBGrids, Menus, AnchorDockPanel, rxduallist,
+  dmbase, DB;
 
 type
 
   { TfrmMalaDireta }
 
   TfrmMalaDireta = class(TForm)
+    btAddtoPrint: TSpeedButton;
+    btAddtoPrint1: TSpeedButton;
     DBGrid2: TDBGrid;
-    DBNavigator2: TDBNavigator;
     DBNavigator3: TDBNavigator;
     dsendereco: TDataSource;
     DBGrid1: TDBGrid;
     DBNavigator1: TDBNavigator;
     dsendsel: TDataSource;
+    edPesqNome: TEdit;
+    Image1: TImage;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
+    Label5: TLabel;
     Panel2: TPanel;
     Panel3: TPanel;
     Panel4: TPanel;
@@ -34,8 +39,8 @@ type
     Panel9: TPanel;
     pcMalaDireta: TPageControl;
     Panel1: TPanel;
+    PopupMenu1: TPopupMenu;
     SpeedButton1: TSpeedButton;
-    SpeedButton2: TSpeedButton;
     SpeedButton3: TSpeedButton;
     SpeedButton4: TSpeedButton;
     Splitter1: TSplitter;
@@ -43,6 +48,7 @@ type
     TabSheet2: TTabSheet;
     TabSheet3: TTabSheet;
     Wizzard: TTabSheet;
+    procedure btAddtoPrintClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -50,7 +56,7 @@ type
   private
 
   public
-
+     procedure Pesquisar();
   end;
 
 var
@@ -64,12 +70,29 @@ implementation
 
 procedure TfrmMalaDireta.SpeedButton1Click(Sender: TObject);
 begin
-  close;
+
+end;
+
+procedure TfrmMalaDireta.Pesquisar();
+begin
+  if not fdmbase.zcon.Connected then
+  begin
+   fdmbase.zEndereco.open;
+  end
+  else
+  begin
+    Showmessage('Not connected!')
+  end;
 end;
 
 procedure TfrmMalaDireta.FormCreate(Sender: TObject);
 begin
 
+end;
+
+procedure TfrmMalaDireta.btAddtoPrintClick(Sender: TObject);
+begin
+  Pesquisar();
 end;
 
 procedure TfrmMalaDireta.FormDestroy(Sender: TObject);
@@ -79,9 +102,13 @@ end;
 
 procedure TfrmMalaDireta.FormShow(Sender: TObject);
 begin
-  if not fdmbase.zendereco.Active then
+  if not fdmbase.zcon.Connected then
   begin
-    fdmbase.zendereco.Open;
+       Pesquisar();
+  end
+  else
+  begin
+    Showmessage('Not connected!')
   end;
 end;
 

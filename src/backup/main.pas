@@ -63,6 +63,7 @@ type
   public
     aplicacao : string;
     procedure Config();
+    procedure PesquisaMalaDireta();
   end;
 
 var
@@ -113,9 +114,8 @@ end;
 
 procedure TfrmMain.imgMalaDiretaClick(Sender: TObject);
 begin
-  frmmaladireta := tfrmmaladireta.create(self);
-  frmmaladireta.showmodal();
-  frmmaladireta.Free;
+     //PesquisaMalaDireta();
+     Showmessage('Not yet');
 
 end;
 
@@ -152,6 +152,14 @@ begin
   frmconfig := Tfrmconfig.create(self);
   frmconfig.showmodal();
   frmconfig.free;
+end;
+
+procedure TfrmMain.PesquisaMalaDireta();
+begin
+  frmmaladireta := tfrmmaladireta.create(self);
+  frmmaladireta.showmodal();
+  frmmaladireta.Free;
+
 end;
 
 end.

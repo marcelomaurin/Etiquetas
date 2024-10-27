@@ -13,8 +13,10 @@ object dmBase: TdmBase
       'controls_cp=CP_UTF8'
       'RawStringEncoding=DB_CP'
     )
+    Connected = True
     DisableSavepoints = False
     Port = 0
+    Database = 'C:\banco\etiqueta.db'
     Protocol = 'sqlite'
     LibraryLocation = 'C:\Program Files (x86)\Etiquetas\sqlite\win64\sqlite3.dll'
     Left = 48

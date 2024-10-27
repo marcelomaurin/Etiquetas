@@ -6,6 +6,7 @@ object frmrelticket: Tfrmrelticket
   Caption = 'frmrelticket'
   ClientHeight = 144
   ClientWidth = 408
+  Position = poMainFormCenter
   LCLVersion = '3.4.0.0'
   object RLRepGondola02: TRLReport
     Left = 0

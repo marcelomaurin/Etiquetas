@@ -7,7 +7,8 @@ object frmcsvproducts: Tfrmcsvproducts
   ClientHeight = 159
   ClientWidth = 320
   OnShow = FormShow
-  LCLVersion = '2.2.2.0'
+  Position = poMainFormCenter
+  LCLVersion = '3.4.0.0'
   object Label1: TLabel
     Left = 11
     Height = 15

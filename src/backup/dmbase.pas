@@ -125,40 +125,54 @@ end;
 
 function TdmBase.ImportEderecoDS: boolean;
 var
-  resultado :boolean;
+  resultado: boolean;
 begin
-    resultado := true;
+  resultado := true;
+  try
     tbcsv.Open;
-    tbcsv.first;
+    tbcsv.First;
+
     if not zendereco.Active then
     begin
-       zEndereco.open;
+      zendereco.Open;
     end;
-    //Endereco();
+
     while not tbcsv.EOF do
     begin
       try
-        zendereco.Append();
-        zendereco.FieldByName('Nome').asstring := tbcsv.Fields[0].asstring;
-        zendereco.FieldByName('TipoPessoa').asstring := tbcsv.Fields[1].asstring;
-        zendereco.FieldByName('Documento').asstring := tbcsv.Fields[2].asstring;
-        zendereco.FieldByName('Logradouro').asstring := tbcsv.Fields[3].asstring;
-        zendereco.FieldByName('Bairro').asstring := tbcsv.Fields[4].asstring;
-        zendereco.FieldByName('Cidade').asstring := tbcsv.Fields[5].asstring;
-        zendereco.FieldByName('CEP').asstring := tbcsv.Fields[6].asstring;
-        zendereco.FieldByName('Referencia').asstring := tbcsv.Fields[7].asstring;
+        zendereco.Append;
+        zendereco.FieldByName('Nome').AsString := tbcsv.Fields[0].AsString;
+        zendereco.FieldByName('TipoPessoa').AsInteger := StrToInt(tbcsv.Fields[1].AsString);
+        zendereco.FieldByName('Documento').AsString := tbcsv.Fields[2].AsString;
+        zendereco.FieldByName('Logradouro').AsString := tbcsv.Fields[3].AsString;
+        zendereco.FieldByName('Bairro').AsString := tbcsv.Fields[4].AsString;
+        zendereco.FieldByName('Cidade').AsString := tbcsv.Fields[5].AsString;
+        zendereco.FieldByName('CEP').AsString := tbcsv.Fields[6].AsString;
+        zendereco.FieldByName('Referencia').AsString := tbcsv.Fields[7].AsString;
         zendereco.Post;
-        tbcsv.next();
-
       except
-        resultado := false;
+        on E: Exception do
+        begin
+          ShowMessage('Erro ao importar registro: ' + E.Message);
+          resultado := false;
+          zendereco.Cancel;  // Cancelar a inserção em caso de erro
+        end;
       end;
+      tbcsv.Next;
     end;
-    if resultado then ShowMessage('Success in CSV Import ');
-    zendereco.Prior;
-    zendereco.close;
-    result := resultado;
+
+    if resultado then
+      ShowMessage('Importação do CSV realizada com sucesso.')
+    else
+      ShowMessage('A importação do CSV terminou com erros em alguns registros.');
+  finally
+    tbcsv.Close;
+    zendereco.Close;
+  end;
+
+  Result := resultado;
 end;
+
 
 
 procedure TdmBase.opendb();
