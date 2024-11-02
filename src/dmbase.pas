@@ -5,8 +5,8 @@ unit dmbase;
 interface
 
 uses
-  Classes, SysUtils, DB, csvdataset, ZConnection, ZDataset, setmain, dialogs,
-  Interfaces;
+  Classes, SysUtils, DB, csvdataset, ZConnection, ZDataset, ZAbstractRODataset,
+  ZSqlUpdate, setmain, dialogs, Interfaces;
 
 type TCSVLayout = ( csv_Nada, csv_Produtos, csv_Endereco);
 
@@ -18,6 +18,15 @@ type
     tbcsv: TCSVDataset;
     dsCSV: TDataSource;
     zcon: TZConnection;
+    zEnderecoBairro: TZRawStringField;
+    zEnderecoCEP: TZRawStringField;
+    zEnderecoCidade: TZRawStringField;
+    zEnderecoDocumento: TZRawStringField;
+    zEnderecoInd: TZInt64Field;
+    zEnderecoLogradouro: TZRawStringField;
+    zEnderecoNome: TZRawStringField;
+    zEnderecoReferencia: TZRawStringField;
+    zEnderecoTipoPessoa: TZInt64Field;
     zproduct: TZTable;
     zqryaux: TZQuery;
     zselproduct: TZTable;
@@ -27,7 +36,7 @@ type
     zproductprice: TStringField;
     zproductproductDesc: TStringField;
     zproductproductDetail: TStringField;
-    zEndereco: TZTable;
+    zendereco: TZTable;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
   private
@@ -77,7 +86,7 @@ begin
 
   if(FileExists(FSetMain.DB)) then
   begin
-    zcon.LibraryLocation:= FSetMain.DB;
+    zcon.LibraryLocation:= FSetMain.SQLLITEDLL;
   end
   else
   begin
@@ -96,6 +105,10 @@ function TdmBase.ImportReportDS: boolean;
 var
   resultado :boolean;
 begin
+    zproduct.close;
+    zproduct.Filtered:= false;
+    zproduct.open;
+
     resultado := true;
     tbcsv.first;
     //zproduct.open;
@@ -111,6 +124,7 @@ begin
         zproduct.FieldByName('price').asstring := tbcsv.Fields[4].asstring;
 
         zproduct.Post;
+        zproduct.ApplyUpdates;
         tbcsv.next();
 
       except
@@ -132,30 +146,28 @@ begin
     tbcsv.Open;
     tbcsv.First;
 
-    if not zendereco.Active then
-    begin
-      zendereco.Open;
-    end;
-
     while not tbcsv.EOF do
     begin
       try
-        zendereco.Append;
-        zendereco.FieldByName('Nome').AsString := tbcsv.Fields[0].AsString;
-        zendereco.FieldByName('TipoPessoa').AsInteger := StrToInt(tbcsv.Fields[1].AsString);
-        zendereco.FieldByName('Documento').AsString := tbcsv.Fields[2].AsString;
-        zendereco.FieldByName('Logradouro').AsString := tbcsv.Fields[3].AsString;
-        zendereco.FieldByName('Bairro').AsString := tbcsv.Fields[4].AsString;
-        zendereco.FieldByName('Cidade').AsString := tbcsv.Fields[5].AsString;
-        zendereco.FieldByName('CEP').AsString := tbcsv.Fields[6].AsString;
-        zendereco.FieldByName('Referencia').AsString := tbcsv.Fields[7].AsString;
-        zendereco.Post;
+        zqryaux.SQL.Text := 'INSERT INTO "endereco" ' +
+                            '("Nome", "TipoPessoa", "Documento", "Logradouro", "Bairro", "Cidade", ' +
+                            '"CEP", "Referencia") ' +
+                            'VALUES (:Nome, :TipoPessoa, :Documento, :Logradouro, :Bairro, :Cidade, :CEP, :Referencia)';
+        zqryaux.ParamByName('Nome').AsString := tbcsv.Fields[0].AsString;
+        zqryaux.ParamByName('TipoPessoa').AsInteger := StrToInt(tbcsv.Fields[1].AsString);
+        zqryaux.ParamByName('Documento').AsString := tbcsv.Fields[2].AsString;
+        zqryaux.ParamByName('Logradouro').AsString := tbcsv.Fields[3].AsString;
+        zqryaux.ParamByName('Bairro').AsString := tbcsv.Fields[4].AsString;
+        zqryaux.ParamByName('Cidade').AsString := tbcsv.Fields[5].AsString;
+        zqryaux.ParamByName('CEP').AsString := tbcsv.Fields[6].AsString;
+        zqryaux.ParamByName('Referencia').AsString := tbcsv.Fields[7].AsString;
+
+        zqryaux.ExecSQL;
       except
         on E: Exception do
         begin
           ShowMessage('Erro ao importar registro: ' + E.Message);
           resultado := false;
-          zendereco.Cancel;  // Cancelar a inserção em caso de erro
         end;
       end;
       tbcsv.Next;
@@ -167,7 +179,6 @@ begin
       ShowMessage('A importação do CSV terminou com erros em alguns registros.');
   finally
     tbcsv.Close;
-    zendereco.Close;
   end;
 
   Result := resultado;

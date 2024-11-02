@@ -44,6 +44,7 @@ type
     PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
+    StatusBar1: TStatusBar;
     TabSheet1: TTabSheet;
     TabSheet2: TTabSheet;
     tsProducts: TTabSheet;
@@ -80,6 +81,9 @@ begin
   aplicacao := Application.ExeName;
   FSetMain := TSetMain.create();
   fdmBase := TdmBase.create(self);
+  fdmBase.opendb();
+  StatusBar1.Panels[0].Text:= FSetMain.db;
+  StatusBar1.Panels[1].Text:= FSetMain.SQLLITEDLL;
 
 
   left := FSetMain.posx;
@@ -93,6 +97,7 @@ end;
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   frmRegistrar.free;
+  fdmBase.closedb();
   fdmBase.free();
   FSetMain.posx := left ;
   FSetMain.posy := top;
@@ -114,8 +119,8 @@ end;
 
 procedure TfrmMain.imgMalaDiretaClick(Sender: TObject);
 begin
-     //PesquisaMalaDireta();
-     Showmessage('Not yet');
+     PesquisaMalaDireta();
+     //Showmessage('Not yet');
 
 end;
 

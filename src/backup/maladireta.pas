@@ -49,6 +49,7 @@ type
     TabSheet3: TTabSheet;
     Wizzard: TTabSheet;
     procedure btAddtoPrintClick(Sender: TObject);
+    procedure edPesqNomeKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -75,14 +76,23 @@ end;
 
 procedure TfrmMalaDireta.Pesquisar();
 begin
-  if not fdmbase.zcon.Connected then
-  begin
-   fdmbase.zEndereco.open;
-  end
-  else
-  begin
-    Showmessage('Not connected!')
-  end;
+
+
+   if(edPesqNome.text ='') then
+   begin
+     fdmbase.zEndereco.close;
+     fdmbase.zEndereco.Filtered:=false;
+     fdmbase.zEndereco.Filter:= '';
+     fdmbase.zEndereco.open;
+   end
+   else
+   begin
+     fdmbase.zEndereco.close;
+     fdmbase.zEndereco.Filtered:=true;
+     fdmbase.zEndereco.Filter:= ' Nome like '+QuotedStr(edPesqNome.text);
+     fdmbase.zEndereco.open;
+   end;
+
 end;
 
 procedure TfrmMalaDireta.FormCreate(Sender: TObject);
@@ -95,6 +105,12 @@ begin
   Pesquisar();
 end;
 
+procedure TfrmMalaDireta.edPesqNomeKeyPress(Sender: TObject; var Key: char);
+begin
+  if(key=#13) then
+  be
+end;
+
 procedure TfrmMalaDireta.FormDestroy(Sender: TObject);
 begin
  fdmbase.zendereco.close;
@@ -102,14 +118,7 @@ end;
 
 procedure TfrmMalaDireta.FormShow(Sender: TObject);
 begin
-  if not fdmbase.zcon.Connected then
-  begin
-       Pesquisar();
-  end
-  else
-  begin
-    Showmessage('Not connected!')
-  end;
+   Pesquisar();
 end;
 
 end.

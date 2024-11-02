@@ -85,7 +85,7 @@ object frmMalaDireta: TfrmMalaDireta
             ParentFont = False
           end
           object Image1: TImage
-            Left = 200
+            Left = 0
             Height = 88
             Top = 8
             Width = 104
@@ -4289,6 +4289,7 @@ object frmMalaDireta: TfrmMalaDireta
             DataSource = dsendereco
             Options = []
             TabOrder = 0
+            VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbCancel, nbRefresh]
           end
           object Label5: TLabel
             Left = 8
@@ -4305,8 +4306,8 @@ object frmMalaDireta: TfrmMalaDireta
             ParentShowHint = False
             ShowHint = True
             TabOrder = 1
-            Text = 'edPesqNome'
             TextHint = 'Input Name to search'
+            OnKeyPress = edPesqNomeKeyPress
           end
           object btAddtoPrint: TSpeedButton
             Left = 272
@@ -4443,15 +4444,15 @@ object frmMalaDireta: TfrmMalaDireta
           Color = clWindow
           Columns = <          
             item
+              ReadOnly = True
+              Title.Caption = 'Ind'
+              FieldName = 'Ind'
+            end          
+            item
               Title.Caption = 'Nome'
               FieldName = 'Nome'
             end          
             item
-              PickList.Strings = (
-                'Nao setado'
-                'Pessoa Física'
-                'Pessoa Juridica'
-              )
               Title.Caption = 'TipoPessoa'
               FieldName = 'TipoPessoa'
             end          
@@ -4593,7 +4594,7 @@ object frmMalaDireta: TfrmMalaDireta
     end
   end
   object dsendereco: TDataSource
-    DataSet = dmBase.zEndereco
+    DataSet = dmBase.zendereco
     Left = 288
     Top = 256
   end

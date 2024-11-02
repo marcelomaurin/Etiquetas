@@ -3,9 +3,9 @@ object dmBase: TdmBase
   OnDestroy = DataModuleDestroy
   OldCreateOrder = False
   Height = 356
-  HorizontalOffset = 997
+  HorizontalOffset = 864
   VerticalOffset = 265
-  Width = 313
+  Width = 446
   object zcon: TZConnection
     ControlsCodePage = cCP_UTF8
     Properties.Strings = (
@@ -13,20 +13,19 @@ object dmBase: TdmBase
       'controls_cp=CP_UTF8'
       'RawStringEncoding=DB_CP'
     )
-    Connected = True
     DisableSavepoints = False
     Port = 0
     Database = 'C:\banco\etiqueta.db'
     Protocol = 'sqlite'
     LibraryLocation = 'C:\Program Files (x86)\Etiquetas\sqlite\win64\sqlite3.dll'
-    Left = 48
+    Left = 24
     Top = 16
   end
   object zproduct: TZTable
     Connection = zcon
     TableName = 'product'
-    Left = 107
-    Top = 17
+    Left = 80
+    Top = 264
     object zproductidproduto: TLongintField
       FieldKind = fkData
       FieldName = 'idproduto'
@@ -86,8 +85,8 @@ object dmBase: TdmBase
   object zselproduct: TZTable
     Connection = zcon
     TableName = 'selproduct'
-    Left = 107
-    Top = 88
+    Left = 144
+    Top = 264
   end
   object tbcsv: TCSVDataset
     FieldDefs = <>
@@ -98,24 +97,24 @@ object dmBase: TdmBase
     CSVOptions.LineEnding = #13#10
     CSVOptions.IgnoreOuterWhitespace = False
     CSVOptions.QuoteOuterWhitespace = True
-    Left = 248
-    Top = 152
+    Left = 407
+    Top = 16
   end
   object dsCSV: TDataSource
     DataSet = tbcsv
-    Left = 201
-    Top = 152
-  end
-  object zEndereco: TZTable
-    Connection = zcon
-    TableName = 'Endereco'
-    Left = 87
-    Top = 264
+    Left = 360
+    Top = 16
   end
   object zqryaux: TZQuery
     Connection = zcon
     Params = <>
-    Left = 264
-    Top = 296
+    Left = 408
+    Top = 80
+  end
+  object zendereco: TZTable
+    Connection = zcon
+    TableName = 'endereco'
+    Left = 24
+    Top = 264
   end
 end
