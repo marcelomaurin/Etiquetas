@@ -33,8 +33,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="11"/>
-        <TopLine Value="5"/>
-        <CursorPos X="34" Y="10"/>
+        <TopLine Value="120"/>
+        <CursorPos X="31" Y="143"/>
         <UsageCount Value="96"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -45,8 +45,10 @@
         <ComponentName Value="frmrelticket02"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="9"/>
-        <CursorPos X="120" Y="16"/>
+        <TopLine Value="64"/>
+        <CursorPos X="5" Y="94"/>
         <UsageCount Value="96"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -88,7 +90,6 @@
       <Unit7>
         <Filename Value="setmain.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="10"/>
         <TopLine Value="73"/>
         <CursorPos X="8" Y="93"/>
@@ -151,8 +152,8 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="8"/>
-        <TopLine Value="66"/>
-        <CursorPos X="61" Y="66"/>
+        <TopLine Value="65"/>
+        <CursorPos Y="92"/>
         <UsageCount Value="62"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -183,7 +184,7 @@
         <LoadedDesigner Value="True"/>
       </Unit14>
       <Unit15>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\plain\ZPlainLoader.pas"/>
+        <Filename Value="..\..\..\..\..\..\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\plain\ZPlainLoader.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="238"/>
         <CursorPos Y="258"/>
@@ -191,7 +192,7 @@
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit15>
       <Unit16>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
+        <Filename Value="..\..\..\..\..\..\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractConnection.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="479"/>
         <CursorPos Y="496"/>
@@ -220,7 +221,7 @@
         <UsageCount Value="6"/>
       </Unit19>
       <Unit20>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
+        <Filename Value="..\..\..\..\..\..\marce\AppData\Local\lazarus\onlinepackagemanager\packages\fortes4lazarus 3.24\rlreport.pas"/>
         <UnitName Value="RLReport"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="6721"/>
@@ -236,14 +237,14 @@
         <UsageCount Value="10"/>
       </Unit21>
       <Unit22>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\OnGuard\source\lcl\qonguard2.pas"/>
+        <Filename Value="..\..\..\..\..\..\marce\AppData\Local\lazarus\onlinepackagemanager\packages\OnGuard\source\lcl\qonguard2.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="30"/>
         <CursorPos X="22" Y="54"/>
         <UsageCount Value="7"/>
       </Unit22>
       <Unit23>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\dbc\ZDbcSqLiteUtils.pas"/>
+        <Filename Value="..\..\..\..\..\..\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\dbc\ZDbcSqLiteUtils.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="217"/>
         <CursorPos Y="227"/>
@@ -251,7 +252,7 @@
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit23>
       <Unit24>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\dbc\ZDbcSqLiteStatement.pas"/>
+        <Filename Value="..\..\..\..\..\..\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\dbc\ZDbcSqLiteStatement.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="330"/>
         <CursorPos Y="354"/>
@@ -259,7 +260,7 @@
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit24>
       <Unit25>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractRODataset.pas"/>
+        <Filename Value="..\..\..\..\..\..\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractRODataset.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="6180"/>
         <CursorPos Y="6190"/>
@@ -267,7 +268,7 @@
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit25>
       <Unit26>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractDataset.pas"/>
+        <Filename Value="..\..\..\..\..\..\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\component\ZAbstractDataset.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="737"/>
         <CursorPos Y="751"/>
@@ -319,14 +320,13 @@
       </Unit32>
       <Unit33>
         <Filename Value="d:\lazarus\lcl\include\customform.inc"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="907"/>
         <CursorPos Y="923"/>
         <UsageCount Value="17"/>
-        <Loaded Value="True"/>
       </Unit33>
       <Unit34>
-        <Filename Value="C:\Users\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\dbc\ZDbcSqLite.pas"/>
+        <Filename Value="..\..\..\..\..\..\marce\AppData\Local\lazarus\onlinepackagemanager\packages\zeosdbo\src\dbc\ZDbcSqLite.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="725"/>
         <CursorPos Y="740"/>
@@ -335,133 +335,131 @@
       </Unit34>
       <Unit35>
         <Filename Value="d:\lazarus\fpc\3.2.2\source\rtl\objpas\classes\classesh.inc"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="54"/>
         <CursorPos X="21" Y="70"/>
         <UsageCount Value="12"/>
-        <Loaded Value="True"/>
       </Unit35>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="89" TopLine="68"/>
+        <Caret Line="195" Column="18" TopLine="169"/>
       </Position1>
       <Position2>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="75" Column="18" TopLine="68"/>
+        <Caret Line="199" Column="34" TopLine="173"/>
       </Position2>
       <Position3>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="93" Column="26" TopLine="68"/>
+        <Caret Line="75" Column="18" TopLine="59"/>
       </Position3>
       <Position4>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="195" Column="18" TopLine="169"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="88" Column="30" TopLine="74"/>
       </Position4>
       <Position5>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="199" Column="34" TopLine="173"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="83" TopLine="74"/>
       </Position5>
       <Position6>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="75" Column="18" TopLine="59"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="86" TopLine="74"/>
       </Position6>
       <Position7>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="93" Column="26" TopLine="67"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="87" TopLine="74"/>
       </Position7>
       <Position8>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="195" Column="18" TopLine="169"/>
+        <Filename Value="maladireta.pas"/>
+        <Caret Line="104" TopLine="86"/>
       </Position8>
       <Position9>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="199" Column="34" TopLine="173"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="82" TopLine="74"/>
       </Position9>
       <Position10>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="75" Column="18" TopLine="59"/>
+        <Caret Line="67" Column="26" TopLine="59"/>
       </Position10>
       <Position11>
-        <Filename Value="main.pas"/>
-        <Caret Line="88" Column="30" TopLine="74"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="66" Column="26" TopLine="58"/>
       </Position11>
       <Position12>
-        <Filename Value="main.pas"/>
-        <Caret Line="83" TopLine="74"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="67" Column="26" TopLine="59"/>
       </Position12>
       <Position13>
-        <Filename Value="main.pas"/>
-        <Caret Line="86" TopLine="74"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="66" Column="26" TopLine="58"/>
       </Position13>
       <Position14>
-        <Filename Value="main.pas"/>
-        <Caret Line="87" TopLine="74"/>
+        <Filename Value="maladireta.pas"/>
+        <Caret Line="92" Column="72" TopLine="71"/>
       </Position14>
       <Position15>
         <Filename Value="maladireta.pas"/>
-        <Caret Line="104" TopLine="86"/>
+        <Caret Line="109" Column="23" TopLine="93"/>
       </Position15>
       <Position16>
-        <Filename Value="main.pas"/>
-        <Caret Line="82" TopLine="74"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="75" Column="16" TopLine="59"/>
       </Position16>
       <Position17>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="67" Column="26" TopLine="59"/>
+        <Caret Line="93" Column="26" TopLine="67"/>
       </Position17>
       <Position18>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="66" Column="26" TopLine="58"/>
-      </Position18>
-      <Position19>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="67" Column="26" TopLine="59"/>
-      </Position19>
-      <Position20>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="66" Column="26" TopLine="58"/>
-      </Position20>
-      <Position21>
-        <Filename Value="maladireta.pas"/>
-        <Caret Line="92" Column="72" TopLine="71"/>
-      </Position21>
-      <Position22>
-        <Filename Value="maladireta.pas"/>
-        <Caret Line="109" Column="23" TopLine="93"/>
-      </Position22>
-      <Position23>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="75" Column="16" TopLine="59"/>
-      </Position23>
-      <Position24>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="93" Column="26" TopLine="67"/>
-      </Position24>
-      <Position25>
         <Filename Value="main.pas"/>
         <Caret Line="10" Column="38"/>
-      </Position25>
-      <Position26>
+      </Position18>
+      <Position19>
         <Filename Value="main.pas"/>
         <Caret Line="115" Column="3" TopLine="113"/>
-      </Position26>
-      <Position27>
+      </Position19>
+      <Position20>
         <Filename Value="gondola.pas"/>
         <Caret Line="35" Column="3" TopLine="24"/>
-      </Position27>
-      <Position28>
+      </Position20>
+      <Position21>
         <Filename Value="gondola.pas"/>
         <Caret Line="17" Column="3" TopLine="6"/>
-      </Position28>
-      <Position29>
+      </Position21>
+      <Position22>
         <Filename Value="gondola.pas"/>
         <Caret Line="47" Column="3" TopLine="45"/>
-      </Position29>
-      <Position30>
+      </Position22>
+      <Position23>
         <Filename Value="ticket.pas"/>
         <Caret Line="16" Column="3" TopLine="5"/>
+      </Position23>
+      <Position24>
+        <Filename Value="ticket.pas"/>
+        <Caret Line="10" Column="34" TopLine="5"/>
+      </Position24>
+      <Position25>
+        <Filename Value="ticket.pas"/>
+        <Caret Line="153" Column="14" TopLine="151"/>
+      </Position25>
+      <Position26>
+        <Filename Value="ticket.pas"/>
+      </Position26>
+      <Position27>
+        <Filename Value="ticket.pas"/>
+        <Caret Line="76" Column="23" TopLine="50"/>
+      </Position27>
+      <Position28>
+        <Filename Value="relticket.pas"/>
+        <Caret Line="79" Column="42" TopLine="65"/>
+      </Position28>
+      <Position29>
+        <Filename Value="relticket02.pas"/>
+        <Caret Line="16" Column="120"/>
+      </Position29>
+      <Position30>
+        <Filename Value="relticket02.pas"/>
+        <Caret Line="36" Column="24" TopLine="9"/>
       </Position30>
     </JumpHistory>
     <RunParams>
