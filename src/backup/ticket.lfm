@@ -8,16 +8,16 @@ object frmTicket: TfrmTicket
   ClientWidth = 684
   OnClose = FormClose
   OnCreate = FormCreate
-  Position = poOwnerFormCenter
+  Position = poMainFormCenter
   LCLVersion = '3.4.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 355
     Top = 0
     Width = 684
-    ActivePage = TabSheet1
+    ActivePage = tsPrint
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Search'
@@ -31595,11 +31595,11 @@ object frmTicket: TfrmTicket
         Stretch = True
       end
       object Label7: TLabel
-        Left = 456
+        Left = 408
         Height = 15
         Top = 24
-        Width = 101
-        Caption = 'Select tag to print'
+        Width = 177
+        Caption = 'Select tag with barcode to print'
         Font.Style = [fsBold]
         ParentColor = False
         ParentFont = False
@@ -35587,6 +35587,17 @@ object frmTicket: TfrmTicket
           F900F4F4F400F7F7F700FCFCFC00FFFFFF00FFFFFF00FFFFFF00
         }
         OnClick = btPrintClick
+      end
+      object Label11: TLabel
+        Left = 424
+        Height = 15
+        Top = 136
+        Width = 166
+        Caption = 'Select tag no barcode to print'
+        Font.Style = [fsBold]
+        ParentColor = False
+        ParentFont = False
+        OnClick = Label7Click
       end
     end
     object TabSheet4: TTabSheet

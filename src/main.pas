@@ -10,7 +10,7 @@ uses
   maladireta;
 
 const
-  versao = 1.7 ;
+  versao = 1.8 ;
 
 type
 

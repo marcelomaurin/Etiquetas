@@ -83,7 +83,7 @@ begin
   fdmBase := TdmBase.create(self);
   fdmBase.opendb();
   StatusBar1.Panels[0].Text:= FSetMain.db;
-  StatusBar1.Panels[1].Text:= FSetMain.;
+  StatusBar1.Panels[1].Text:= FSetMain.SQLLITEDLL;
 
 
   left := FSetMain.posx;

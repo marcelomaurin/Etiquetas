@@ -30,6 +30,7 @@ type
     Image3: TImage;
     Label1: TLabel;
     Label10: TLabel;
+    Label11: TLabel;
     lbVersao: TLabel;
     Label2: TLabel;
     Label3: TLabel;
