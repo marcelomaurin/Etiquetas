@@ -32,10 +32,9 @@
         <ComponentName Value="frmTicket"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="11"/>
         <TopLine Value="5"/>
-        <CursorPos X="3" Y="8"/>
+        <CursorPos X="34" Y="10"/>
         <UsageCount Value="96"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -89,8 +88,9 @@
       <Unit7>
         <Filename Value="setmain.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="10"/>
-        <TopLine Value="67"/>
+        <TopLine Value="73"/>
         <CursorPos X="8" Y="93"/>
         <UsageCount Value="88"/>
         <Loaded Value="True"/>
@@ -322,7 +322,7 @@
         <EditorIndex Value="12"/>
         <TopLine Value="907"/>
         <CursorPos Y="923"/>
-        <UsageCount Value="16"/>
+        <UsageCount Value="17"/>
         <Loaded Value="True"/>
       </Unit33>
       <Unit34>
@@ -338,7 +338,7 @@
         <EditorIndex Value="13"/>
         <TopLine Value="54"/>
         <CursorPos X="21" Y="70"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="12"/>
         <Loaded Value="True"/>
       </Unit35>
     </Units>
