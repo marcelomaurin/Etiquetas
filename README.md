@@ -27,3 +27,4 @@ Software de gestión de etiquetas Gondola para impresoras Zebra
 # Screens
 <img src="https://github.com/marcelomaurin/Etiquetas/blob/main/img/screens/main.png">
 <img src="https://github.com/marcelomaurin/Etiquetas/blob/main/img/screens/tags.png">
+<img src="https://github.com/marcelomaurin/Etiquetas/blob/main/img/etiqueta.bmp">
