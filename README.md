@@ -1,6 +1,6 @@
 # Portuguese
 
-## Etiquetas
+## Etiquetas 
 Software de Gerenciamento de Etiquetas de Gondola para impressoras Zebra
 
 ## Documentação do Projeto
