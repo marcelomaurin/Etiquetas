@@ -47,7 +47,7 @@ type
     PrinterSetupDialog1: TPrinterSetupDialog;
     btAddtoPrint: TSpeedButton;
     btDelAll: TSpeedButton;
-    TabSheet1: TTabSheet;
+    tsSearch: TTabSheet;
     TabSheet2: TTabSheet;
     tsPrint: TTabSheet;
     TabSheet4: TTabSheet;
@@ -67,7 +67,7 @@ type
     procedure mnInsertClick(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
     procedure btAddtoPrintClick(Sender: TObject);
-    procedure TabSheet1Show(Sender: TObject);
+    procedure tsSearchShow(Sender: TObject);
   private
 
   public
@@ -109,7 +109,7 @@ begin
   Fdmbase.NewSel();
 end;
 
-procedure TfrmTicket.TabSheet1Show(Sender: TObject);
+procedure TfrmTicket.tsSearchShow(Sender: TObject);
 begin
 
 end;
@@ -210,6 +210,7 @@ end;
 procedure TfrmTicket.FormCreate(Sender: TObject);
 begin
   //fdmbase := TdmBase.create(self);
+  PageControl1.ActivePage := tsSearch;
   fdmBase.opendb;
 end;
 

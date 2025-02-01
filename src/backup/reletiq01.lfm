@@ -1,0 +1,142 @@
+object frmreletiq01: Tfrmreletiq01
+  Left = 646
+  Height = 583
+  Top = 340
+  Width = 431
+  Caption = 'frmreletiq01'
+  ClientHeight = 583
+  ClientWidth = 431
+  LCLVersion = '3.4.0.0'
+  object RLRepGondola02: TRLReport
+    Left = 8
+    Height = 582
+    Top = 8
+    Width = 416
+    Font.Color = clBlack
+    Font.Height = -13
+    Font.Name = 'Arial'
+    Margins.LeftMargin = 0
+    Margins.TopMargin = 5
+    Margins.RightMargin = 0
+    Margins.BottomMargin = 0
+    PageSetup.PaperSize = fpCustom
+    PageSetup.PaperWidth = 110
+    PageSetup.PaperHeight = 154
+    RealBounds.UsedUnit = buMilimeters
+    object RLToName: TRLLabel
+      Left = 16
+      Height = 32
+      Top = 131
+      Width = 386
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Name'
+      Font.Color = clBlack
+      Font.Height = -24
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object RLTOADDRESS01: TRLLabel
+      Left = 16
+      Height = 16
+      Top = 179
+      Width = 386
+      AutoSize = False
+      Caption = 'Detail 01'
+    end
+    object RLTitulo: TRLLabel
+      Left = 168
+      Height = 32
+      Top = 27
+      Width = 66
+      Alignment = taCenter
+      Caption = 'Title'
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -27
+      Font.Name = 'Arial'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object RLLabel1: TRLLabel
+      Left = 8
+      Height = 16
+      Top = 107
+      Width = 25
+      Caption = 'TO:'
+    end
+    object RLTOADDRESS2: TRLLabel
+      Left = 16
+      Height = 16
+      Top = 203
+      Width = 386
+      AutoSize = False
+      Caption = 'Detail 02'
+    end
+    object RLFROM: TRLLabel
+      Left = 8
+      Height = 16
+      Top = 341
+      Width = 386
+      AutoSize = False
+      Caption = 'FROM'
+    end
+    object RLDraw1: TRLDraw
+      Left = 8
+      Height = 10
+      Top = 323
+      Width = 394
+    end
+    object RLDraw2: TRLDraw
+      Left = 8
+      Height = 10
+      Top = 91
+      Width = 394
+    end
+    object RLFROMName: TRLLabel
+      Left = 8
+      Height = 32
+      Top = 373
+      Width = 386
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Name'
+      Font.Color = clBlack
+      Font.Height = -24
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object RLFROMADDRESS1: TRLLabel
+      Left = 8
+      Height = 16
+      Top = 421
+      Width = 386
+      AutoSize = False
+      Caption = 'Detail 01'
+    end
+    object RLFROMADDRESS2: TRLLabel
+      Left = 8
+      Height = 16
+      Top = 445
+      Width = 386
+      AutoSize = False
+      Caption = 'Detail 02'
+    end
+    object RLBARCODE: TRLBarcode
+      Left = 162
+      Height = 40
+      Top = 491
+      Width = 104
+      Alignment = taCenter
+      BarcodeType = bcEAN13
+      Caption = '0123456'
+      Margins.LeftMargin = 1
+      Margins.RightMargin = 1
+      ShowText = boCode
+    end
+  end
+end

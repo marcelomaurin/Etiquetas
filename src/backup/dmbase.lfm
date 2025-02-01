@@ -3,8 +3,8 @@ object dmBase: TdmBase
   OnDestroy = DataModuleDestroy
   OldCreateOrder = False
   Height = 356
-  HorizontalOffset = 864
-  VerticalOffset = 265
+  HorizontalOffset = 1424
+  VerticalOffset = 401
   Width = 446
   object zcon: TZConnection
     ControlsCodePage = cCP_UTF8
@@ -13,9 +13,10 @@ object dmBase: TdmBase
       'controls_cp=CP_UTF8'
       'RawStringEncoding=DB_CP'
     )
+    Connected = True
     DisableSavepoints = False
     Port = 0
-    Database = 'C:\banco\etiqueta.db'
+    Database = 'D:\projetos\maurinsoft\Etiquetas\db\etiqueta.db'
     Protocol = 'sqlite'
     LibraryLocation = 'C:\Program Files (x86)\Etiquetas\sqlite\win64\sqlite3.dll'
     Left = 24
@@ -114,7 +115,138 @@ object dmBase: TdmBase
   object zendereco: TZTable
     Connection = zcon
     TableName = 'endereco'
-    Left = 24
+    Left = 208
     Top = 264
+  end
+  object zselendereco: TZTable
+    Connection = zcon
+    TableName = 'selendereco'
+    Left = 288
+    Top = 264
+    object zselenderecoInd: TLargeintField
+      DisplayLabel = 'Master Key'
+      FieldKind = fkData
+      FieldName = 'Ind'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object zselenderecoNome: TStringField
+      DisplayLabel = 'Name'
+      FieldKind = fkData
+      FieldName = 'Nome'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+      Size = 40
+    end
+    object zselenderecoTipoPessoa: TLargeintField
+      DisplayLabel = 'Type'
+      FieldKind = fkData
+      FieldName = 'TipoPessoa'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object zselenderecoDocumento: TStringField
+      DisplayLabel = 'Document'
+      FieldKind = fkData
+      FieldName = 'Documento'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 40
+    end
+    object zselenderecoLogradouro: TStringField
+      DisplayLabel = 'Address01'
+      FieldKind = fkData
+      FieldName = 'Logradouro'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 40
+    end
+    object zselenderecoBairro: TStringField
+      DisplayLabel = 'Address02'
+      FieldKind = fkData
+      FieldName = 'Bairro'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 40
+    end
+    object zselenderecoCidade: TStringField
+      DisplayLabel = 'City'
+      FieldKind = fkData
+      FieldName = 'Cidade'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 40
+    end
+    object zselenderecoCEP: TStringField
+      DisplayLabel = 'Zipcode'
+      FieldKind = fkData
+      FieldName = 'CEP'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object zselenderecoReferencia: TStringField
+      DisplayLabel = 'Referency'
+      FieldKind = fkData
+      FieldName = 'Referencia'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 40
+    end
+    object zselenderecoBARCODE: TStringField
+      FieldKind = fkData
+      FieldName = 'BARCODE'
+      Index = 9
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object zselenderecoQRCODE: TStringField
+      FieldKind = fkData
+      FieldName = 'QRCODE'
+      Index = 10
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 200
+    end
+    object zselenderecodescprod: TStringField
+      FieldKind = fkData
+      FieldName = 'descprod'
+      Index = 11
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 200
+    end
   end
 end

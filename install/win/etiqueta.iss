@@ -46,8 +46,8 @@ Source: "D:\projetos\maurinsoft\Etiquetas\src\etiquetas.exe"; DestDir: "{app}"; 
 Source: "D:\projetos\maurinsoft\Etiquetas\db\etiqueta.db"; DestDir: "C:\db\"; Flags: ignoreversion
 ; Banco de dados e CSVs para pasta de dados global
 Source: "D:\projetos\maurinsoft\Etiquetas\db\etiqueta.db"; DestDir: "{commonappdata}\Etiquetas\db\"; Flags: ignoreversion
-Source: "D:\projetos\maurinsoft\Etiquetas\csv\gondola01.csv"; DestDir: "{commonappdata}\Etiquetas\csv\"; Flags: ignoreversion
-Source: "D:\projetos\maurinsoft\Etiquetas\csv\gondola02.csv"; DestDir: "{commonappdata}\Etiquetas\csv\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\csv\*.csv"; DestDir: "{commonappdata}\Etiquetas\csv\"; Flags: ignoreversion
+
 
 ; Biblioteca SQLite para System32
 Source: "D:\projetos\maurinsoft\Etiquetas\sqlite\win64\sqlite3.dll"; DestDir: "{app}\sqlite\win64\"; Flags: ignoreversion

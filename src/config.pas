@@ -6,23 +6,34 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, EditBtn,
-  Buttons, rxfolderlister, rxtoolbar, setmain, fileutil, PrintersDlgs;
+  Buttons, ComCtrls, ExtCtrls, rxfolderlister, rxtoolbar, setmain, fileutil,
+  PrintersDlgs;
 
 type
 
   { Tfrmconfig }
 
   Tfrmconfig = class(TForm)
+    btDelete: TBitBtn;
     btDelete1: TBitBtn;
     btSave: TBitBtn;
-    btDelete: TBitBtn;
-    edDLL: TFileNameEdit;
     edDB: TFileNameEdit;
+    edDLL: TFileNameEdit;
+    edEndereco1: TEdit;
+    edPessoa: TEdit;
+    edPessoa1: TEdit;
+    edEndereco2: TEdit;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    PageControl1: TPageControl;
+    Panel1: TPanel;
     PrinterSetupDialog1: TPrinterSetupDialog;
+    tsconn: TTabSheet;
+    tsLocation: TTabSheet;
     procedure btDelete1Click(Sender: TObject);
     procedure btDeleteClick(Sender: TObject);
     procedure btSaveClick(Sender: TObject);
@@ -47,8 +58,12 @@ implementation
 
 procedure Tfrmconfig.FormShow(Sender: TObject);
 begin
-  edDLL.text := FSetMain.SQLLITEDLL;
-  edDB.text := FSetMain.db;
+  // Carrega os valores dos campos a partir do FSetMain
+  edDLL.Text     := FSetMain.SQLLITEDLL;
+  edDB.Text      := FSetMain.db;
+  edPessoa.Text  := FSetMain.EMPRESA;    // Novo: EMPRESA
+  edEndereco1.Text := FSetMain.ENDERECO1;  // Novo: ENDERECO1
+  edEndereco2.Text := FSetMain.ENDERECO2;  // Novo: ENDERECO2
 
 end;
 
@@ -93,7 +108,10 @@ begin
    {$ENDIF}
   end;
   FSetMain.SQLLITEDLL:= edDLL.Text;
-  FSetMain.db:= edDB.text;
+  FSetMain.db         := edDB.Text;
+  FSetMain.EMPRESA    := edPessoa.Text;    // Novo: EMPRESA
+  FSetMain.ENDERECO1  := edEndereco1.Text; // Novo: ENDERECO1
+  FSetMain.ENDERECO2  := edEndereco2.Text; // Novo: ENDERECO2
   FSetMain.SalvaContexto(false);
   close;
 end;

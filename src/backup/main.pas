@@ -10,7 +10,7 @@ uses
   maladireta;
 
 const
-  versao = 1.7 ;
+  versao = 1.8 ;
 
 type
 
@@ -27,6 +27,7 @@ type
     Label10: TLabel;
     Label11: TLabel;
     Label12: TLabel;
+    Label13: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -45,9 +46,9 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     StatusBar1: TStatusBar;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
-    tsProducts: TTabSheet;
+    tbSobre: TTabSheet;
+    tbThermal: TTabSheet;
+    tbProducts: TTabSheet;
     tbZebra: TTabSheet;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -84,7 +85,7 @@ begin
   fdmBase.opendb();
   StatusBar1.Panels[0].Text:= FSetMain.db;
   StatusBar1.Panels[1].Text:= FSetMain.SQLLITEDLL;
-
+  PageControl1.ActivePage := tbSobre;
 
   left := FSetMain.posx;
   top := FSetMain.posy;
@@ -107,7 +108,7 @@ end;
 
 procedure TfrmMain.Image1Click(Sender: TObject);
 begin
-   tsProducts.Show;
+   tbProducts.Show;
 end;
 
 procedure TfrmMain.Image2Click(Sender: TObject);

@@ -6,7 +6,7 @@ object frmrelticket02: Tfrmrelticket02
   Caption = 'frmrelticket02'
   ClientHeight = 164
   ClientWidth = 404
-  LCLVersion = '2.2.2.0'
+  LCLVersion = '3.6.0.0'
   object RLRepGondola02: TRLReport
     Left = 0
     Height = 151
@@ -71,10 +71,10 @@ object frmrelticket02: Tfrmrelticket02
       Caption = 'Detail 01'
     end
     object RLDetail02: TRLBarcode
-      Left = 8
+      Left = 62
       Height = 40
       Top = 99
-      Width = 168
+      Width = 60
       Alignment = taCenter
       Caption = '0123456'
       Margins.LeftMargin = 1

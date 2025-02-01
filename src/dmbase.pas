@@ -18,6 +18,7 @@ type
     tbcsv: TCSVDataset;
     dsCSV: TDataSource;
     zcon: TZConnection;
+    zselendereco: TZTable;
     zEnderecoBairro: TZRawStringField;
     zEnderecoCEP: TZRawStringField;
     zEnderecoCidade: TZRawStringField;
@@ -29,6 +30,18 @@ type
     zEnderecoTipoPessoa: TZInt64Field;
     zproduct: TZTable;
     zqryaux: TZQuery;
+    zselenderecoBairro: TStringField;
+    zselenderecoBARCODE: TStringField;
+    zselenderecoCEP: TStringField;
+    zselenderecoCidade: TStringField;
+    zselenderecodescprod: TStringField;
+    zselenderecoDocumento: TStringField;
+    zselenderecoInd: TLargeintField;
+    zselenderecoLogradouro: TStringField;
+    zselenderecoNome: TStringField;
+    zselenderecoQRCODE: TStringField;
+    zselenderecoReferencia: TStringField;
+    zselenderecoTipoPessoa: TLargeintField;
     zselproduct: TZTable;
     zproductDetail01: TStringField;
     zproductDetail02: TStringField;
@@ -48,6 +61,7 @@ type
     procedure closedb();
     procedure product();
     procedure Endereco();
+    procedure SelEndereco();
     procedure selproduct();
     procedure delallselectproducts();
     procedure NewSel();
@@ -56,6 +70,7 @@ type
     function csvValidaLayout( tipo : TCSVLayout) : boolean;
     function dropproducts(): boolean;
     procedure config();
+    procedure NewSelEndereco();
 
   end;
 
@@ -255,6 +270,17 @@ begin
 
 end;
 
+procedure TdmBase.SelEndereco();
+begin
+  if NOT zcon.Connected then
+  begin
+    //zendereco.Close;
+    zselendereco.open;
+  end;
+  //zEndereco.Refresh;
+
+end;
+
 procedure TdmBase.selproduct();
 begin
   if zselproduct.Active then
@@ -414,6 +440,30 @@ end;
 procedure TdmBase.config();
 begin
   frmmain.config();
+end;
+
+procedure TdmBase.NewSelEndereco();
+begin
+  if (not zselendereco.Active) then
+  begin
+    zselendereco.Open;
+  end;
+  zselendereco.Insert;
+  zselendereco.FieldByName('Nome').AsString       := zendereco.FieldByName('Nome').AsString;
+  zselendereco.FieldByName('TipoPessoa').AsInteger := zendereco.FieldByName('TipoPessoa').AsInteger;
+  zselendereco.FieldByName('Documento').AsString   := zendereco.FieldByName('Documento').AsString;
+  zselendereco.FieldByName('Logradouro').AsString  := zendereco.FieldByName('Logradouro').AsString;
+  zselendereco.FieldByName('Bairro').AsString      := zendereco.FieldByName('Bairro').AsString;
+  zselendereco.FieldByName('Cidade').AsString      := zendereco.FieldByName('Cidade').AsString;
+  zselendereco.FieldByName('CEP').AsString         := zendereco.FieldByName('CEP').AsString;
+  zselendereco.FieldByName('Referencia').AsString  := zendereco.FieldByName('Referencia').AsString;
+
+  // Caso seja necessário, você pode preencher os campos adicionais da tabela selendereco:
+  zselendereco.FieldByName('BARCODE').AsString := '';
+  zselendereco.FieldByName('QRCODE').AsString  := '';
+  zselendereco.FieldByName('descprod').AsString  := '';
+
+  zselendereco.Post;
 end;
 
 
