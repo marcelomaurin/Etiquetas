@@ -10,7 +10,7 @@ uses
   maladireta;
 
 const
-  versao = 1.8 ;
+  versao = 1.8;
 
 type
 
@@ -81,7 +81,7 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   aplicacao := Application.ExeName;
   FSetMain := TSetMain.create();
-  fdmBase := TdmBase.create(self);
+  fdmBase := TdmBase.create();
   fdmBase.opendb();
   StatusBar1.Panels[0].Text:= FSetMain.db;
   StatusBar1.Panels[1].Text:= FSetMain.SQLLITEDLL;

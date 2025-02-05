@@ -239,6 +239,7 @@ object dmBase: TdmBase
       Size = 200
     end
     object zselenderecodescprod: TStringField
+      DisplayLabel = 'Description'
       FieldKind = fkData
       FieldName = 'descprod'
       Index = 11

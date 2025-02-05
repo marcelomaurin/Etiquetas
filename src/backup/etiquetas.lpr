@@ -20,7 +20,7 @@ begin
   Application.Scaled:=True;
   Application.Initialize;
   Application.CreateForm(TfrmMain, frmMain);
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(Tfrmreletiq01, frmreletiq01);
   Application.Run;
 end.
 

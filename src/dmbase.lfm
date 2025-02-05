@@ -16,9 +16,9 @@ object dmBase: TdmBase
     Connected = True
     DisableSavepoints = False
     Port = 0
-    Database = 'D:\projetos\maurinsoft\Etiquetas\db\etiqueta.db'
+    Database = 'C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\db\etiqueta.db'
     Protocol = 'sqlite'
-    LibraryLocation = 'C:\Program Files (x86)\Etiquetas\sqlite\win64\sqlite3.dll'
+    LibraryLocation = 'C:\Program Files (x86)\Etiquetas\sqlite\win32\sqlite3.dll'
     Left = 24
     Top = 16
   end
