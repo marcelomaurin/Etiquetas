@@ -20,6 +20,7 @@ type
     Image1: TImage;
     Image2: TImage;
     Image3: TImage;
+    Image4: TImage;
     imgMalaDireta: TImage;
     imgProducts: TImage;
     imgZebra: TImage;
@@ -28,6 +29,7 @@ type
     Label11: TLabel;
     Label12: TLabel;
     Label13: TLabel;
+    Label14: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;

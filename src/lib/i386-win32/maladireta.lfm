@@ -10,7 +10,7 @@ object frmMalaDireta: TfrmMalaDireta
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '3.4.0.0'
+  LCLVersion = '3.6.0.0'
   object Panel1: TPanel
     Left = 0
     Height = 50
@@ -44,9 +44,9 @@ object frmMalaDireta: TfrmMalaDireta
     Height = 492
     Top = 50
     Width = 898
-    ActivePage = tsTagType
+    ActivePage = Wizzard
     Align = alClient
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 1
     object Wizzard: TTabSheet
       Caption = 'Address'

@@ -14,10 +14,12 @@ type
 
   TfrmImport = class(TForm)
     btAddtoPrint1: TSpeedButton;
+    Image1: TImage;
     imgImportProducts: TImage;
     imgImportProducts1: TImage;
     Label1: TLabel;
     Label2: TLabel;
+    Label3: TLabel;
     procedure btAddtoPrint1Click(Sender: TObject);
     procedure btcloseClick(Sender: TObject);
     procedure imgImportProducts1Click(Sender: TObject);

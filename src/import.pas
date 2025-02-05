@@ -14,12 +14,15 @@ type
 
   TfrmImport = class(TForm)
     btAddtoPrint1: TSpeedButton;
+    imgImportLaboratory: TImage;
     imgImportProducts: TImage;
     imgImportProducts1: TImage;
     Label1: TLabel;
     Label2: TLabel;
+    Label3: TLabel;
     procedure btAddtoPrint1Click(Sender: TObject);
     procedure btcloseClick(Sender: TObject);
+    procedure imgImportLaboratoryClick(Sender: TObject);
     procedure imgImportProducts1Click(Sender: TObject);
     procedure imgImportProductsClick(Sender: TObject);
   private
@@ -38,6 +41,11 @@ implementation
 { TfrmImport }
 
 procedure TfrmImport.btcloseClick(Sender: TObject);
+begin
+
+end;
+
+procedure TfrmImport.imgImportLaboratoryClick(Sender: TObject);
 begin
 
 end;

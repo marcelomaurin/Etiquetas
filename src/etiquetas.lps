@@ -10,7 +10,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="4"/>
         <CursorPos X="11" Y="15"/>
-        <UsageCount Value="105"/>
+        <UsageCount Value="106"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -22,7 +22,7 @@
         <EditorIndex Value="5"/>
         <TopLine Value="45"/>
         <CursorPos X="3" Y="47"/>
-        <UsageCount Value="105"/>
+        <UsageCount Value="106"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -35,7 +35,7 @@
         <EditorIndex Value="12"/>
         <TopLine Value="93"/>
         <CursorPos X="17" Y="95"/>
-        <UsageCount Value="105"/>
+        <UsageCount Value="106"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit2>
@@ -48,7 +48,7 @@
         <EditorIndex Value="10"/>
         <TopLine Value="64"/>
         <CursorPos X="5" Y="67"/>
-        <UsageCount Value="105"/>
+        <UsageCount Value="106"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit3>
@@ -58,11 +58,10 @@
         <ComponentName Value="dmBase"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="67"/>
-        <CursorPos Y="90"/>
-        <UsageCount Value="103"/>
+        <TopLine Value="34"/>
+        <CursorPos Y="92"/>
+        <UsageCount Value="104"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit4>
@@ -75,7 +74,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="73"/>
         <CursorPos X="50" Y="82"/>
-        <UsageCount Value="98"/>
+        <UsageCount Value="99"/>
       </Unit5>
       <Unit6>
         <Filename Value="funcoes.pas"/>
@@ -83,7 +82,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="21"/>
         <CursorPos Y="59"/>
-        <UsageCount Value="98"/>
+        <UsageCount Value="99"/>
       </Unit6>
       <Unit7>
         <Filename Value="setmain.pas"/>
@@ -91,7 +90,7 @@
         <EditorIndex Value="11"/>
         <TopLine Value="219"/>
         <CursorPos X="32" Y="225"/>
-        <UsageCount Value="97"/>
+        <UsageCount Value="98"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
@@ -102,7 +101,7 @@
         <ResourceBaseClass Value="Form"/>
         <TopLine Value="53"/>
         <CursorPos X="11" Y="55"/>
-        <UsageCount Value="96"/>
+        <UsageCount Value="97"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit8>
@@ -113,9 +112,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="7"/>
-        <TopLine Value="66"/>
-        <CursorPos Y="84"/>
-        <UsageCount Value="80"/>
+        <TopLine Value="68"/>
+        <CursorPos X="59" Y="68"/>
+        <UsageCount Value="81"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit9>
@@ -126,10 +125,11 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Import"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="6"/>
-        <TopLine Value="46"/>
-        <CursorPos X="3" Y="62"/>
-        <UsageCount Value="75"/>
+        <TopLine Value="40"/>
+        <CursorPos X="96" Y="48"/>
+        <UsageCount Value="76"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit10>
@@ -142,7 +142,7 @@
         <EditorIndex Value="2"/>
         <TopLine Value="33"/>
         <CursorPos X="3" Y="15"/>
-        <UsageCount Value="74"/>
+        <UsageCount Value="75"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit11>
@@ -155,7 +155,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="65"/>
         <CursorPos Y="92"/>
-        <UsageCount Value="71"/>
+        <UsageCount Value="72"/>
       </Unit12>
       <Unit13>
         <Filename Value="csvendereco.pas"/>
@@ -166,7 +166,7 @@
         <EditorIndex Value="1"/>
         <TopLine Value="35"/>
         <CursorPos Y="49"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="69"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit13>
@@ -178,9 +178,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MalaDireta"/>
         <EditorIndex Value="8"/>
-        <TopLine Value="129"/>
-        <CursorPos X="28" Y="140"/>
-        <UsageCount Value="62"/>
+        <TopLine Value="130"/>
+        <CursorPos X="55" Y="130"/>
+        <UsageCount Value="63"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit14>
@@ -193,7 +193,7 @@
         <EditorIndex Value="9"/>
         <TopLine Value="7"/>
         <CursorPos X="19" Y="24"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit15>
@@ -358,124 +358,124 @@
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="reletiq01.pas"/>
-        <Caret Line="19" Column="55"/>
+        <Filename Value="maladireta.pas"/>
+        <Caret Line="144" TopLine="132"/>
       </Position1>
       <Position2>
         <Filename Value="reletiq01.pas"/>
-        <Caret Line="18" Column="55"/>
+        <Caret Line="20" Column="33" TopLine="7"/>
       </Position2>
       <Position3>
-        <Filename Value="maladireta.pas"/>
-        <Caret Line="195" TopLine="182"/>
-      </Position3>
-      <Position4>
-        <Filename Value="maladireta.pas"/>
-        <Caret Line="79" Column="15" TopLine="59"/>
-      </Position4>
-      <Position5>
-        <Filename Value="maladireta.pas"/>
-        <Caret Line="138" Column="32" TopLine="134"/>
-      </Position5>
-      <Position6>
-        <Filename Value="maladireta.pas"/>
-        <Caret Line="144" TopLine="132"/>
-      </Position6>
-      <Position7>
-        <Filename Value="reletiq01.pas"/>
-        <Caret Line="20" Column="33" TopLine="7"/>
-      </Position7>
-      <Position8>
         <Filename Value="reletiq01.pas"/>
         <Caret Line="19" Column="33" TopLine="7"/>
-      </Position8>
-      <Position9>
+      </Position3>
+      <Position4>
         <Filename Value="reletiq01.pas"/>
         <Caret Line="22" Column="42" TopLine="7"/>
-      </Position9>
-      <Position10>
+      </Position4>
+      <Position5>
         <Filename Value="dmbase.pas"/>
         <Caret Line="452" Column="63" TopLine="434"/>
+      </Position5>
+      <Position6>
+        <Filename Value="main.pas"/>
+        <Caret Line="82" TopLine="70"/>
+      </Position6>
+      <Position7>
+        <Filename Value="main.pas"/>
+        <Caret Line="83" TopLine="70"/>
+      </Position7>
+      <Position8>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="90" TopLine="70"/>
+      </Position8>
+      <Position9>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="248" TopLine="232"/>
+      </Position9>
+      <Position10>
+        <Filename Value="main.pas"/>
+        <Caret Line="82" TopLine="70"/>
       </Position10>
       <Position11>
         <Filename Value="main.pas"/>
-        <Caret Line="82" TopLine="70"/>
+        <Caret Line="83" TopLine="70"/>
       </Position11>
       <Position12>
         <Filename Value="main.pas"/>
-        <Caret Line="83" TopLine="70"/>
+        <Caret Line="84" TopLine="70"/>
       </Position12>
       <Position13>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="90" TopLine="70"/>
+        <Caret Line="92" TopLine="61"/>
       </Position13>
       <Position14>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="248" TopLine="232"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="82" TopLine="70"/>
       </Position14>
       <Position15>
         <Filename Value="main.pas"/>
-        <Caret Line="82" TopLine="70"/>
+        <Caret Line="83" TopLine="70"/>
       </Position15>
       <Position16>
         <Filename Value="main.pas"/>
-        <Caret Line="83" TopLine="70"/>
+        <Caret Line="84" Column="30" TopLine="68"/>
       </Position16>
       <Position17>
-        <Filename Value="main.pas"/>
-        <Caret Line="84" TopLine="70"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="92" TopLine="82"/>
       </Position17>
       <Position18>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="92" TopLine="61"/>
+        <Caret Line="90" Column="3" TopLine="82"/>
       </Position18>
       <Position19>
-        <Filename Value="main.pas"/>
-        <Caret Line="82" TopLine="70"/>
+        <Filename Value="dmbase.pas"/>
+        <Caret Line="116" Column="3" TopLine="114"/>
       </Position19>
       <Position20>
         <Filename Value="main.pas"/>
-        <Caret Line="83" TopLine="70"/>
+        <Caret Line="82" TopLine="66"/>
       </Position20>
       <Position21>
         <Filename Value="main.pas"/>
-        <Caret Line="84" Column="30" TopLine="68"/>
+        <Caret Line="83" TopLine="66"/>
       </Position21>
       <Position22>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="92" TopLine="82"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="84" TopLine="66"/>
       </Position22>
       <Position23>
         <Filename Value="dmbase.pas"/>
-        <Caret Line="90" Column="3" TopLine="82"/>
+        <Caret Line="78" Column="10" TopLine="67"/>
       </Position23>
       <Position24>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="116" Column="3" TopLine="114"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="82" TopLine="66"/>
       </Position24>
       <Position25>
         <Filename Value="main.pas"/>
-        <Caret Line="82" TopLine="66"/>
+        <Caret Line="84" TopLine="66"/>
       </Position25>
       <Position26>
         <Filename Value="main.pas"/>
-        <Caret Line="83" TopLine="66"/>
+        <Caret Line="85" TopLine="67"/>
       </Position26>
       <Position27>
         <Filename Value="main.pas"/>
-        <Caret Line="84" TopLine="66"/>
+        <Caret Line="86" TopLine="68"/>
       </Position27>
       <Position28>
-        <Filename Value="dmbase.pas"/>
-        <Caret Line="78" Column="10" TopLine="67"/>
+        <Filename Value="import.pas"/>
+        <Caret Line="62" Column="3" TopLine="37"/>
       </Position28>
       <Position29>
-        <Filename Value="main.pas"/>
-        <Caret Line="82" TopLine="66"/>
+        <Filename Value="import.pas"/>
+        <Caret Line="63" Column="3" TopLine="38"/>
       </Position29>
       <Position30>
-        <Filename Value="main.pas"/>
-        <Caret Line="84" TopLine="66"/>
+        <Filename Value="import.pas"/>
+        <Caret Line="56" Column="39" TopLine="40"/>
       </Position30>
     </JumpHistory>
     <RunParams>
@@ -497,7 +497,7 @@
         <WatchScope Value="wpsLocal"/>
         <WatchKind Value="wpkWrite"/>
         <Source Value="main.pas"/>
-        <Line Value="151"/>
+        <Line Value="153"/>
       </Item>
       <Item>
         <Kind Value="bpkSource"/>
@@ -526,34 +526,6 @@
         <WatchKind Value="wpkWrite"/>
         <Source Value="dmbase.pas"/>
         <Line Value="355"/>
-      </Item>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="main.pas"/>
-        <Line Value="82"/>
-      </Item>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="dmbase.pas"/>
-        <Line Value="90"/>
-      </Item>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="main.pas"/>
-        <Line Value="84"/>
-      </Item>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="dmbase.pas"/>
-        <Line Value="92"/>
       </Item>
     </BreakPoints>
   </Debugging>
