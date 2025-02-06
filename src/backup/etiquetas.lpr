@@ -9,7 +9,7 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, anchordockpkg, rxnew, fortes324forlaz, lnetvisual, gondola, ticket,
   relticket02, zcomponent, dmbase, registro, funcoes, setmain, config, main, 
-Import, csvproducts, relticket, csvendereco, MalaDireta, reletiq01
+Import, csvproducts, relticket, csvendereco, MalaDireta, reletiq01, etqlab
   { you can add units after this };
 
 {$R *.res}
@@ -21,6 +21,7 @@ begin
   Application.Initialize;
   Application.CreateForm(TfrmMain, frmMain);
   Application.CreateForm(Tfrmreletiq01, frmreletiq01);
+  Application.CreateForm(Tfrmetqlab, frmetqlab);
   Application.Run;
 end.
 

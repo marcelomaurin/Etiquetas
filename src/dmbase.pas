@@ -18,6 +18,11 @@ type
     tbcsv: TCSVDataset;
     dsCSV: TDataSource;
     zcon: TZConnection;
+    zetqlab: TZTable;
+    zetqlabbarcode: TZRawStringField;
+    zetqlabid: TZInt64Field;
+    zetqlabrotulo01: TZRawStringField;
+    zetqlabrotulo02: TZRawStringField;
     zselendereco: TZTable;
     zEnderecoBairro: TZRawStringField;
     zEnderecoCEP: TZRawStringField;
@@ -30,6 +35,7 @@ type
     zEnderecoTipoPessoa: TZInt64Field;
     zproduct: TZTable;
     zqryaux: TZQuery;
+    zseletqlab: TZTable;
     zselenderecoBairro: TStringField;
     zselenderecoBARCODE: TStringField;
     zselenderecoCEP: TStringField;
@@ -42,6 +48,10 @@ type
     zselenderecoQRCODE: TStringField;
     zselenderecoReferencia: TStringField;
     zselenderecoTipoPessoa: TLargeintField;
+    zseletqlabbarcode: TZRawStringField;
+    zseletqlabid: TZInt64Field;
+    zseletqlabrotulo01: TZRawStringField;
+    zseletqlabrotulo02: TZRawStringField;
     zselproduct: TZTable;
     zproductDetail01: TStringField;
     zproductDetail02: TStringField;

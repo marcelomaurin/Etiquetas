@@ -7,10 +7,10 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, StdCtrls,
   ExtCtrls, ComCtrls, setmain, dmbase, registro, config, gondola, import,
-  maladireta;
+  maladireta, etqlab;
 
 const
-  versao = 1.8;
+  versao = 1.9;
 
 type
 
@@ -56,6 +56,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
+    procedure Image4Click(Sender: TObject);
     procedure imgMalaDiretaClick(Sender: TObject);
     procedure imgProductsClick(Sender: TObject);
     procedure imgZebraClick(Sender: TObject);
@@ -68,6 +69,7 @@ type
     aplicacao : string;
     procedure Config();
     procedure PesquisaMalaDireta();
+    procedure PesquisaEtqLaboratorio();
   end;
 
 var
@@ -120,6 +122,11 @@ begin
   frmgondola.Free;
 end;
 
+procedure TfrmMain.Image4Click(Sender: TObject);
+begin
+  PesquisaEtqLaboratorio();
+end;
+
 procedure TfrmMain.imgMalaDiretaClick(Sender: TObject);
 begin
      PesquisaMalaDireta();
@@ -160,6 +167,7 @@ begin
   frmconfig := Tfrmconfig.create(self);
   frmconfig.showmodal();
   frmconfig.free;
+  frmconfig := nil;
 end;
 
 procedure TfrmMain.PesquisaMalaDireta();
@@ -167,7 +175,16 @@ begin
   frmmaladireta := tfrmmaladireta.create(self);
   frmmaladireta.showmodal();
   frmmaladireta.Free;
+  frmmaladireta := nil;
 
+end;
+
+procedure TfrmMain.PesquisaEtqLaboratorio();
+begin
+  frmetqlab := Tfrmetqlab.create(self);
+  frmetqlab.showmodal();
+  frmetqlab.free;
+  frmetqlab := nil;
 end;
 
 end.
