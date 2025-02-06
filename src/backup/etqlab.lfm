@@ -41,9 +41,9 @@ object frmetqlab: Tfrmetqlab
     Height = 579
     Top = 50
     Width = 956
-    ActivePage = tsTagType
+    ActivePage = Wizzard
     Align = alClient
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 1
     object Wizzard: TTabSheet
       Caption = 'Address'
