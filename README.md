@@ -4,8 +4,7 @@
 Software de Gerenciamento de Etiquetas de Gondola para impressoras Zebra
 
 ## Documentação do Projeto
-[<a href=["[https://maurinsoft.com.br/?page_id=20152](https://github.com/marcelomaurin/Etiquetas/wiki)](https://github.com/marcelomaurin/Etiquetas/wiki)">Documentação do Projeto</a>
-](https://github.com/marcelomaurin/Etiquetas/wiki)
+[<a href="https://maurinsoft.com.br/?page_id=20152">Project Documentation</a>](https://github.com/marcelomaurin/Etiquetas/wiki)
 
 # English
 
