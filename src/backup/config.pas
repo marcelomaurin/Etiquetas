@@ -20,6 +20,7 @@ type
     edDB: TFileNameEdit;
     edDLL: TFileNameEdit;
     edEndereco1: TEdit;
+    edSerial: TEdit;
     edPessoa: TEdit;
     edPessoa1: TEdit;
     edEndereco2: TEdit;
@@ -29,9 +30,12 @@ type
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
+    Label7: TLabel;
     PageControl1: TPageControl;
     Panel1: TPanel;
     PrinterSetupDialog1: TPrinterSetupDialog;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
     tsconn: TTabSheet;
     tsLocation: TTabSheet;
     procedure btDelete1Click(Sender: TObject);

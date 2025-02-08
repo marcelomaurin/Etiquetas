@@ -14,12 +14,12 @@ object frmconfig: Tfrmconfig
     Height = 330
     Top = 0
     Width = 520
-    ActivePage = tsLocation
+    ActivePage = TabSheet2
     Align = alClient
-    TabIndex = 1
+    TabIndex = 3
     TabOrder = 0
     object tsconn: TTabSheet
-      Caption = 'Connection Parameters'#10#10#10#10#10
+      Caption = 'Data Base Connection Parameters'#10#10#10#10#10' '
       ClientHeight = 302
       ClientWidth = 512
       object Label1: TLabel
@@ -420,6 +420,28 @@ object frmconfig: Tfrmconfig
         TabOrder = 1
         TextHint = 'First line of the sender''s address'
       end
+    end
+    object TabSheet1: TTabSheet
+      Caption = 'Thermical Printer'
+      ClientHeight = 302
+      ClientWidth = 512
+      object Label7: TLabel
+        Left = 11
+        Height = 15
+        Top = 18
+        Width = 31
+        Caption = 'Serial:'
+      end
+      object edSerial: TEdit
+        Left = 11
+        Height = 23
+        Top = 32
+        Width = 141
+        TabOrder = 0
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'QRCODE'
     end
   end
   object Panel1: TPanel

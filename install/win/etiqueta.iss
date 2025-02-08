@@ -17,7 +17,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={commonpf}\{#MyAppName}
 DisableProgramGroupPage=yes
-OutputDir=C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\bin\
+OutputDir=D:\projetos\maurinsoft\Etiquetas\Etiquetas\bin\
 OutputBaseFilename={#MyInstallExeName}
 Compression=lzma
 SolidCompression=yes
@@ -40,22 +40,22 @@ TD_ETIQUETA=Install demo ETIQUETA
 
 [Files]
 ; Executável principal
-Source: "C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\src\etiquetas.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\src\etiquetas.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Copiando dados para local
-Source: "C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\db\etiqueta.db"; DestDir: "C:\db\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\db\etiqueta.db"; DestDir: "C:\db\"; Flags: ignoreversion
 ; Banco de dados e CSVs para pasta de dados global
-Source: "C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\db\etiqueta.db"; DestDir: "{commonappdata}\Etiquetas\db\"; Flags: ignoreversion
-Source: "C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\csv\*.csv"; DestDir: "{commonappdata}\Etiquetas\csv\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\db\etiqueta.db"; DestDir: "{commonappdata}\Etiquetas\db\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\csv\*.csv"; DestDir: "{commonappdata}\Etiquetas\csv\"; Flags: ignoreversion
 
 
 ; Biblioteca SQLite para System32
-Source: "C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\sqlite\win64\sqlite3.dll"; DestDir: "{app}\sqlite\win64\"; Flags: ignoreversion
-Source: "C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\sqlite\win64\sqlite3.def"; DestDir: "{app}\sqlite\win64\"; Flags: ignoreversion
-Source: "C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\sqlite\win32\sqlite3.dll"; DestDir: "{app}\sqlite\win32\"; Flags: ignoreversion
-Source: "C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\sqlite\win32\sqlite3.def"; DestDir: "{app}\sqlite\win32\"; Flags: ignoreversion
-Source: "C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\sqlite\win32\sqlite3.dll"; DestDir: "{win}\System32\"; Flags: ignoreversion
-Source: "C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\sqlite\win32\sqlite3.def"; DestDir: "{win}\System32\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\sqlite\win64\sqlite3.dll"; DestDir: "{app}\sqlite\win64\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\sqlite\win64\sqlite3.def"; DestDir: "{app}\sqlite\win64\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\sqlite\win32\sqlite3.dll"; DestDir: "{app}\sqlite\win32\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\sqlite\win32\sqlite3.def"; DestDir: "{app}\sqlite\win32\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\sqlite\win32\sqlite3.dll"; DestDir: "{win}\System32\"; Flags: ignoreversion
+Source: "D:\projetos\maurinsoft\Etiquetas\sqlite\win32\sqlite3.def"; DestDir: "{win}\System32\"; Flags: ignoreversion
 
 
 [Dirs]

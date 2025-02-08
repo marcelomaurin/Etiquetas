@@ -34,6 +34,7 @@ type
     Image3: TImage;
     Image4: TImage;
     Image5: TImage;
+    Image6: TImage;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -88,7 +89,7 @@ end;
 procedure Tfrmetqlab.FormCreate(Sender: TObject);
 begin
   pcMalaDireta.ActivePage := Wizzard;
-  fdmbase.zseletqlab();
+  fdmbase.zseletqlab.close();
   fdmbase.zseletqlab.open;
 end;
 

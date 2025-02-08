@@ -13,12 +13,11 @@ object dmBase: TdmBase
       'controls_cp=CP_UTF8'
       'RawStringEncoding=DB_CP'
     )
-    Connected = True
     DisableSavepoints = False
     Port = 0
-    Database = 'C:\Users\mmaurin\Desktop\projetos\maurinsoft\Etiquetas\db\etiqueta.db'
+    Database = 'D:\projetos\maurinsoft\Etiquetas\db\etiqueta.db'
     Protocol = 'sqlite'
-    LibraryLocation = 'C:\Program Files (x86)\Etiquetas\sqlite\win32\sqlite3.dll'
+    LibraryLocation = 'C:\Program Files (x86)\Etiquetas\sqlite\win64\sqlite3.dll'
     Left = 24
     Top = 16
   end

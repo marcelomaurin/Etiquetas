@@ -39,6 +39,7 @@ type
     FEMPRESA: string;
     FENDERECO1: string;
     FENDERECO2: string;
+    FSerialPrinter: string; // Novo parâmetro adicionado
     procedure SetDevice(const Value: Boolean);
     procedure SetPOSX(value: integer);
     procedure SetPOSY(value: integer);
@@ -65,6 +66,7 @@ type
     property EMPRESA: string read FEMPRESA write FEMPRESA;
     property ENDERECO1: string read FENDERECO1 write FENDERECO1;
     property ENDERECO2: string read FENDERECO2 write FENDERECO2;
+    property SerialPrinter: string read FSerialPrinter write FSerialPrinter; // Propriedade nova
   end;
 
 var
@@ -91,6 +93,7 @@ begin
   FEMPRESA := '';
   FENDERECO1 := '';
   FENDERECO2 := '';
+  FSerialPrinter := '';  // Valor default para SerialPrinter
 
   ProgramDataPath := GetAppConfigDir(False); // Define a pasta global de dados
   FSQLLITEDLL := ExtractFilePath(ApplicationName) + '\sqlite\win64\sqlite3.dll';
@@ -169,6 +172,10 @@ begin
 
   if BuscaChave(arquivo, 'ENDERECO2:', posicao) then
     FENDERECO2 := RetiraInfo(arquivo.Strings[posicao]);
+
+  // Carrega o novo parâmetro SerialPrinter:
+  if BuscaChave(arquivo, 'SERIALPRINTER:', posicao) then
+    FSerialPrinter := RetiraInfo(arquivo.Strings[posicao]);
 end;
 
 procedure TSetMain.IdentificaArquivo(flag: boolean);
@@ -226,6 +233,7 @@ begin
   arquivo.Append('EMPRESA:' + FEMPRESA);
   arquivo.Append('ENDERECO1:' + FENDERECO1);
   arquivo.Append('ENDERECO2:' + FENDERECO2);
+  arquivo.Append('SERIALPRINTER:' + FSerialPrinter); // Grava o novo parâmetro
 
   arquivo.SaveToFile(FPath + filename);
 end;

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, StdCtrls,
   ExtCtrls, ComCtrls, setmain, dmbase, registro, config, gondola, import,
-  maladireta, etqlab;
+  maladireta, etqlab, pix;
 
 const
   versao = 1.9;
@@ -21,8 +21,11 @@ type
     Image2: TImage;
     Image3: TImage;
     Image4: TImage;
+    Image5: TImage;
+    Image6: TImage;
+    Image7: TImage;
+    Image8: TImage;
     imgMalaDireta: TImage;
-    imgProducts: TImage;
     imgZebra: TImage;
     Label1: TLabel;
     Label10: TLabel;
@@ -30,6 +33,9 @@ type
     Label12: TLabel;
     Label13: TLabel;
     Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    Label17: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -45,18 +51,32 @@ type
     misetup: TMenuItem;
     miexit: TMenuItem;
     PageControl1: TPageControl;
+    PageControl2: TPageControl;
+    PageControl3: TPageControl;
+    PageControl4: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
     StatusBar1: TStatusBar;
+    TabSheet1: TTabSheet;
+    TabSheet10: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
+    TabSheet4: TTabSheet;
+    TabSheet5: TTabSheet;
+    TabSheet6: TTabSheet;
+    TabSheet7: TTabSheet;
+    TabSheet8: TTabSheet;
+    TabSheet9: TTabSheet;
+    tsPrinter: TTabSheet;
     tbSobre: TTabSheet;
     tbThermal: TTabSheet;
-    tbProducts: TTabSheet;
     tbZebra: TTabSheet;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
     procedure Image4Click(Sender: TObject);
+    procedure Image7Click(Sender: TObject);
     procedure imgMalaDiretaClick(Sender: TObject);
     procedure imgProductsClick(Sender: TObject);
     procedure imgZebraClick(Sender: TObject);
@@ -70,6 +90,7 @@ type
     procedure Config();
     procedure PesquisaMalaDireta();
     procedure PesquisaEtqLaboratorio();
+    procedure PIXBRAZIL();
   end;
 
 var
@@ -112,7 +133,8 @@ end;
 
 procedure TfrmMain.Image1Click(Sender: TObject);
 begin
-   tbProducts.Show;
+   //dmbase.tbProducts.open;
+
 end;
 
 procedure TfrmMain.Image2Click(Sender: TObject);
@@ -125,6 +147,11 @@ end;
 procedure TfrmMain.Image4Click(Sender: TObject);
 begin
   PesquisaEtqLaboratorio();
+end;
+
+procedure TfrmMain.Image7Click(Sender: TObject);
+begin
+  PIXBRAZIL();
 end;
 
 procedure TfrmMain.imgMalaDiretaClick(Sender: TObject);
@@ -185,6 +212,14 @@ begin
   frmetqlab.showmodal();
   frmetqlab.free;
   frmetqlab := nil;
+end;
+
+procedure TfrmMain.PIXBRAZIL();
+begin
+  frmPIX := TfrmPIX.create(self);
+  frmPIX.showmodal();
+  frmPIX.free;
+  frmPIX := nil;
 end;
 
 end.

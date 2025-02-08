@@ -3,9 +3,9 @@ object dmBase: TdmBase
   OnDestroy = DataModuleDestroy
   OldCreateOrder = False
   Height = 356
-  HorizontalOffset = 1424
-  VerticalOffset = 401
-  Width = 446
+  HorizontalOffset = 1026
+  VerticalOffset = 416
+  Width = 529
   object zcon: TZConnection
     ControlsCodePage = cCP_UTF8
     Properties.Strings = (
@@ -13,7 +13,6 @@ object dmBase: TdmBase
       'controls_cp=CP_UTF8'
       'RawStringEncoding=DB_CP'
     )
-    Connected = True
     DisableSavepoints = False
     Port = 0
     Database = 'D:\projetos\maurinsoft\Etiquetas\db\etiqueta.db'
@@ -248,6 +247,94 @@ object dmBase: TdmBase
       ReadOnly = False
       Required = False
       Size = 200
+    end
+  end
+  object zetqlab: TZTable
+    Connection = zcon
+    TableName = 'etqlab'
+    Left = 368
+    Top = 264
+    object zetqlabid: TZInt64Field
+      FieldKind = fkData
+      FieldName = 'id'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object zetqlabrotulo01: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'rotulo01'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 60
+    end
+    object zetqlabrotulo02: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'rotulo02'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 60
+    end
+    object zetqlabbarcode: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'barcode'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+  end
+  object zseletqlab: TZTable
+    Connection = zcon
+    TableName = 'seletqlab'
+    Left = 456
+    Top = 264
+    object zseletqlabid: TZInt64Field
+      FieldKind = fkData
+      FieldName = 'id'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object zseletqlabrotulo01: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'rotulo01'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 60
+    end
+    object zseletqlabrotulo02: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'rotulo02'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 60
+    end
+    object zseletqlabbarcode: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'barcode'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
     end
   end
 end
