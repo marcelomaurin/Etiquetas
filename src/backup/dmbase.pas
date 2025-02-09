@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, DB, csvdataset, ZConnection, ZDataset, ZAbstractRODataset,
   ZSqlUpdate, setmain, dialogs, Interfaces;
 
-type TCSVLayout = ( csv_Nada, csv_Produtos, csv_Endereco);
+type TCSVLayout = ( csv_Nada, csv_Produtos, csv_Endereco, csv_etqlab);
 
 type
 
@@ -65,12 +65,14 @@ type
   private
     function ImportReportDS(): boolean;
     function ImportEderecoDS(): boolean;
+    function ImportEtqLabDS(): boolean;
 
   public
     procedure opendb();
     procedure closedb();
     procedure product();
     procedure Endereco();
+    procedure SelEtqLab();
     procedure SelEndereco();
     procedure selproduct();
     procedure delallselectproducts();
@@ -81,7 +83,7 @@ type
     function dropproducts(): boolean;
     procedure config();
     procedure NewSelEndereco();
-
+    procedure NewSelEtqLab();
   end;
 
 var
@@ -209,6 +211,48 @@ begin
   Result := resultado;
 end;
 
+function TdmBase.ImportEtqLabDS(): boolean;
+var
+  resultado: boolean;
+begin
+  resultado := true;
+  try
+    tbcsv.Open;
+    tbcsv.First;
+
+    while not tbcsv.EOF do
+    begin
+      try
+        zqryaux.SQL.Text := 'INSERT INTO "etqlab" ' +
+                            '("rotulo01", "rotulo02", "barcode") ' +
+                            'VALUES (:rotulo01, :rotulo02, :barcode)';
+        zqryaux.Prepare;
+        zqryaux.ParamByName('rotulo01').AsString := tbcsv.Fields[0].AsString;
+        zqryaux.ParamByName('rotulo02').AsString := tbcsv.Fields[1].AsString;
+        zqryaux.ParamByName('barcode').AsString := tbcsv.Fields[2].AsString;
+        zqryaux.ExecSQL;
+        zqryaux.ApplyUpdates;
+      except
+        on E: Exception do
+        begin
+          ShowMessage('Erro ao importar registro: ' + E.Message);
+          resultado := false;
+        end;
+      end;
+      tbcsv.Next;
+    end;
+
+    if resultado then
+      ShowMessage('Importação do CSV realizada com sucesso.')
+    else
+      ShowMessage('A importação do CSV terminou com erros em alguns registros.');
+  finally
+    tbcsv.Close;
+  end;
+
+  Result := resultado;
+end;
+
 
 
 procedure TdmBase.opendb();
@@ -278,6 +322,16 @@ begin
   end;
   //zEndereco.Refresh;
 
+end;
+
+procedure TdmBase.SelEtqLab();
+begin
+  if NOT zcon.Connected then
+  begin
+    //zendereco.Close;
+    zetqlab.open;
+  end;
+  //zEndereco.Refresh;
 end;
 
 procedure TdmBase.SelEndereco();
@@ -380,7 +434,26 @@ begin
             resultado := false;
           end;
         end;
-
+        if (tipo = csv_etqlab) then
+        begin
+          if (csvValidaLayout(csv_etqlab)) then
+          begin
+            if ImportEtqLabDS() then
+            begin
+              resultado := true;
+            end
+            else
+            begin
+                ShowMessage('Fail in Import CSV');
+                resultado := false;
+            end;
+          end
+          else
+          begin
+            showmessage('Layout CSV not valid!');
+            resultado := false;
+          end;
+        end;
         tbcsv.close;
 
         //resultado := true;
@@ -426,6 +499,18 @@ begin
         showmessage('Invalid CSV fields number');
       end;
 
+    end;
+    if tipo = csv_etqlab then
+    begin
+      //ShowMessage(inttostr(tbcsv.Fields.Count));
+      if  (tbcsv.Fields.Count = 3) then
+      begin
+         resultado := true;
+      end
+      else
+      begin
+        showmessage('Invalid CSV fields number');
+      end;
     end;
     result := resultado;
 end;
@@ -474,6 +559,19 @@ begin
   zselendereco.FieldByName('descprod').AsString  := '';
 
   zselendereco.Post;
+end;
+
+procedure TdmBase.NewSelEtqLab();
+begin
+   if (not zseletqlab.Active) then
+  begin
+    zseletqlab.Open;
+  end;
+  zseletqlab.Insert;
+  zseletqlab.FieldByName('rotulo01').AsString := zetqlab.FieldByName('rotulo01').AsString;
+  zseletqlab.FieldByName('rotulo02').AsString := zetqlab.FieldByName('rotulo02').AsString;
+  zseletqlab.FieldByName('barcode').AsString := zetqlab.FieldByName('barcode').AsString;
+  zseletqlab.Post;
 end;
 
 

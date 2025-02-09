@@ -7,7 +7,7 @@ object frmImport: TfrmImport
   ClientHeight = 266
   ClientWidth = 604
   Position = poMainFormCenter
-  LCLVersion = '3.6.0.0'
+  LCLVersion = '3.4.0.0'
   object imgImportProducts: TImage
     Left = 8
     Height = 162

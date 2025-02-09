@@ -1,13 +1,13 @@
 object frmImport: TfrmImport
   Left = 520
-  Height = 415
+  Height = 266
   Top = 311
   Width = 604
   Caption = 'Import Database Options'
-  ClientHeight = 415
+  ClientHeight = 266
   ClientWidth = 604
   Position = poMainFormCenter
-  LCLVersion = '3.6.0.0'
+  LCLVersion = '3.4.0.0'
   object imgImportProducts: TImage
     Left = 8
     Height = 162
@@ -923,7 +923,7 @@ object frmImport: TfrmImport
   object btAddtoPrint1: TSpeedButton
     Left = 232
     Height = 35
-    Top = 368
+    Top = 224
     Width = 112
     Caption = 'Close'
     Glyph.Data = {
@@ -1045,11 +1045,12 @@ object frmImport: TfrmImport
     }
     OnClick = btAddtoPrint1Click
   end
-  object Image1: TImage
+  object imgImportLaboratory: TImage
     Left = 419
     Height = 160
     Top = 8
     Width = 173
+    OnClick = imgImportLaboratoryClick
     Picture.Data = {
       0A544A706567496D6167653F360000FFD8FFE000104A46494600010100006400
       640000FFEC00114475636B7900010004000000640000FFDB0043000503040404

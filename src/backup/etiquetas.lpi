@@ -64,7 +64,7 @@
         <PackageName Value="LCL"/>
       </Item10>
     </RequiredPackages>
-    <Units Count="18">
+    <Units Count="19">
       <Unit0>
         <Filename Value="etiquetas.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -181,8 +181,15 @@
         <Filename Value="pix.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmPIX"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit17>
+      <Unit18>
+        <Filename Value="csvetqlab.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmcsvetqlab"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit18>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

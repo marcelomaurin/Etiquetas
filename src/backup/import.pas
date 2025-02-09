@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Buttons, dmbase, funcoes, csvproducts, csvendereco;
+  Buttons, dmbase, funcoes, csvproducts, csvendereco, csvetqlab;
 
 type
 
@@ -14,7 +14,7 @@ type
 
   TfrmImport = class(TForm)
     btAddtoPrint1: TSpeedButton;
-    Image1: TImage;
+    imgImportLaboratory: TImage;
     imgImportProducts: TImage;
     imgImportProducts1: TImage;
     Label1: TLabel;
@@ -22,6 +22,7 @@ type
     Label3: TLabel;
     procedure btAddtoPrint1Click(Sender: TObject);
     procedure btcloseClick(Sender: TObject);
+    procedure imgImportLaboratoryClick(Sender: TObject);
     procedure imgImportProducts1Click(Sender: TObject);
     procedure imgImportProductsClick(Sender: TObject);
   private
@@ -42,6 +43,16 @@ implementation
 procedure TfrmImport.btcloseClick(Sender: TObject);
 begin
 
+end;
+
+procedure TfrmImport.imgImportLaboratoryClick(Sender: TObject);
+begin
+  self.Cursor:= crHourGlass;
+  frmcsvetqlab := Tfrmcsvetqlab.create(self);
+  self.Cursor:=  crArrow;
+  frmetqlab.showmodal;
+  frmetqlab.free;
+  frmetqlab := nil;
 end;
 
 procedure TfrmImport.btAddtoPrint1Click(Sender: TObject);

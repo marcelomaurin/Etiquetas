@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Buttons, dmbase, funcoes, csvproducts, csvendereco;
+  Buttons, dmbase, funcoes, csvproducts, csvendereco, csvetqlab;
 
 type
 
@@ -47,7 +47,12 @@ end;
 
 procedure TfrmImport.imgImportLaboratoryClick(Sender: TObject);
 begin
-
+  self.Cursor:= crHourGlass;
+  frmcsvetqlab := Tfrmcsvetqlab.create(self);
+  self.Cursor:=  crArrow;
+  frmcsvetqlab.showmodal;
+  frmcsvetqlab.free;
+  frmcsvetqlab := nil;
 end;
 
 procedure TfrmImport.btAddtoPrint1Click(Sender: TObject);

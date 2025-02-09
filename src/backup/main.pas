@@ -10,7 +10,7 @@ uses
   maladireta, etqlab, pix;
 
 const
-  versao = 1.9;
+  versao = 1.10 betha;
 
 type
 

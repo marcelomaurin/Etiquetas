@@ -41,9 +41,9 @@ object frmetqlab: Tfrmetqlab
     Height = 579
     Top = 50
     Width = 956
-    ActivePage = Wizzard
+    ActivePage = tsTagType
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 1
     object Wizzard: TTabSheet
       Caption = 'Address'
@@ -482,6 +482,7 @@ object frmetqlab: Tfrmetqlab
               BDFFFFFFE0FFFFFFEAFFFFFFFAFFFDFAFCFFFFFCFBFFFBF9F8FFFAFDFFFFF7FA
               FEFFFDFEFCFFFCFBF7FF
             }
+            OnClick = btAddtoPrintClick
           end
         end
         object DBGrid1: TDBGrid
@@ -535,6 +536,7 @@ object frmetqlab: Tfrmetqlab
           Top = 168
           Width = 40
           Caption = '>'
+          OnClick = btSelecionaClick
           ShowHint = True
           ParentShowHint = False
         end
@@ -545,6 +547,7 @@ object frmetqlab: Tfrmetqlab
           Top = 216
           Width = 40
           Caption = '<'
+          OnClick = btDeleteClick
           ShowHint = True
           ParentShowHint = False
         end
@@ -872,6 +875,7 @@ object frmetqlab: Tfrmetqlab
             F7FFF4F4F4FFF7F7F7FFF8F8F8FFF4F4F4FFF5F5F5FFF8F8F8FFF5F5F5FFF4F4
             F4FF
           }
+          OnClick = btAddtoPrint2Click
         end
         object DBNavigator4: TDBNavigator
           Left = 480
@@ -939,6 +943,7 @@ object frmetqlab: Tfrmetqlab
         Height = 80
         Top = 152
         Width = 232
+        OnClick = Image3Click
         Picture.Data = {
           1754506F727461626C654E6574776F726B47726170686963200D000089504E47
           0D0A1A0A0000000D49484452000000AE00000040080600000083424C1C000000
@@ -5144,20 +5149,20 @@ object frmetqlab: Tfrmetqlab
         Color = clWindow
         Columns = <        
           item
-            Title.Caption = 'Master Key'
-            FieldName = 'Ind'
+            Title.Caption = 'id'
+            FieldName = 'id'
           end        
           item
-            Title.Caption = 'Name'
-            FieldName = 'Nome'
+            Title.Caption = 'rotulo01'
+            FieldName = 'rotulo01'
           end        
           item
-            Title.Caption = 'Type'
-            FieldName = 'TipoPessoa'
+            Title.Caption = 'rotulo02'
+            FieldName = 'rotulo02'
           end        
           item
-            Title.Caption = 'Document'
-            FieldName = 'Documento'
+            Title.Caption = 'barcode'
+            FieldName = 'barcode'
           end>
         DataSource = dseletqlab
         TabOrder = 1
@@ -36303,15 +36308,69 @@ object frmetqlab: Tfrmetqlab
         }
         Stretch = True
       end
+      object Image7: TImage
+        Left = 448
+        Height = 92
+        Top = 396
+        Width = 384
+      end
+      object lbNome: TLabel
+        Left = 461
+        Height = 32
+        Top = 393
+        Width = 91
+        Alignment = taCenter
+        Caption = 'lbNome'
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -24
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object lbLinha01: TLabel
+        Left = 461
+        Height = 25
+        Top = 424
+        Width = 82
+        Caption = 'lbLinha01'
+        Font.CharSet = ANSI_CHARSET
+        Font.Height = -19
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        ParentFont = False
+      end
+      object BarcodeEAN1: TBarcodeEAN
+        Left = 453
+        Height = 32
+        Top = 448
+        Width = 371
+        ParentColor = False
+        Text = '012345678'
+        Scale = 2
+        RecommendedSymbolSize = False
+        SymbolHeight = 20
+        WhiteSpaceWidth = 14
+      end
+      object Label10: TLabel
+        Left = 448
+        Height = 15
+        Top = 376
+        Width = 25
+        Caption = 'View'
+      end
     end
   end
   object dsetqlab: TDataSource
     DataSet = dmBase.zetqlab
+    OnDataChange = dsetqlabDataChange
     Left = 316
     Top = 284
   end
   object dseletqlab: TDataSource
     DataSet = dmBase.zseletqlab
+    OnStateChange = dseletqlabStateChange
+    OnDataChange = dseletqlabDataChange
     Left = 468
     Top = 292
   end
