@@ -45,7 +45,7 @@ uses main;
 procedure Tfrmgondola.Image1Click(Sender: TObject);
 begin
   frmTicket := TfrmTicket.create(self);
-  frmTicket.lbVersao.Caption:= floattostr(versao);
+  frmTicket.lbVersao.Caption:= versao;
   frmticket.ShowModal;
   frmTicket.free;
 end;
@@ -57,7 +57,7 @@ end;
 
 procedure Tfrmgondola.FormCreate(Sender: TObject);
 begin
-  lbver.Caption := 'Version '+FloatToStr(versao);
+  lbver.Caption := 'Version '+versao;
 end;
 
 procedure Tfrmgondola.btconfigClick(Sender: TObject);

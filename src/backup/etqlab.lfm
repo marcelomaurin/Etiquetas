@@ -36310,7 +36310,7 @@ object frmetqlab: Tfrmetqlab
       end
       object Image7: TImage
         Left = 448
-        Height = 100
+        Height = 92
         Top = 396
         Width = 384
       end

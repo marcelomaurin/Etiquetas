@@ -105234,6 +105234,18 @@ object frmMain: TfrmMain
         OnClick = miImportClick
       end
     end
+    object miPulseira: TMenuItem
+      Caption = 'Pulseiras de bebê'
+      OnClick = miPulseiraClick
+    end
+    object miDespachoMedico: TMenuItem
+      Caption = 'Despacho médico (100 x 150)'
+      OnClick = miDespachoMedicoClick
+    end
+    object miExameMedico: TMenuItem
+      Caption = 'Exame laboratorial (51 x 25)'
+      OnClick = miExameMedicoClick
+    end
     object miexit: TMenuItem
       Caption = 'Exit'
       OnClick = miexitClick

@@ -7,10 +7,10 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, StdCtrls,
   ExtCtrls, ComCtrls, setmain, dmbase, registro, config, gondola, import,
-  maladireta, etqlab, pix;
+  maladireta, etqlab, pix, pulseira, etiquetasmedicas;
 
 const
-  versao = 1.10;
+  versao = '0110';
 
 type
 
@@ -46,6 +46,9 @@ type
     Label9: TLabel;
     lbVersion: TLabel;
     MainMenu1: TMainMenu;
+    miDespachoMedico: TMenuItem;
+    miExameMedico: TMenuItem;
+    miPulseira: TMenuItem;
     miImport: TMenuItem;
     miconfig: TMenuItem;
     misetup: TMenuItem;
@@ -81,6 +84,9 @@ type
     procedure imgProductsClick(Sender: TObject);
     procedure imgZebraClick(Sender: TObject);
     procedure miexitClick(Sender: TObject);
+    procedure miDespachoMedicoClick(Sender: TObject);
+    procedure miExameMedicoClick(Sender: TObject);
+    procedure miPulseiraClick(Sender: TObject);
     procedure miImportClick(Sender: TObject);
     procedure misetupClick(Sender: TObject);
   private
@@ -102,6 +108,27 @@ implementation
 
 { TfrmMain }
 
+procedure TfrmMain.miDespachoMedicoClick(Sender: TObject);
+var Janela: TfrmEtiquetasMedicas;
+begin
+  Janela := TfrmEtiquetasMedicas.CreateModelo(Self, emDespacho);
+  try Janela.ShowModal; finally Janela.Free; end;
+end;
+
+procedure TfrmMain.miExameMedicoClick(Sender: TObject);
+var Janela: TfrmEtiquetasMedicas;
+begin
+  Janela := TfrmEtiquetasMedicas.CreateModelo(Self, emExame);
+  try Janela.ShowModal; finally Janela.Free; end;
+end;
+
+procedure TfrmMain.miPulseiraClick(Sender: TObject);
+var Janela: TfrmPulseira;
+begin
+  Janela := TfrmPulseira.Create(Self);
+  try Janela.ShowModal; finally Janela.Free; end;
+end;
+
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   aplicacao := Application.ExeName;
@@ -117,7 +144,7 @@ begin
   //FSetMain.CarregaContexto();
   frmRegistrar := TfrmRegistrar.Create(self);
   frmRegistrar.Identifica();
-  lbVersion.Caption:= floattostr(versao);
+  lbVersion.Caption:= versao;
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
