@@ -1,0 +1,324 @@
+object frmetfarm: Tfrmetfarm
+  Left = 460
+  Height = 540
+  Top = 220
+  Width = 760
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'Cadastro de Rotulos / Farmacia'
+  ClientHeight = 540
+  ClientWidth = 760
+  Font.CharSet = ANSI_CHARSET
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Pitch = fpVariable
+  Font.Quality = fqDraft
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '3.4.0.0'
+  object pnlTop: TPanel
+    Left = 0
+    Height = 48
+    Top = 0
+    Width = 760
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 48
+    ClientWidth = 760
+    Color = 15921906
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 0
+    object btnNovo: TBitBtn
+      Left = 12
+      Height = 32
+      Top = 8
+      Width = 85
+      Caption = '&Novo'
+      Kind = bkCustom
+      OnClick = btnNovoClick
+      TabOrder = 0
+    end
+    object btnEditar: TBitBtn
+      Left = 104
+      Height = 32
+      Top = 8
+      Width = 85
+      Caption = '&Editar'
+      Kind = bkCustom
+      OnClick = btnEditarClick
+      TabOrder = 1
+    end
+    object btnSalvar: TBitBtn
+      Left = 196
+      Height = 32
+      Top = 8
+      Width = 85
+      Caption = '&Salvar'
+      Kind = bkCustom
+      OnClick = btnSalvarClick
+      TabOrder = 2
+    end
+    object btnCancelar: TBitBtn
+      Left = 288
+      Height = 32
+      Top = 8
+      Width = 85
+      Caption = '&Cancelar'
+      Kind = bkCustom
+      OnClick = btnCancelarClick
+      TabOrder = 3
+    end
+    object btnExcluir: TBitBtn
+      Left = 380
+      Height = 32
+      Top = 8
+      Width = 85
+      Caption = '&Excluir'
+      Kind = bkCustom
+      OnClick = btnExcluirClick
+      TabOrder = 4
+    end
+    object btnFechar: TBitBtn
+      Left = 660
+      Height = 32
+      Top = 8
+      Width = 88
+      Anchors = [akTop, akRight]
+      Caption = '&Fechar'
+      Kind = bkClose
+      OnClick = btnFecharClick
+      TabOrder = 5
+    end
+  end
+  object pnlEdicao: TPanel
+    Left = 0
+    Height = 152
+    Top = 48
+    Width = 760
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 152
+    ClientWidth = 760
+    Color = clWhite
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 1
+    object lblID: TLabel
+      Left = 16
+      Height = 15
+      Top = 8
+      Width = 14
+      Caption = 'ID:'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edID: TDBEdit
+      Left = 16
+      Height = 23
+      Top = 26
+      Width = 90
+      DataField = 'id'
+      DataSource = dsEtFarm
+      ReadOnly = True
+      Alignment = taRightJustify
+      Color = clBtnFace
+      MaxLength = 0
+      TabOrder = 0
+    end
+    object lblBarcode: TLabel
+      Left = 120
+      Height = 15
+      Top = 8
+      Width = 98
+      Caption = 'Codigo de Barras:'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edBarcode: TDBEdit
+      Left = 120
+      Height = 23
+      Top = 26
+      Width = 220
+      DataField = 'barcode'
+      DataSource = dsEtFarm
+      MaxLength = 20
+      TabOrder = 1
+    end
+    object lblRotulo01: TLabel
+      Left = 16
+      Height = 15
+      Top = 55
+      Width = 217
+      Caption = 'Rotulo 1 (Medicamento / Descricao):'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edRotulo01: TDBEdit
+      Left = 16
+      Height = 23
+      Top = 73
+      Width = 728
+      DataField = 'rotulo01'
+      DataSource = dsEtFarm
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 60
+      TabOrder = 2
+    end
+    object lblRotulo02: TLabel
+      Left = 16
+      Height = 15
+      Top = 101
+      Width = 208
+      Caption = 'Rotulo 2 (Posologia / Lote / Detalhe):'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edRotulo02: TDBEdit
+      Left = 16
+      Height = 23
+      Top = 119
+      Width = 728
+      DataField = 'rotulo02'
+      DataSource = dsEtFarm
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 60
+      TabOrder = 3
+    end
+  end
+  object pnlPesquisa: TPanel
+    Left = 0
+    Height = 44
+    Top = 200
+    Width = 760
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 44
+    ClientWidth = 760
+    Color = 16382457
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 2
+    object lblBusca: TLabel
+      Left = 16
+      Height = 15
+      Top = 14
+      Width = 53
+      Caption = 'Localizar:'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edBusca: TEdit
+      Left = 76
+      Height = 23
+      Top = 10
+      Width = 360
+      OnKeyPress = edBuscaKeyPress
+      TabOrder = 0
+    end
+    object btnBuscar: TBitBtn
+      Left = 444
+      Height = 26
+      Top = 9
+      Width = 85
+      Caption = 'Filtrar'
+      OnClick = btnBuscarClick
+      TabOrder = 1
+    end
+    object btnLimpar: TBitBtn
+      Left = 536
+      Height = 26
+      Top = 9
+      Width = 85
+      Caption = 'Todos'
+      OnClick = btnLimparClick
+      TabOrder = 2
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Height = 273
+    Top = 244
+    Width = 760
+    Align = alClient
+    Color = clWindow
+    Columns = <    
+      item
+        Title.Caption = 'ID'
+        Width = 50
+        FieldName = 'id'
+      end    
+      item
+        Title.Caption = 'Rotulo 1 (Medicamento / Descricao)'
+        Width = 270
+        FieldName = 'rotulo01'
+      end    
+      item
+        Title.Caption = 'Rotulo 2 (Posologia / Lote / Detalhe)'
+        Width = 270
+        FieldName = 'rotulo02'
+      end    
+      item
+        Title.Caption = 'Codigo de Barras'
+        Width = 140
+        FieldName = 'barcode'
+      end>
+    DataSource = dsEtFarm
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    ReadOnly = True
+    TabOrder = 3
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 517
+    Width = 760
+    Panels = <    
+      item
+        Text = 'Status: Visualizacao'
+        Width = 350
+      end    
+      item
+        Text = 'Total: 0 registro(s)'
+        Width = 200
+      end>
+    SimplePanel = False
+  end
+  object dsEtFarm: TDataSource
+    OnStateChange = dsEtFarmStateChange
+    OnDataChange = dsEtFarmDataChange
+    Left = 680
+    Top = 72
+  end
+end

@@ -6,11 +6,11 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, StdCtrls,
-  ExtCtrls, ComCtrls, setmain, dmbase, registro, config, gondola, import,
-  maladireta, etqlab, pix, pulseira, etiquetasmedicas;
+  ExtCtrls, ComCtrls, Buttons, setmain, dmbase, registro, config, gondola, import,
+  maladireta, etqlab, pix, pulseira, etiquetasmedicas, etfarm;
 
 const
-  versao = '0110';
+  versao = '0111';
 
 type
 
@@ -48,6 +48,7 @@ type
     MainMenu1: TMainMenu;
     miDespachoMedico: TMenuItem;
     miExameMedico: TMenuItem;
+    miCadFarm: TMenuItem;
     miPulseira: TMenuItem;
     miImport: TMenuItem;
     miconfig: TMenuItem;
@@ -74,11 +75,20 @@ type
     tbSobre: TTabSheet;
     tbThermal: TTabSheet;
     tbZebra: TTabSheet;
+    tsHospitalSupply: TTabSheet;
+    LabelPulseira: TLabel;
+    LabelPulseiraInfo: TLabel;
+    btnPulseiraZebra: TBitBtn;
+    btnCadFarm: TBitBtn;
+    LabelDespacho: TLabel;
+    imgDespachoMedico: TImage;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
     procedure Image4Click(Sender: TObject);
+    procedure imgDespachoMedicoClick(Sender: TObject);
+    procedure Image5Click(Sender: TObject);
     procedure Image7Click(Sender: TObject);
     procedure imgMalaDiretaClick(Sender: TObject);
     procedure imgProductsClick(Sender: TObject);
@@ -86,6 +96,7 @@ type
     procedure miexitClick(Sender: TObject);
     procedure miDespachoMedicoClick(Sender: TObject);
     procedure miExameMedicoClick(Sender: TObject);
+    procedure miCadFarmClick(Sender: TObject);
     procedure miPulseiraClick(Sender: TObject);
     procedure miImportClick(Sender: TObject);
     procedure misetupClick(Sender: TObject);
@@ -122,6 +133,13 @@ begin
   try Janela.ShowModal; finally Janela.Free; end;
 end;
 
+procedure TfrmMain.miCadFarmClick(Sender: TObject);
+var Janela: Tfrmetfarm;
+begin
+  Janela := Tfrmetfarm.Create(Self);
+  try Janela.ShowModal; finally Janela.Free; end;
+end;
+
 procedure TfrmMain.miPulseiraClick(Sender: TObject);
 var Janela: TfrmPulseira;
 begin
@@ -145,6 +163,27 @@ begin
   frmRegistrar := TfrmRegistrar.Create(self);
   frmRegistrar.Identifica();
   lbVersion.Caption:= versao;
+
+  // Garantir eventos e interatividade na aba Zebra > Laboratory Supply
+  Image4.Enabled := True;
+  Image4.Cursor := crHandPoint;
+  Image4.OnClick := @Image4Click;
+  Image4.BringToFront;
+  Label14.Cursor := crHandPoint;
+  Label14.OnClick := @Image4Click;
+
+  if Assigned(imgDespachoMedico) then
+  begin
+    imgDespachoMedico.Enabled := True;
+    imgDespachoMedico.Cursor := crHandPoint;
+    imgDespachoMedico.OnClick := @imgDespachoMedicoClick;
+    imgDespachoMedico.BringToFront;
+  end;
+  if Assigned(LabelDespacho) then
+  begin
+    LabelDespacho.Cursor := crHandPoint;
+    LabelDespacho.OnClick := @imgDespachoMedicoClick;
+  end;
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
@@ -173,6 +212,19 @@ end;
 
 procedure TfrmMain.Image4Click(Sender: TObject);
 begin
+  // Zebra -> Laboratory Supply: Exame Laboratorial (51 x 25)
+  miExameMedicoClick(Sender);
+end;
+
+procedure TfrmMain.imgDespachoMedicoClick(Sender: TObject);
+begin
+  // Zebra -> Laboratory Supply: Despacho Médico (100 x 150)
+  miDespachoMedicoClick(Sender);
+end;
+
+procedure TfrmMain.Image5Click(Sender: TObject);
+begin
+  // Thermal Printer -> Laboratory Supply: Etiquetas de Laboratório e Farmácia
   PesquisaEtqLaboratorio();
 end;
 

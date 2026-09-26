@@ -1,0 +1,478 @@
+object frmCadEndereco: TfrmCadEndereco
+  Left = 440
+  Height = 560
+  Top = 200
+  Width = 780
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'Cadastro de Enderecos (Direct Mail)'
+  ClientHeight = 560
+  ClientWidth = 780
+  Font.CharSet = ANSI_CHARSET
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Pitch = fpVariable
+  Font.Quality = fqDraft
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '3.4.0.0'
+  object pnlTop: TPanel
+    Left = 0
+    Height = 48
+    Top = 0
+    Width = 780
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 48
+    ClientWidth = 780
+    Color = 15921906
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 0
+    object btnNovo: TBitBtn
+      Left = 12
+      Height = 32
+      Top = 8
+      Width = 85
+      Caption = '&Novo'
+      Kind = bkCustom
+      OnClick = btnNovoClick
+      TabOrder = 0
+    end
+    object btnEditar: TBitBtn
+      Left = 104
+      Height = 32
+      Top = 8
+      Width = 85
+      Caption = '&Editar'
+      Kind = bkCustom
+      OnClick = btnEditarClick
+      TabOrder = 1
+    end
+    object btnSalvar: TBitBtn
+      Left = 196
+      Height = 32
+      Top = 8
+      Width = 85
+      Caption = '&Salvar'
+      Kind = bkCustom
+      OnClick = btnSalvarClick
+      TabOrder = 2
+    end
+    object btnCancelar: TBitBtn
+      Left = 288
+      Height = 32
+      Top = 8
+      Width = 85
+      Caption = '&Cancelar'
+      Kind = bkCustom
+      OnClick = btnCancelarClick
+      TabOrder = 3
+    end
+    object btnExcluir: TBitBtn
+      Left = 380
+      Height = 32
+      Top = 8
+      Width = 85
+      Caption = '&Excluir'
+      Kind = bkCustom
+      OnClick = btnExcluirClick
+      TabOrder = 4
+    end
+    object btnFechar: TBitBtn
+      Left = 680
+      Height = 32
+      Top = 8
+      Width = 88
+      Anchors = [akTop, akRight]
+      Caption = '&Fechar'
+      Kind = bkClose
+      OnClick = btnFecharClick
+      TabOrder = 5
+    end
+  end
+  object pnlEdicao: TPanel
+    Left = 0
+    Height = 195
+    Top = 48
+    Width = 780
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 195
+    ClientWidth = 780
+    Color = clWhite
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 1
+    object lblInd: TLabel
+      Left = 16
+      Height = 15
+      Top = 8
+      Width = 46
+      Caption = 'ID / Ind:'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edInd: TDBEdit
+      Left = 16
+      Height = 23
+      Top = 26
+      Width = 70
+      DataField = 'Ind'
+      DataSource = dsEndereco
+      ReadOnly = True
+      Alignment = taRightJustify
+      Color = clBtnFace
+      MaxLength = 0
+      TabOrder = 0
+    end
+    object lblTipoPessoa: TLabel
+      Left = 96
+      Height = 15
+      Top = 8
+      Width = 30
+      Caption = 'Tipo:'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object cbTipoPessoa: TComboBox
+      Left = 96
+      Height = 23
+      Top = 26
+      Width = 140
+      ItemHeight = 15
+      Items.Strings = (
+        '0 - Pessoa Fisica'
+        '1 - Pessoa Juridica'
+      )
+      Style = csDropDownList
+      TabOrder = 1
+    end
+    object lblDocumento: TLabel
+      Left = 246
+      Height = 15
+      Top = 8
+      Width = 135
+      Caption = 'Documento (CPF / CNPJ):'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edDocumento: TDBEdit
+      Left = 246
+      Height = 23
+      Top = 26
+      Width = 230
+      DataField = 'Documento'
+      DataSource = dsEndereco
+      MaxLength = 40
+      TabOrder = 2
+    end
+    object lblCEP: TLabel
+      Left = 486
+      Height = 15
+      Top = 8
+      Width = 25
+      Caption = 'CEP:'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edCEP: TDBEdit
+      Left = 486
+      Height = 23
+      Top = 26
+      Width = 140
+      DataField = 'CEP'
+      DataSource = dsEndereco
+      MaxLength = 20
+      TabOrder = 3
+    end
+    object lblNome: TLabel
+      Left = 16
+      Height = 15
+      Top = 54
+      Width = 129
+      Caption = 'Nome / Razao Social *:'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edNome: TDBEdit
+      Left = 16
+      Height = 23
+      Top = 72
+      Width = 748
+      DataField = 'Nome'
+      DataSource = dsEndereco
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 40
+      TabOrder = 4
+    end
+    object lblLogradouro: TLabel
+      Left = 16
+      Height = 15
+      Top = 100
+      Width = 196
+      Caption = 'Logradouro (Endereco, Numero...):'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edLogradouro: TDBEdit
+      Left = 16
+      Height = 23
+      Top = 118
+      Width = 460
+      DataField = 'Logradouro'
+      DataSource = dsEndereco
+      MaxLength = 40
+      TabOrder = 5
+    end
+    object lblBairro: TLabel
+      Left = 486
+      Height = 15
+      Top = 100
+      Width = 38
+      Caption = 'Bairro:'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edBairro: TDBEdit
+      Left = 486
+      Height = 23
+      Top = 118
+      Width = 278
+      DataField = 'Bairro'
+      DataSource = dsEndereco
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 40
+      TabOrder = 6
+    end
+    object lblCidade: TLabel
+      Left = 16
+      Height = 15
+      Top = 146
+      Width = 41
+      Caption = 'Cidade:'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edCidade: TDBEdit
+      Left = 16
+      Height = 23
+      Top = 164
+      Width = 220
+      DataField = 'Cidade'
+      DataSource = dsEndereco
+      MaxLength = 40
+      TabOrder = 7
+    end
+    object lblReferencia: TLabel
+      Left = 246
+      Height = 15
+      Top = 146
+      Width = 146
+      Caption = 'Referencia / Complemento:'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edReferencia: TDBEdit
+      Left = 246
+      Height = 23
+      Top = 164
+      Width = 518
+      DataField = 'Referencia'
+      DataSource = dsEndereco
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 40
+      TabOrder = 8
+    end
+  end
+  object pnlPesquisa: TPanel
+    Left = 0
+    Height = 44
+    Top = 243
+    Width = 780
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 44
+    ClientWidth = 780
+    Color = 16382457
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 2
+    object lblBusca: TLabel
+      Left = 16
+      Height = 15
+      Top = 14
+      Width = 53
+      Caption = 'Localizar:'
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object edBusca: TEdit
+      Left = 76
+      Height = 23
+      Top = 10
+      Width = 360
+      OnKeyPress = edBuscaKeyPress
+      TabOrder = 0
+    end
+    object btnBuscar: TBitBtn
+      Left = 444
+      Height = 26
+      Top = 9
+      Width = 85
+      Caption = 'Filtrar'
+      OnClick = btnBuscarClick
+      TabOrder = 1
+    end
+    object btnLimpar: TBitBtn
+      Left = 536
+      Height = 26
+      Top = 9
+      Width = 85
+      Caption = 'Todos'
+      OnClick = btnLimparClick
+      TabOrder = 2
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Height = 250
+    Top = 287
+    Width = 780
+    Align = alClient
+    Color = clWindow
+    Columns = <    
+      item
+        Title.Caption = 'ID'
+        Width = 45
+        FieldName = 'Ind'
+      end    
+      item
+        Title.Caption = 'Nome / Razao Social'
+        Width = 190
+        FieldName = 'Nome'
+      end    
+      item
+        Title.Caption = 'Tipo'
+        Width = 50
+        FieldName = 'TipoPessoa'
+      end    
+      item
+        Title.Caption = 'Documento'
+        Width = 110
+        FieldName = 'Documento'
+      end    
+      item
+        Title.Caption = 'Logradouro'
+        Width = 160
+        FieldName = 'Logradouro'
+      end    
+      item
+        Title.Caption = 'Bairro'
+        Width = 95
+        FieldName = 'Bairro'
+      end    
+      item
+        Title.Caption = 'Cidade'
+        Width = 95
+        FieldName = 'Cidade'
+      end    
+      item
+        Title.Caption = 'CEP'
+        Width = 75
+        FieldName = 'CEP'
+      end    
+      item
+        Title.Caption = 'Referencia'
+        Width = 130
+        FieldName = 'Referencia'
+      end>
+    DataSource = dsEndereco
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    ReadOnly = True
+    TabOrder = 3
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 537
+    Width = 780
+    Panels = <    
+      item
+        Text = 'Status: Visualizacao'
+        Width = 350
+      end    
+      item
+        Text = 'Total: 0 endereco(s)'
+        Width = 200
+      end>
+    SimplePanel = False
+  end
+  object dsEndereco: TDataSource
+    OnStateChange = dsEnderecoStateChange
+    OnDataChange = dsEnderecoDataChange
+    Left = 690
+    Top = 72
+  end
+end

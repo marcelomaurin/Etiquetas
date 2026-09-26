@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   Buttons, DBCtrls, StdCtrls, DBGrids, Menus, AnchorDockPanel, rxduallist,
-  reletiq01, dmbase, DB, setmain;
+  reletiq01, dmbase, DB, setmain, cadendereco;
 
 type
 
@@ -15,6 +15,7 @@ type
 
   TfrmMalaDireta = class(TForm)
     btAddtoPrint: TSpeedButton;
+    btCadastrar: TSpeedButton;
     btAddtoPrint1: TSpeedButton;
     btAddtoPrint2: TSpeedButton;
     DBGrid2: TDBGrid;
@@ -66,6 +67,7 @@ type
     procedure btAddtoPrint2Click(Sender: TObject);
     procedure btAddtoPrint3Click(Sender: TObject);
     procedure btAddtoPrintClick(Sender: TObject);
+    procedure btCadastrarClick(Sender: TObject);
     procedure edPesqNomeKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -90,6 +92,22 @@ implementation
 {$R *.lfm}
 
 { TfrmMalaDireta }
+
+procedure TfrmMalaDireta.btCadastrarClick(Sender: TObject);
+begin
+  frmCadEndereco := TfrmCadEndereco.Create(Self);
+  try
+    frmCadEndereco.ShowModal;
+  finally
+    frmCadEndereco.Free;
+    frmCadEndereco := nil;
+  end;
+  if (dsendereco.DataSet <> nil) and dsendereco.DataSet.Active then
+  begin
+    dsendereco.DataSet.Close;
+    dsendereco.DataSet.Open;
+  end;
+end;
 
 procedure TfrmMalaDireta.SpeedButton1Click(Sender: TObject);
 begin

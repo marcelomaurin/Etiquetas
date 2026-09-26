@@ -22,8 +22,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="10"/>
-      <StringTable ProductName="Etiquetas" ProductVersion="0110" FileDescription="Etiquetas 0110"/>
+      <MinorVersionNr Value="11"/>
+      <StringTable ProductName="Etiquetas" ProductVersion="0111" FileDescription="Etiquetas 0111"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -67,7 +67,7 @@
         <PackageName Value="LCL"/>
       </Item10>
     </RequiredPackages>
-    <Units Count="21">
+    <Units Count="23">
       <Unit0>
         <Filename Value="etiquetas.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -201,6 +201,20 @@
         <Filename Value="etiquetasmedicas.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit20>
+      <Unit21>
+        <Filename Value="etfarm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmetfarm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="cadendereco.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmCadEndereco"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit22>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -40,6 +40,12 @@ type
     FENDERECO1: string;
     FENDERECO2: string;
     FSerialPrinter: string; // Novo parâmetro adicionado
+    // Parâmetros do módulo de Etiquetas de Laboratório (etqlab):
+    FLabTagType: integer;
+    FLabPrinter: string;
+    FLabCopies: integer;
+    FLabSerialPort: string;
+    FLabBaudRate: integer;
     procedure SetDevice(const Value: Boolean);
     procedure SetPOSX(value: integer);
     procedure SetPOSY(value: integer);
@@ -67,6 +73,11 @@ type
     property ENDERECO1: string read FENDERECO1 write FENDERECO1;
     property ENDERECO2: string read FENDERECO2 write FENDERECO2;
     property SerialPrinter: string read FSerialPrinter write FSerialPrinter; // Propriedade nova
+    property LabTagType: integer read FLabTagType write FLabTagType;
+    property LabPrinter: string read FLabPrinter write FLabPrinter;
+    property LabCopies: integer read FLabCopies write FLabCopies;
+    property LabSerialPort: string read FLabSerialPort write FLabSerialPort;
+    property LabBaudRate: integer read FLabBaudRate write FLabBaudRate;
   end;
 
 var
@@ -94,6 +105,11 @@ begin
   FENDERECO1 := '';
   FENDERECO2 := '';
   FSerialPrinter := '';  // Valor default para SerialPrinter
+  FLabTagType := 0;
+  FLabPrinter := '';
+  FLabCopies := 1;
+  FLabSerialPort := 'COM1';
+  FLabBaudRate := 9600;
 
   ProgramDataPath := GetAppConfigDir(False); // Define a pasta global de dados
   FSQLLITEDLL := ExtractFilePath(ApplicationName) + '\sqlite\win64\sqlite3.dll';
@@ -176,6 +192,22 @@ begin
   // Carrega o novo parâmetro SerialPrinter:
   if BuscaChave(arquivo, 'SERIALPRINTER:', posicao) then
     FSerialPrinter := RetiraInfo(arquivo.Strings[posicao]);
+
+  // Carrega os parâmetros de etqlab:
+  if BuscaChave(arquivo, 'LABTAGTYPE:', posicao) then
+    FLabTagType := StrToIntDef(RetiraInfo(arquivo.Strings[posicao]), 0);
+
+  if BuscaChave(arquivo, 'LABPRINTER:', posicao) then
+    FLabPrinter := RetiraInfo(arquivo.Strings[posicao]);
+
+  if BuscaChave(arquivo, 'LABCOPIES:', posicao) then
+    FLabCopies := StrToIntDef(RetiraInfo(arquivo.Strings[posicao]), 1);
+
+  if BuscaChave(arquivo, 'LABSERIALPORT:', posicao) then
+    FLabSerialPort := RetiraInfo(arquivo.Strings[posicao]);
+
+  if BuscaChave(arquivo, 'LABBAUDRATE:', posicao) then
+    FLabBaudRate := StrToIntDef(RetiraInfo(arquivo.Strings[posicao]), 9600);
 end;
 
 procedure TSetMain.IdentificaArquivo(flag: boolean);
@@ -234,6 +266,11 @@ begin
   arquivo.Append('ENDERECO1:' + FENDERECO1);
   arquivo.Append('ENDERECO2:' + FENDERECO2);
   arquivo.Append('SERIALPRINTER:' + FSerialPrinter); // Grava o novo parâmetro
+  arquivo.Append('LABTAGTYPE:' + IntToStr(FLabTagType));
+  arquivo.Append('LABPRINTER:' + FLabPrinter);
+  arquivo.Append('LABCOPIES:' + IntToStr(FLabCopies));
+  arquivo.Append('LABSERIALPORT:' + FLabSerialPort);
+  arquivo.Append('LABBAUDRATE:' + IntToStr(FLabBaudRate));
 
   arquivo.SaveToFile(FPath + filename);
 end;
