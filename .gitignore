@@ -72,3 +72,10 @@ modules/
 # Vendor libraries
 libs/
 src/libs/
+
+# Verificação da interface e arquivos gerados localmente
+/build-layout.log
+/build-installer.log
+/tests/build-test.log
+/tests/lib/
+/tests/output/

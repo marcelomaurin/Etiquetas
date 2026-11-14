@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   Buttons, DBCtrls, StdCtrls, DBGrids, Menus, ubarcodes, AnchorDockPanel,
   Printers, PrintersDlgs, LCLIntf, LCLType,
-  rxduallist, dmbase, DB, setmain, etfarm;
+  rxduallist, dmbase, DB, setmain, etfarm, aiposprinter, imp_generico;
 
 type
 
@@ -457,18 +457,65 @@ end;
 
 procedure Tfrmetqlab.ImprimirESCPOS();
 var
-  numCopias: Integer;
+  numCopias, i, totalImpressas: Integer;
+  PosPrinter: TAIPOSPrinter;
+  rot1, rot2, code: string;
 begin
   numCopias := StrToIntDef(edCopiesESCPOS.Text, 1);
   if numCopias < 1 then numCopias := 1;
 
-  ShowMessage(Format('Configuracao ESC/POS salva com sucesso!' + sLineBreak +
-                     'Porta: %s' + sLineBreak +
-                     'Baud Rate: %s' + sLineBreak +
-                     'Copias: %d' + sLineBreak +
-                     'Total de itens: %d etiqueta(s).' + sLineBreak +
-                     'Comandos ESC/POS gerados para envio.',
-                     [cbPortaSerial.Text, cbBaudRate.Text, numCopias, fdmbase.zseletqlab.RecordCount]));
+  PosPrinter := TAIPOSPrinter.Create(Self);
+  try
+    PosPrinter.InterfaceType := piSerial;
+    PosPrinter.PrinterModel := pmElginI9;
+    PosPrinter.Protocol := ppEscPos;
+    PosPrinter.DeviceName := cbPortaSerial.Text;
+    PosPrinter.SerialBaud := StrToIntDef(cbBaudRate.Text, 9600);
+
+    if not PosPrinter.OpenConnection then
+    begin
+      MessageDlg('Impressora Térmica ESC/POS (TAIPOSPrinter)',
+        'Configuração salva em etiqueta.cfg, porém não foi possível abrir a porta ' +
+        cbPortaSerial.Text + ' (' + cbBaudRate.Text + ' bps):' + sLineBreak +
+        PosPrinter.LastError, mtWarning, [mbOK], 0);
+      Exit;
+    end;
+
+    totalImpressas := 0;
+    fdmbase.zseletqlab.DisableControls;
+    try
+      fdmbase.zseletqlab.First;
+      while not fdmbase.zseletqlab.EOF do
+      begin
+        rot1 := fdmbase.zseletqlab.FieldByName('rotulo01').AsString;
+        rot2 := fdmbase.zseletqlab.FieldByName('rotulo02').AsString;
+        code := fdmbase.zseletqlab.FieldByName('barcode').AsString;
+        for i := 1 to numCopias do
+        begin
+          PosPrinter.AlignCenter;
+          PosPrinter.SetBold(True);
+          PosPrinter.PrintTextLine(rot1);
+          PosPrinter.SetBold(False);
+          if rot2 <> '' then
+            PosPrinter.PrintTextLine(rot2);
+          if code <> '' then
+            PosPrinter.PrintBarcode(code, 70, 2, 2);
+          PosPrinter.PrintTextLine('');
+          PosPrinter.CutPaper;
+          Inc(totalImpressas);
+        end;
+        fdmbase.zseletqlab.Next;
+      end;
+    finally
+      fdmbase.zseletqlab.EnableControls;
+      PosPrinter.CloseConnection;
+    end;
+
+    ShowMessage(Format('Sucesso! %d etiqueta(s) enviada(s) via TAIPOSPrinter (ESC/POS) na porta %s.',
+      [totalImpressas, cbPortaSerial.Text]));
+  finally
+    PosPrinter.Free;
+  end;
 end;
 
 procedure Tfrmetqlab.btAddtoPrintClick(Sender: TObject);

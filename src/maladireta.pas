@@ -134,9 +134,7 @@ end;
 
 procedure TfrmMalaDireta.Pesquisar();
 begin
-
-
-   if(edPesqNome.text ='') then
+   if(Trim(edPesqNome.text) ='') then
    begin
      fdmbase.zEndereco.close;
      fdmbase.zEndereco.Filtered:=false;
@@ -147,23 +145,29 @@ begin
    begin
      fdmbase.zEndereco.close;
      fdmbase.zEndereco.Filtered:=true;
-     fdmbase.zEndereco.Filter:= ' Nome like '+QuotedStr(edPesqNome.text);
+     fdmbase.zEndereco.Filter:= ' Nome like '+QuotedStr('%' + Trim(edPesqNome.text) + '%');
      fdmbase.zEndereco.open;
    end;
-
 end;
 
 procedure TfrmMalaDireta.PrintEtiqueta();
 begin
   frmreletiq01 := Tfrmreletiq01.Create(self);
-  frmreletiq01.rltoname.Caption := FSetMain.EMPRESA;
-  frmreletiq01.RLTOADDRESS01.Caption := FSetMain.ENDERECO1;
-  frmreletiq01.RLTOADDRESS2.Caption := FSetMain.ENDERECO2;
-  frmreletiq01.RLFROMName.caption := fdmBase.zselendereco.FieldByName('nome').AsString;
-  frmreletiq01.RLFROMADDRESS1.caption := fdmBase.zselendereco.FieldByName('logradouro').AsString;
-  frmreletiq01.RLFROMADDRESS2.caption := fdmBase.zselendereco.FieldByName('bairro').AsString+' '+fdmBase.zselendereco.FieldByName('cidade').AsString+fdmBase.zselendereco.FieldByName('cep').AsString;
-  frmreletiq01.RLBARCODE.caption := fdmBase.zselendereco.FieldByName('BARCODE').AsString;
-  frmreletiq01.RLRepGondola02.Preview(nil);
+  try
+    frmreletiq01.rltoname.Caption := FSetMain.EMPRESA;
+    frmreletiq01.RLTOADDRESS01.Caption := FSetMain.ENDERECO1;
+    frmreletiq01.RLTOADDRESS2.Caption := FSetMain.ENDERECO2;
+    frmreletiq01.RLFROMName.caption := fdmBase.zselendereco.FieldByName('nome').AsString;
+    frmreletiq01.RLFROMADDRESS1.caption := fdmBase.zselendereco.FieldByName('logradouro').AsString;
+    frmreletiq01.RLFROMADDRESS2.caption := fdmBase.zselendereco.FieldByName('bairro').AsString + ' - ' +
+      fdmBase.zselendereco.FieldByName('cidade').AsString + ' - CEP: ' +
+      fdmBase.zselendereco.FieldByName('cep').AsString;
+    frmreletiq01.RLBARCODE.caption := fdmBase.zselendereco.FieldByName('BARCODE').AsString;
+    frmreletiq01.RLRepGondola02.PreviewModal;
+  finally
+    frmreletiq01.Free;
+    frmreletiq01 := nil;
+  end;
 end;
 
 procedure TfrmMalaDireta.FormCreate(Sender: TObject);

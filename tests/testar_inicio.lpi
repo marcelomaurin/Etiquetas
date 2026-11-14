@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <General>
+      <SessionStorage Value="InProjectDir"/>
+      <Title Value="Verificação do início e impressão"/>
+      <ResourceType Value="res"/>
+    </General>
+    <BuildModes Count="1">
+      <Item1 Name="Default" Default="True"/>
+    </BuildModes>
+    <RequiredPackages Count="3">
+      <Item1><PackageName Value="Printer4Lazarus"/></Item1>
+      <Item2><PackageName Value="lazbarcodes"/></Item2>
+      <Item3><PackageName Value="LCL"/></Item3>
+    </RequiredPackages>
+    <Units Count="1">
+      <Unit0>
+        <Filename Value="testar_inicio.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit0>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="../src"/>
+      <UnitOutputDirectory Value="lib"/>
+    </SearchPaths>
+    <Target><Filename Value="testar_inicio"/></Target>
+    <Linking><Options><Win32><GraphicApplication Value="True"/></Win32></Options></Linking>
+  </CompilerOptions>
+</CONFIG>

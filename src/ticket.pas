@@ -176,8 +176,26 @@ begin
 end;
 
 procedure TfrmTicket.btSearchChange(Sender: TObject);
+var
+  Filtro: string;
 begin
   fdmBase.product();
+  Filtro := '';
+  if Trim(edcode.Text) <> '' then
+    Filtro := 'idproduto = ' + IntToStr(StrToIntDef(Trim(edcode.Text), -1));
+  if Trim(edDescription.Text) <> '' then
+  begin
+    if Filtro <> '' then Filtro := Filtro + ' AND ';
+    Filtro := Filtro + 'productDesc LIKE ' + QuotedStr('%' + Trim(edDescription.Text) + '%');
+  end;
+  if Trim(edFamily.Text) <> '' then
+  begin
+    if Filtro <> '' then Filtro := Filtro + ' AND ';
+    Filtro := Filtro + 'productDetail LIKE ' + QuotedStr('%' + Trim(edFamily.Text) + '%');
+  end;
+  fdmBase.zproduct.Filtered := False;
+  fdmBase.zproduct.Filter := Filtro;
+  fdmBase.zproduct.Filtered := (Filtro <> '');
 end;
 
 procedure TfrmTicket.btDelAllClick(Sender: TObject);

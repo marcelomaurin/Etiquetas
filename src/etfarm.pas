@@ -222,7 +222,8 @@ begin
   end;
 
   fdmbase.zetqlab.Filtered := False;
-  fdmbase.zetqlab.Filter := Format('(rotulo01 LIKE ''%%%s%%'') OR (rotulo02 LIKE ''%%%s%%'') OR (barcode LIKE ''%%%s%%'')',
+  Termo := QuotedStr('%' + Termo + '%');
+  fdmbase.zetqlab.Filter := Format('(rotulo01 LIKE %s) OR (rotulo02 LIKE %s) OR (barcode LIKE %s)',
     [Termo, Termo, Termo]);
   fdmbase.zetqlab.Filtered := True;
   AtualizaContadorRegistros;

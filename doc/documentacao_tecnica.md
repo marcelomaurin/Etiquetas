@@ -45,6 +45,9 @@ Unidades carregadas no projeto incluem:
 - `MalaDireta`
 - `etqlab`
 - `pix`
+- `inicio`, `qrmidia` e `qrdesenho`
+- `mercadolivre` e `enviosarquivo`
+- `etiquetasnovas` e `etiquetaspimaco`
 - relatórios de impressão
 
 ---
@@ -64,13 +67,15 @@ Responsabilidades:
 - Abrir o banco SQLite.
 - Exibir versão do sistema.
 - Abrir os módulos do sistema.
+- Criar o painel `TInicio` e encaminhar suas ações ao modelo e modo de impressora selecionados.
+- Organizar os menus Configurações, Impressoras e Ferramentas e permitir alternar para a tela clássica.
 - Salvar posição da janela ao encerrar.
 
 Versão declarada no fonte:
 
 ```pascal
 const
-  versao = 1.10;
+  versao = '0120';
 ```
 
 ---
@@ -328,13 +333,93 @@ O sistema usa banco local. Para ambientes com vários usuários simultâneos, se
 
 ## 14. Sugestões para evolução comercial
 
-- Criar instalador Windows completo.
+- Manter o instalador Inno Setup de `install/win/etiqueta.iss` alinhado ao executável e aos fundos distribuídos.
 - Gerar releases versionadas no GitHub.
 - Adicionar arquivo `LICENSE`.
-- Criar manual com imagens reais das telas.
+- Atualizar as capturas da documentação quando os fluxos visuais mudarem.
 - Padronizar idioma da interface.
 - Melhorar tratamento de erros.
 - Criar backup automático do banco antes de importações.
 - Criar modelos CSV dentro da pasta `csv/modelos`.
 - Adicionar testes de impressão e calibração.
 - Criar opção de exportar base de produtos e endereços.
+
+## 15. Painel visual e novos fluxos de impressão
+
+| Unidade | Responsabilidade |
+|---|---|
+| `inicio.pas` | `TInicio`: quatro famílias de impressora, cartões desenhados no Canvas, busca, filtros e grade adaptável. `TCartaoInicio` oferece clique e ativação por Enter/Espaço. |
+| `etiquetasnovas.pas` | Modelos setoriais de varejo, saúde, laboratório, logística e crachás; modos Zebra, térmica 80 mm e térmica 58 mm. |
+| `etiquetaspimaco.pas` | Modelos de folha A4/Carta, finalidade e grade de etiquetas. |
+| `qrmidia.pas` | Editor de links com título, texto, chamada, imagem e fundo; prévia, PNG e impressão pelo dispositivo escolhido. |
+| `qrdesenho.pas` | `TQRCodeImpressao`: renderização por módulos inteiros, margem branca de quatro módulos e rejeição de símbolos com menos de três pixels por módulo na imagem gerada. |
+| `mercadolivre.pas` | Seleção do arquivo/entrada ZIP, abertura externa do PDF e envio dos bytes ZPL à fila RAW do Windows. |
+| `enviosarquivo.pas` | Leitura de arquivos de envio e ZIP em memória, reconhecimento por conteúdo e limite de 32 MB por arquivo. |
+
+`TInicio.AoAbrirModelo` entrega o cartão a `TfrmMain.AbrirModeloInicio`.
+O tipo selecionado determina o modo dos modelos setoriais ou o uso do modelo
+Pimaco. Os códigos 1000, 1001 e 1002 abrem QR de mídia, pulseira e importação
+Mercado Livre, respectivamente; a pulseira aparece no catálogo Zebra.
+
+### Renderização de QR Code
+
+O editor gera uma imagem a oito pontos por milímetro (aproximadamente 203 dpi).
+A prévia, a exportação PNG e a impressão usam essa composição. A impressão
+converte as dimensões em milímetros para `Printer.XDPI/YDPI`, verifica a área
+imprimível e abre `TPrintDialog` para escolher o dispositivo. Não configura o
+papel do driver nem monta uma grade Pimaco para cartões QR.
+
+Título/texto que ultrapassam o espaço disponível, links inválidos e símbolos
+muito densos bloqueiam a saída. A imagem/logotipo e o fundo ficam fora da área
+do QR. O recurso codifica um link HTTP/HTTPS; não envia ou hospeda o arquivo
+de destino. Os quatro fundos são carregados de `background/qrcode` ao lado do
+executável ou, durante o desenvolvimento, da pasta equivalente na raiz do projeto.
+
+### Arquivos do Mercado Livre
+
+O importador aceita `.pdf`, `.zip`, `.zpl`, `.txt` e `.prn`. Reconhece PDF pela
+assinatura `%PDF-` e ZPL pela presença de `^XA` e `^XZ`; essa verificação não é
+uma validação completa de todos os comandos ou da estrutura interna do PDF.
+
+`TUnZipper` lista até 2.000 entradas e extrai apenas a entrada selecionada para
+um stream em memória. `TStreamEtiqueta.Write` limita também os dados já
+descompactados, sem gravar os caminhos do ZIP no disco. O importador preserva
+os bytes. O PDF selecionado é copiado para um arquivo temporário e aberto com
+`OpenDocument`; ele permanece na pasta temporária para permitir a leitura pelo
+visualizador externo.
+
+O envio direto de ZPL usa `OpenPrinterW`, `StartDocPrinterW` e `WritePrinter`,
+com liberação dos recursos de impressão e tratamento de escritas parciais.
+Exige o modo Zebra e uma impressora compatível com ZPL escolhida pelo usuário.
+Não há renderizador ZPL, visualizador PDF incorporado, OAuth ou chamada à API
+do Mercado Livre. No Linux, o caminho disponível para etiquetas de envio é PDF.
+
+## 16. Compilação e verificação
+
+Com Lazarus, pacotes do projeto e dependências locais instalados:
+
+```powershell
+lazbuild src/etiquetas.lpi
+lazbuild tests/testar_inicio.lpi
+```
+
+Execute `tests/testar_inicio.exe` e consulte `tests/output/verificacao.txt`.
+O teste usa dados demonstrativos, gera capturas do painel/editor/importador e
+exemplos PNG de QR para os quatro modos, fundos, imagem e cartaz A4.
+Os arquivos em `tests/output` e `tests/lib` são gerados localmente e ignorados
+pelo Git.
+
+Com Python e OpenCV disponíveis:
+
+```powershell
+python tests/verificar_qr.py
+```
+
+A verificação realizada nesta atualização compilou o projeto para
+`i386-win32`, validou busca, campos vazios, bloqueios por link/texto inválido,
+importação de ZIP, assinatura dos arquivos, limite de tamanho e preservação dos
+bytes ZPL. Também decodificou 25 imagens QR com o link original. Esses testes
+não verificam uma impressora física nem acessam uma conta do Mercado Livre.
+
+As imagens documentais atualizadas ficam em `img/screens`; consulte o
+[registro das capturas](../img/screens/README.md) antes de substituí-las.

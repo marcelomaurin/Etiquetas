@@ -99,28 +99,14 @@ uses main;
 
 procedure TdmBase.DataModuleCreate(Sender: TObject);
 begin
-  zcon.Database :=  FSetMain.db;
+  zcon.Database := FSetMain.db;
+  zcon.LibraryLocation := FSetMain.SQLLITEDLL;
 
-  if(FileExists(FSetMain.SQLLITEDLL)) then
+  if (not FileExists(FSetMain.SQLLITEDLL)) or (not FileExists(FSetMain.DB)) then
   begin
-    zcon.LibraryLocation:= FSetMain.SQLLITEDLL;
-  end
-  else
-  begin
-    ShowMessage('Library path invalid!');
-    frmmain.config();
+    if Assigned(frmMain) then
+      frmMain.config();
   end;
-
-  if(FileExists(FSetMain.DB)) then
-  begin
-    zcon.LibraryLocation:= FSetMain.SQLLITEDLL;
-  end
-  else
-  begin
-    ShowMessage('Database path invalid!');
-    frmmain.config();
-  end;
-
 end;
 
 procedure TdmBase.DataModuleDestroy(Sender: TObject);
@@ -131,6 +117,7 @@ end;
 function TdmBase.ImportReportDS: boolean;
 var
   resultado :boolean;
+  emTransacao: boolean;
 begin
     zproduct.close;
     zproduct.Filtered:= false;
@@ -138,27 +125,37 @@ begin
 
     resultado := true;
     tbcsv.first;
-    //zproduct.open;
     product();
-    while not tbcsv.EOF do
-    begin
-      try
-        zproduct.Append();
-        zproduct.FieldByName('productDesc').asstring := tbcsv.Fields[0].asstring;
-        zproduct.FieldByName('productDetail').asstring := tbcsv.Fields[1].asstring;
-        zproduct.FieldByName('Detail01').asstring := tbcsv.Fields[2].asstring;
-        zproduct.FieldByName('Detail02').asstring := tbcsv.Fields[3].asstring;
-        zproduct.FieldByName('price').asstring := tbcsv.Fields[4].asstring;
+    emTransacao := zcon.Connected and (not zcon.InTransaction);
+    if emTransacao then
+      zcon.StartTransaction;
+    try
+      while not tbcsv.EOF do
+      begin
+        try
+          zproduct.Append();
+          zproduct.FieldByName('productDesc').asstring := tbcsv.Fields[0].asstring;
+          zproduct.FieldByName('productDetail').asstring := tbcsv.Fields[1].asstring;
+          zproduct.FieldByName('Detail01').asstring := tbcsv.Fields[2].asstring;
+          zproduct.FieldByName('Detail02').asstring := tbcsv.Fields[3].asstring;
+          zproduct.FieldByName('price').asstring := tbcsv.Fields[4].asstring;
 
-        zproduct.Post;
-        zproduct.ApplyUpdates;
-        tbcsv.next();
-
-      except
-        resultado := false;
+          zproduct.Post;
+          zproduct.ApplyUpdates;
+          tbcsv.next();
+        except
+          resultado := false;
+          tbcsv.next();
+        end;
       end;
+      if emTransacao then
+        zcon.Commit;
+    except
+      if emTransacao then
+        zcon.Rollback;
+      resultado := false;
     end;
-    if resultado then ShowMessage('Success in CSV Import ');
+    if resultado then ShowMessage('Importação do CSV de produtos concluída com sucesso.');
     zproduct.Prior;
     zproduct.close;
     result := resultado;
@@ -315,34 +312,29 @@ end;
 
 procedure TdmBase.Endereco;
 begin
-  if NOT zcon.Connected then
+  if zcon.Connected then
   begin
-    //zendereco.Close;
+    zendereco.Close;
     zendereco.open;
   end;
-  //zEndereco.Refresh;
-
 end;
 
 procedure TdmBase.SelEtqLab();
 begin
-  if NOT zcon.Connected then
+  if zcon.Connected then
   begin
-    //zendereco.Close;
+    zetqlab.Close;
     zetqlab.open;
   end;
-  //zEndereco.Refresh;
 end;
 
 procedure TdmBase.SelEndereco();
 begin
-  if NOT zcon.Connected then
+  if zcon.Connected then
   begin
-    //zendereco.Close;
+    zselendereco.Close;
     zselendereco.open;
   end;
-  //zEndereco.Refresh;
-
 end;
 
 procedure TdmBase.selproduct();

@@ -246,7 +246,8 @@ begin
   end;
 
   fdmbase.zendereco.Filtered := False;
-  fdmbase.zendereco.Filter := Format('(Nome LIKE ''%%%s%%'') OR (Documento LIKE ''%%%s%%'') OR (Cidade LIKE ''%%%s%%'') OR (Logradouro LIKE ''%%%s%%'') OR (Bairro LIKE ''%%%s%%'')',
+  Termo := QuotedStr('%' + Termo + '%');
+  fdmbase.zendereco.Filter := Format('(Nome LIKE %s) OR (Documento LIKE %s) OR (Cidade LIKE %s) OR (Logradouro LIKE %s) OR (Bairro LIKE %s)',
     [Termo, Termo, Termo, Termo, Termo]);
   fdmbase.zendereco.Filtered := True;
   AtualizaContadorRegistros;

@@ -10,6 +10,11 @@ Atualmente existem três layouts principais:
 
 O sistema valida o número de colunas antes da importação.
 
+Entre por **Configurações → Importar dados**. Para importar etiquetas prontas
+do Mercado Livre em PDF, ZIP ou ZPL, use o cartão **Mercado Livre · envios** no
+início e siga o [guia correspondente](NOVO_INICIO.md#etiquetas-de-envio-do-mercado-livre).
+Esses arquivos não usam os layouts CSV descritos aqui.
+
 ---
 
 ## 1. Regras gerais
@@ -40,9 +45,9 @@ O CSV de produtos deve ter **5 colunas**.
 ### Exemplo
 
 ```csv
-Arroz Tipo 1,Pacote 5kg,Oferta,Válido até domingo,R$ 25,90
-Feijão Carioca,Pacote 1kg,Preço especial,Lote promocional,R$ 7,99
-Café Tradicional,500g,Torrado e moído,Oferta da semana,R$ 18,50
+Arroz Tipo 1,Pacote 5kg,Oferta,Válido até domingo,"R$ 25,90"
+Feijão Carioca,Pacote 1kg,Preço especial,Lote promocional,"R$ 7,99"
+Café Tradicional,500g,Torrado e moído,Oferta da semana,"R$ 18,50"
 ```
 
 Observação: caso o preço contenha vírgula decimal, recomenda-se testar o separador usado pelo arquivo CSV. Em alguns ambientes pode ser melhor usar ponto decimal ou separar por ponto e vírgula, conforme o componente de leitura configurado.
@@ -100,7 +105,7 @@ Amostra 003,Urina,789000000003
 ## 5. Como importar
 
 1. Abra o sistema.
-2. Acesse **Importação**.
+2. Acesse **Configurações → Importar dados**.
 3. Escolha o tipo de importação.
 4. Selecione o arquivo CSV.
 5. Confirme a importação.

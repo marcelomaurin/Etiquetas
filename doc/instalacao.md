@@ -24,12 +24,28 @@ Etiquetas/
 ├── db/
 │   └── etiqueta.db
 ├── sqlite/
-│   └── win64/
+│   └── win32/
 │       └── sqlite3.dll
+├── background/
+│   └── qrcode/
+│       ├── saude-clinica.png
+│       ├── saude-laboratorio.png
+│       ├── varejo-mercado.png
+│       └── varejo-loja.png
 └── img/
 ```
 
 A estrutura exata pode variar conforme a versão distribuída.
+
+A biblioteca SQLite deve ter a mesma arquitetura do executável. A compilação
+Windows validada nesta atualização é `i386-win32` (32 bits), inclusive quando
+executada em Windows de 64 bits. Use `sqlite/win32/sqlite3.dll` ou outra cópia
+32 bits configurada em **Configurações → Preferências**. O caminho padrão do
+código ainda pode apontar para `win64`; confira e corrija esse campo.
+
+Para abrir e imprimir etiquetas PDF do Mercado Livre, mantenha um leitor de
+PDF instalado e associado a arquivos `.pdf`. O envio direto de ZPL está
+disponível no Windows; no Linux, utilize o fluxo PDF.
 
 ---
 
@@ -60,7 +76,7 @@ Esse arquivo guarda produtos, endereços e registros usados na impressão.
 Confirme se existe a biblioteca SQLite, por exemplo:
 
 ```text
-C:\Etiquetas\sqlite\win64\sqlite3.dll
+C:\Etiquetas\sqlite\win32\sqlite3.dll
 ```
 
 Sem essa biblioteca o sistema pode exibir erro de conexão com banco.
@@ -73,7 +89,10 @@ Execute:
 etiquetas.exe
 ```
 
-No primeiro uso, abra a tela **Configuração** e confirme os caminhos do banco e da DLL SQLite.
+No primeiro uso, abra **Configurações → Preferências** e confirme os caminhos
+do banco e da DLL SQLite. Em instalações pelo Inno Setup, o banco também pode
+estar em `%ProgramData%\Etiquetas\db\etiqueta.db` ou `C:\db\etiqueta.db`;
+selecione o arquivo que contém seus dados.
 
 ---
 
@@ -121,7 +140,7 @@ Execute o binário compilado para Linux:
 
 ## 4. Configuração inicial
 
-Abra o menu **Configuração** e preencha:
+Abra **Configurações → Preferências** e preencha:
 
 | Campo | Finalidade |
 |---|---|
@@ -161,7 +180,7 @@ Antes de imprimir pelo Etiquetas, instale a impressora no sistema operacional.
 
 Depois, no Etiquetas:
 
-1. Acesse **Configuração**.
+1. Acesse **Configurações → Preferências**.
 2. Use a opção de configuração de impressora, quando disponível.
 3. Escolha a impressora padrão ou a impressora de etiquetas.
 4. Faça um teste de impressão.
@@ -194,3 +213,9 @@ Para atualizar:
 4. Substitua o executável e arquivos do sistema.
 5. Mantenha o banco antigo, salvo quando houver orientação de migração.
 6. Abra o sistema e teste a impressão.
+
+Inclua a pasta `background/qrcode` ao atualizar: os quatro fundos são carregados
+desse local ao lado do executável. Na execução pelo projeto (`src/etiquetas.exe`),
+também é aceita a pasta `background/qrcode` na raiz do repositório. O script
+`install/win/etiqueta.iss` inclui os fundos; instaladores antigos precisam ser
+regerados para distribuir as novas telas e imagens.

@@ -208,3 +208,46 @@ db/etiqueta.db
 ```
 
 Também é recomendável guardar o arquivo de configuração do usuário `etiqueta.cfg`, localizado na pasta de configuração da aplicação.
+
+## 11. Não encontro um módulo da tela antiga
+
+Use **Configurações → Alternar início / tela clássica** para os assistentes
+anteriores de produtos, mala direta, laboratório e PIX. No novo painel, confira
+o tipo de impressora, limpe a busca e volte o filtro para **Todas as finalidades**.
+O menu **Impressoras → tipo desejado → Ver modelos no início** retorna ao catálogo.
+
+## 12. QR Code de manual ou vídeo não gera ou não abre
+
+| Situação | O que fazer |
+|---|---|
+| Link inválido | Informe o endereço completo com `https://` ou `http://` e preencha o título. Um caminho local de arquivo não é aceito como link. |
+| Texto não cabe | Reduza o título/texto de apoio, aumente a altura ou retire a imagem. Palavras muito longas também podem ultrapassar a largura. |
+| Espaço insuficiente para o QR | Aumente a altura ou reduza o espaço ocupado por imagem e texto. |
+| Link muito longo para o tamanho | Use um endereço menor ou aumente a área disponível para o QR. |
+| Celular lê, mas não abre o conteúdo | Use **Visualizar link** e confira disponibilidade/permissões do destino. O aplicativo não hospeda o arquivo. |
+| Leitura ruim no papel | Confira dimensões, qualidade e contraste da impressão; preserve a margem branca e teste com o celular. |
+
+## 13. Fundo ilustrado não encontrado
+
+Confira a pasta `background/qrcode` ao lado do executável. Ela deve conter
+`saude-clinica.png`, `saude-laboratorio.png`, `varejo-mercado.png` e
+`varejo-loja.png`. Na execução pelo projeto também é aceita a pasta da raiz do
+repositório. Atualizar apenas o executável não copia essas imagens.
+
+**Remover** retira a imagem/logotipo personalizado; para retirar a ilustração,
+selecione **Sem fundo ilustrado**.
+
+## 14. Etiqueta do Mercado Livre não importa ou não imprime
+
+| Situação | O que fazer |
+|---|---|
+| ZIP sem etiquetas compatíveis | Baixe novamente o arquivo original. O ZIP precisa conter PDF, ZPL, TXT ou PRN compatível. |
+| TXT/PRN inválido | Importe a versão térmica original com comandos ZPL; texto comum, HTML e planilhas não são etiquetas ZPL. |
+| Arquivo vazio ou maior que 32 MB | Baixe um arquivo válido ou divida o lote na origem. O limite também é aplicado ao conteúdo descompactado. |
+| PDF não abre | Configure um leitor de PDF instalado e a associação de arquivos `.pdf`. A visualização é externa. |
+| Envio ZPL indisponível | Volte ao início e escolha **Zebra / rolo**. O envio direto está disponível no Windows e exige impressora compatível com ZPL. |
+| Impressora imprime comandos como texto | Confira se o dispositivo escolhido entende ZPL; use a versão PDF para uma impressora comum. |
+| Etiqueta cortada ou reduzida | Use o papel do documento e a escala original. O formato de envio 100 × 150 mm não cabe em bobinas de 58/80 mm. |
+| ZIP mostra resumo ou PLP | Selecione a etiqueta correta na lista; resumo/PLP não substitui a etiqueta de envio. |
+
+Consulte o [guia de importação e fontes oficiais](NOVO_INICIO.md#etiquetas-de-envio-do-mercado-livre).

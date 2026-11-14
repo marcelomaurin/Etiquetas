@@ -67,36 +67,24 @@ end;
 procedure TfrmPIX.ImprimirImagem;
 var
   bmp: TBitmap;
-  ScreenDC: HDC;
-  ControlRect: TRect;
-  ScreenPos: TPoint;
+  QRRect: TRect;
 begin
-  // Cria um bitmap com as mesmas dimensões do componente imgpix
   bmp := TBitmap.Create;
   try
-    bmp.Width := imgpix.Width;
-    bmp.Height := imgpix.Height;
+    bmp.SetSize(imgpix.Width, imgpix.Height);
+    bmp.Canvas.Brush.Color := clWhite;
+    bmp.Canvas.FillRect(0, 0, bmp.Width, bmp.Height);
+    if Assigned(imgpix.Picture) and Assigned(imgpix.Picture.Graphic) and (not imgpix.Picture.Graphic.Empty) then
+      bmp.Canvas.StretchDraw(Rect(0, 0, bmp.Width, bmp.Height), imgpix.Picture.Graphic);
 
-    // Obtém a posição do componente na tela
-    ScreenPos := imgpix.ClientToScreen(Point(0, 0));
-    ControlRect := Rect(ScreenPos.X, ScreenPos.Y,
-                        ScreenPos.X + imgpix.Width,
-                        ScreenPos.Y + imgpix.Height);
+    QRRect := Rect(BarcodeQR1.Left - imgpix.Left,
+                   BarcodeQR1.Top - imgpix.Top,
+                   BarcodeQR1.Left - imgpix.Left + BarcodeQR1.Width,
+                   BarcodeQR1.Top - imgpix.Top + BarcodeQR1.Height);
+    BarcodeQR1.PaintOnCanvas(bmp.Canvas, QRRect);
 
-    // Captura o conteúdo da área correspondente na tela
-    ScreenDC := GetDC(0);  // Obtém o DC da tela inteira
-    try
-      BitBlt(bmp.Canvas.Handle, 0, 0, bmp.Width, bmp.Height,
-             ScreenDC, ControlRect.Left, ControlRect.Top, SRCCOPY);
-    finally
-      ReleaseDC(0, ScreenDC);
-    end;
-
-    // Envia o bitmap capturado para a impressora padrão
     Printer.BeginDoc;
     try
-      // Desenha o bitmap no canvas da impressora.
-      // Se necessário, ajuste a posição ou escalonamento.
       Printer.Canvas.Draw(0, 0, bmp);
     finally
       Printer.EndDoc;

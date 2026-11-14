@@ -2,7 +2,11 @@
 
 Este guia explica como preparar a impressora para uso com o **Etiquetas**.
 
-O sistema envia a impressão para o mecanismo padrão de impressão do sistema operacional. Por isso, antes de configurar dentro do Etiquetas, a impressora deve estar instalada e funcionando no Windows ou Linux.
+Instale e teste a impressora no sistema operacional antes de usá-la no Etiquetas.
+Os modelos usam relatórios/driver ou os modos diretos oferecidos pelo módulo.
+O editor de QR Code permite escolher o dispositivo na janela de impressão;
+etiquetas PDF do Mercado Livre são impressas pelo leitor externo e o envio
+direto de ZPL usa a fila de impressão do Windows.
 
 ---
 
@@ -10,7 +14,20 @@ O sistema envia a impressão para o mecanismo padrão de impressão do sistema o
 
 O projeto foi criado com foco em etiquetas, especialmente cenários com impressoras Zebra, mas também pode usar impressoras configuradas no sistema operacional, dependendo do layout e driver.
 
-Exemplos de uso:
+No painel inicial, escolha uma das quatro famílias:
+
+| Tipo | Mídia | Limite de largura no editor de QR Code |
+|---|---|---:|
+| Zebra / rolo | Etiquetas adesivas em rolo | Até 104 mm |
+| Térmica 80 mm | Bobina de balcão / PDV | Até 72 mm úteis |
+| Térmica 58 mm | Bobina compacta / portátil | Até 48 mm úteis |
+| Laser / jato de tinta | Folhas A4/Carta e grades Pimaco | Até 190 mm |
+
+Esses limites pertencem ao editor de QR Code e não garantem compatibilidade
+com toda impressora dessa família. Confira a largura útil do seu equipamento.
+O editor aceita altura de 80 a 277 mm; **Cartaz A4** usa área de 190 × 277 mm.
+
+Outros exemplos de uso:
 
 - Impressora Zebra para etiquetas de gôndola.
 - Impressora térmica de etiquetas.
@@ -78,11 +95,31 @@ Somente depois faça o teste no Etiquetas.
 
 No sistema:
 
-1. Abra **Configuração**.
-2. Use a opção de configuração de impressora, quando disponível.
-3. Escolha a impressora desejada.
-4. Salve a configuração.
+1. Abra **Configurações → Preferências** para conferir as preferências gerais.
+2. No início, selecione o tipo de impressora e abra o modelo desejado.
+3. Confira a impressora e as dimensões na tela do modelo/diálogo de impressão.
+4. Nas propriedades do driver, ajuste papel, orientação e margens.
 5. Faça um teste com uma etiqueta.
+
+Escolher o cartão de impressora define o modo do modelo. Essa escolha não
+instala um dispositivo nem altera automaticamente o papel no driver.
+
+### QR Code de manuais e vídeos
+
+Use **Escolher impressora e imprimir** no editor. Se o formato exceder a área
+imprimível informada pelo driver, a impressão será bloqueada. Corrija o papel
+ou reduza as dimensões. A opção em folha imprime um cartão individual, sem
+distribuir cópias automaticamente em uma grade Pimaco.
+
+### Etiqueta do Mercado Livre
+
+PDF abre no leitor instalado; escolha a impressora nesse leitor e mantenha o
+tamanho original do documento. O padrão brasileiro de envio é 100 × 150 mm,
+incompatível com bobinas de 58/80 mm. Para ZPL, selecione **Zebra / rolo** no
+painel e uma impressora que entenda ZPL no diálogo de envio. O envio direto de
+ZPL está disponível no Windows e preserva os comandos originais.
+
+Consulte o [guia de importação e suas fontes oficiais](NOVO_INICIO.md#etiquetas-de-envio-do-mercado-livre).
 
 ---
 
