@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  Buttons, DBCtrls, StdCtrls, DBGrids, Menus, AnchorDockPanel, rxduallist,
-  reletiq01, dmbase, DB, setmain, cadendereco;
+  Buttons, DBCtrls, StdCtrls, DBGrids, Menus, AnchorDockPanel,
+  reletiq01, dmbase, DB, setmain, cadendereco, crudfinalidade;
 
 type
 
@@ -78,6 +78,7 @@ type
     procedure btSelecionaClick(Sender: TObject);
     procedure btDeleteClick(Sender: TObject);
   private
+    procedure AbrirCrudTabelaClick(Sender: TObject);
 
   public
      procedure Pesquisar();
@@ -170,11 +171,31 @@ begin
   end;
 end;
 
+procedure TfrmMalaDireta.AbrirCrudTabelaClick(Sender: TObject);
+var
+  Dlg: TfrmCrudFinalidade;
+begin
+  Dlg := TfrmCrudFinalidade.CreateComFinalidade(Self, 'classica_endereco', False);
+  try
+    Dlg.ShowModal;
+  finally
+    Dlg.Free;
+  end;
+  fdmBase.Endereco();
+end;
+
 procedure TfrmMalaDireta.FormCreate(Sender: TObject);
+var
+  BtnCrud: TButton;
 begin
   pcMalaDireta.ActivePage := Wizzard;
   fdmbase.SelEndereco();
   fdmbase.zselendereco.open;
+  BtnCrud := TButton.Create(Self);
+  BtnCrud.Parent := Panel1;
+  BtnCrud.Caption := 'Gerenciar Tabela (CRUD / CSV / Limpar)';
+  BtnCrud.SetBounds(360, 9, 265, 32);
+  BtnCrud.OnClick := @AbrirCrudTabelaClick;
 end;
 
 procedure TfrmMalaDireta.btAddtoPrintClick(Sender: TObject);

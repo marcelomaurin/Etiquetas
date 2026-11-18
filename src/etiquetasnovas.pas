@@ -5,9 +5,10 @@ unit etiquetasnovas;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Spin, Graphics,
-  Dialogs, ExtDlgs, Printers, RLReport, RLBarcode, RLConsts, RLTypes,
-  setmain, aiposprinter, imp_generico, aiserial, imagefilters;
+  Classes, SysUtils, Math, Forms, Controls, StdCtrls, ExtCtrls, Spin, Graphics,
+  Dialogs, ExtDlgs, Printers, PrintersDlgs, RLReport, RLBarcode, RLConsts, RLTypes,
+  setmain, aiposprinter, imp_generico, aiserial, imagefilters,
+  tabelafinalidade, crudfinalidade, wizardimpressao;
 
 type
   TModoImpressoraEtiqueta = (
@@ -29,7 +30,15 @@ type
     msSupValidadeANVISA,    // 9: Supermercado/Saúde - Validade ANVISA RDC 216 (50x30 mm)
     msEnvioDespachoVolumes, // 10: Logística - Envio e Despacho de Produtos (100x150 mm)
     msCrachaVisitanteHosp,  // 11: Hospital - Crachá Visitante / Acompanhante (80x50 mm)
-    msCrachaFuncionario     // 12: Varejo/Saúde - Crachá Funcionário / Operador c/ Foto (54x86 mm)
+    msCrachaFuncionario,    // 12: Varejo/Saúde - Crachá Funcionário / Operador c/ Foto (54x86 mm)
+    msEnvioML150x100,       // 13: Logística/E-commerce - Etiqueta Tipo ML (150x100 mm)
+    msRibbonPatrimonio,     // 14: Exclusiva Ribbon/Zebra - Patrimônio / Ativo Fixo (50x25 mm)
+    msTerm80ComandaPedido,  // 15: Exclusiva Térmica 80 col - Comanda / Pedido Cozinha/Balcão
+    msTerm80SenhaAtendimento,//16: Exclusiva Térmica 80 col - Senha / Ficha de Atendimento
+    msTerm55SacolaDelivery, // 17: Exclusiva Térmica 55/58 mm - Sacola / Delivery Compacta
+    msTerm55PrecoCorredor,  // 18: Exclusiva Térmica 55/58 mm - Preço Rápido de Corredor
+    msTerm55ComandaCompacta,// 19: Exclusiva Térmica 55/58 mm - Comanda Resumida Portátil
+    msTerm55SenhaPortatil   // 20: Exclusiva Térmica 55/58 mm - Senha / Ticket Portátil
   );
 
   TCamposSetoriais = array[0..7] of string;
@@ -52,6 +61,19 @@ type
     btnFotoCracha: TButton;
     chkFotoPB: TCheckBox;
     FCaminhoFoto: string;
+    FPainelBanco: TPainelBancoFinalidade;
+    FWizardPOS: Boolean;
+    procedure AbrirWizardImpressao(SaidaPOS: Boolean);
+    procedure ExecutarWizardSetorial(const OpcaoPapel: TOpcaoPapelWizard;
+      Modo: TModoImpressaoWizard; Repeticoes: Integer;
+      const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
+    procedure ImprimirItemGrafico(AModelo: TModeloEtiquetaSetorial;
+      const C: TCamposSetoriais; const Foto: string; ApenasPrevia: Boolean);
+    procedure ImprimirLotePOS(AModelo: TModeloEtiquetaSetorial;
+      Modo: TModoImpressoraEtiqueta; const Itens: array of TCamposSetoriais);
+    procedure CarregarValoresBanco(const Valores: array of string);
+    procedure ObterValoresBanco(out Valores: TStringArray);
+    procedure PopularModelosCompativeis(AModo: TModoImpressoraEtiqueta; ModeloAlvo: TModeloEtiquetaSetorial);
     procedure AtualizarInterface(Sender: TObject);
     procedure GerarEANBalancaClick(Sender: TObject);
     procedure SelecionarFotoClick(Sender: TObject);
@@ -62,6 +84,8 @@ type
       AModo: TModoImpressoraEtiqueta; AModelo: TModeloEtiquetaSetorial);
   end;
 
+function ModeloCompativelComImpressora(AModo: TModoImpressoraEtiqueta;
+  AModelo: TModeloEtiquetaSetorial): Boolean;
 function CalcularEAN13Balanca(const CodigoPLU: string; ValorOuPeso: Double): string;
 function CriarRelatorioSetorial(AOwner: TComponent;
   AModo: TModoImpressoraEtiqueta; AModelo: TModeloEtiquetaSetorial;
@@ -84,8 +108,37 @@ const
     'Supermercado & Saúde: Controle de Validade ANVISA RDC 216 (50 x 30 mm)',
     'Logística & Varejo: Envio e Despacho de Produtos (100 x 150 mm)',
     'Hospitalar: Crachá de Visitante / Acompanhante (80 x 50 mm)',
-    'Varejo & Saúde: Crachá de Funcionário / Operador c/ Foto (54 x 86 mm)'
+    'Varejo & Saúde: Crachá de Funcionário / Operador c/ Foto (54 x 86 mm)',
+    'Logística & E-commerce: Etiqueta Tipo ML (150 x 100 mm)',
+    'Ribbon / Zebra: Patrimônio e Ativo Fixo (50 x 25 mm)',
+    'Térmica 80 col: Comanda / Pedido de Cozinha e Balcão (80 mm)',
+    'Térmica 80 col: Senha / Ficha de Atendimento (80 mm)',
+    'Térmica 55/58 mm: Sacola / Delivery Compacta (55 mm)',
+    'Térmica 55/58 mm: Preço Rápido de Corredor (55 mm)',
+    'Térmica 55/58 mm: Comanda Resumida Portátil (55 mm)',
+    'Térmica 55/58 mm: Senha / Ticket Portátil (55 mm)'
   );
+
+function ModeloCompativelComImpressora(AModo: TModoImpressoraEtiqueta;
+  AModelo: TModeloEtiquetaSetorial): Boolean;
+begin
+  case AModo of
+    miZebraRolo:
+      Result := not (AModelo in [msTerm80ComandaPedido, msTerm80SenhaAtendimento,
+        msTerm55SacolaDelivery, msTerm55PrecoCorredor,
+        msTerm55ComandaCompacta, msTerm55SenhaPortatil]);
+    miTermica80Col:
+      Result := not (AModelo in [msLabLaminaBiopsia, msLabBolsaSangue,
+        msRibbonPatrimonio, msTerm55SacolaDelivery, msTerm55PrecoCorredor,
+        msTerm55ComandaCompacta, msTerm55SenhaPortatil]);
+    miTermica40Col:
+      Result := not (AModelo in [msLabLaminaBiopsia, msLabBolsaSangue,
+        msLabTransporteBio, msEnvioML150x100, msRibbonPatrimonio,
+        msTerm80ComandaPedido, msTerm80SenhaAtendimento]);
+  else
+    Result := True;
+  end;
+end;
 
 function MM(V: Double): Integer;
 begin
@@ -120,7 +173,7 @@ begin
     begin
       W := 80.0;
       case AModelo of
-        msEnvioDespachoVolumes, msLabTransporteBio: H := 110.0;
+        msEnvioDespachoVolumes, msEnvioML150x100, msLabTransporteBio: H := 110.0;
         msMedSoroInfusao, msLabBolsaSangue: H := 75.0;
         else H := 55.0;
       end;
@@ -129,7 +182,7 @@ begin
     begin
       W := 58.0;
       case AModelo of
-        msEnvioDespachoVolumes, msLabTransporteBio: H := 85.0;
+        msEnvioDespachoVolumes, msEnvioML150x100, msLabTransporteBio: H := 85.0;
         else H := 45.0;
       end;
     end;
@@ -149,6 +202,9 @@ begin
         msEnvioDespachoVolumes: begin W := 100.0; H := 150.0; end;
         msCrachaVisitanteHosp:  begin W := 80.0;  H := 50.0;  end;
         msCrachaFuncionario:    begin W := 54.0;  H := 86.0;  end;
+        msEnvioML150x100:       begin W := 150.0; H := 100.0; end;
+        msRibbonPatrimonio:     begin W := 50.0;  H := 25.0;  end;
+        else                    begin W := 80.0;  H := 50.0;  end;
       end;
     end;
   end;
@@ -296,6 +352,51 @@ begin
       Exit;
     end;
 
+    if (AModelo = msEnvioML150x100) and (AModo = miZebraRolo) then
+    begin
+      Borda := TRLDraw.Create(Result);
+      Borda.Parent := Result;
+      Borda.DrawKind := dkRectangle;
+      Borda.SetBounds(MM(2.0), MM(2.0), MM(W - 4.0), MM(H - 4.0));
+
+      AddLinha('ETIQUETA DE ENVIO · TIPO ML (150 x 100 mm)', 5.0, 4.5, 92.0, 10, True);
+      AddLinha(C[5], 98.0, 4.5, 47.0, 9, True, True);
+
+      Borda := TRLDraw.Create(Result);
+      Borda.Parent := Result;
+      Borda.DrawKind := dkRectangle;
+      Borda.SetBounds(MM(2.0), MM(13.0), MM(W - 4.0), MM(0.5));
+
+      AddLinha('DESTINATÁRIO', 5.0, 15.5, 88.0, 8, True);
+      AddLinha(C[0], 5.0, 20.5, 88.0, 11, True);
+      AddLinha(C[1], 5.0, 28.0, 88.0, 9, False);
+      AddLinha(C[2], 5.0, 35.0, 88.0, 9, True);
+
+      Borda := TRLDraw.Create(Result);
+      Borda.Parent := Result;
+      Borda.DrawKind := dkRectangle;
+      Borda.SetBounds(MM(96.0), MM(15.0), MM(49.0), MM(46.0));
+      AddLinha('ROTA / SERVIÇO', 98.0, 17.5, 45.0, 8, True, True);
+      AddLinha(C[5], 98.0, 24.5, 45.0, 10, True, True);
+      AddLinha(C[4], 98.0, 37.0, 45.0, 8, False, True);
+
+      Borda := TRLDraw.Create(Result);
+      Borda.Parent := Result;
+      Borda.DrawKind := dkRectangle;
+      Borda.SetBounds(MM(2.0), MM(43.5), MM(94.0), MM(0.5));
+
+      AddLinha('REMETENTE', 5.0, 45.5, 88.0, 7, True);
+      AddLinha(C[3], 5.0, 49.5, 88.0, 9, False);
+      AddLinha(C[6], 5.0, 56.5, 88.0, 8, False);
+
+      if Trim(C[7]) <> '' then
+      begin
+        AddBarras(C[7], 8.0, 66.0, W - 16.0, 20.0);
+        AddLinha(C[7], 5.0, 88.0, W - 10.0, 10, True, True);
+      end;
+      Exit;
+    end;
+
     case AModelo of
       msLabTuboColeta:        Cabecalho := 'LABORATÓRIO - AMOSTRA / TUBO';
       msLabLaminaBiopsia:     Cabecalho := 'PATOLOGIA / BIÓPSIA';
@@ -310,6 +411,14 @@ begin
       msEnvioDespachoVolumes: Cabecalho := 'EXPEDIÇÃO E DESPACHO DE PRODUTOS';
       msCrachaVisitanteHosp:  Cabecalho := 'CONTROLE DE ACESSO / VISITANTE';
       msCrachaFuncionario:    Cabecalho := 'IDENTIFICAÇÃO FUNCIONAL';
+      msEnvioML150x100:       Cabecalho := 'ETIQUETA DE ENVIO - TIPO ML (150 x 100 mm)';
+      msRibbonPatrimonio:     Cabecalho := 'PATRIMÔNIO / ATIVO FIXO';
+      msTerm80ComandaPedido:  Cabecalho := 'COMANDA / PEDIDO (80 mm)';
+      msTerm80SenhaAtendimento: Cabecalho := 'SENHA DE ATENDIMENTO (80 mm)';
+      msTerm55SacolaDelivery: Cabecalho := 'ENTREGA / DELIVERY (55 mm)';
+      msTerm55PrecoCorredor:  Cabecalho := 'PREÇO RÁPIDO (55 mm)';
+      msTerm55ComandaCompacta: Cabecalho := 'COMANDA PORTÁTIL (55 mm)';
+      msTerm55SenhaPortatil:  Cabecalho := 'SENHA / TICKET (55 mm)';
     end;
 
     if H <= 32.0 then
@@ -364,7 +473,6 @@ end;
 constructor TfrmEtiquetasSetoriais.CreateSetorial(AOwner: TComponent;
   AModo: TModoImpressoraEtiqueta; AModelo: TModeloEtiquetaSetorial);
 var
-  M: TModeloEtiquetaSetorial;
   I: Integer;
   L: TLabel;
   BtnGrafico, BtnPOS: TButton;
@@ -372,11 +480,11 @@ begin
   inherited CreateNew(AOwner);
   FModo := AModo;
   FModelo := AModelo;
-  Caption := 'Emissão de Etiquetas — Saúde, Higiene, Supermercado, Despacho e Crachás';
+  Caption := 'Emissão de Etiquetas — Ribbon/Zebra, Térmica 80mm e Térmica 55/58mm';
   Position := poScreenCenter;
   BorderStyle := bsDialog;
   ClientWidth := 820;
-  ClientHeight := 555;
+  ClientHeight := 604;
 
   L := TLabel.Create(Self);
   L.Parent := Self;
@@ -388,15 +496,15 @@ begin
   cbModoImpressora.Parent := Self;
   cbModoImpressora.Style := csDropDownList;
   cbModoImpressora.SetBounds(20, 34, 340, 26);
-  cbModoImpressora.Items.Add('Impressora Tipo Zebra / Etiquetadora de Rolo');
-  cbModoImpressora.Items.Add('Impressora Térmica Comum 80 Colunas (Bobina 80mm)');
-  cbModoImpressora.Items.Add('Impressora Térmica 40 Colunas / 58mm (Maquininha)');
+  cbModoImpressora.Items.Add('Impressora Zebra / Ribbon (Rolo Adesivo)');
+  cbModoImpressora.Items.Add('Impressora Térmica 80 Colunas (Bobina 80mm)');
+  cbModoImpressora.Items.Add('Impressora Térmica 55 / 58 mm (40–55 col · Portátil)');
   cbModoImpressora.ItemIndex := Ord(AModo);
   cbModoImpressora.OnChange := @AtualizarInterface;
 
   L := TLabel.Create(Self);
   L.Parent := Self;
-  L.Caption := '2. Modelo de Etiqueta (Saúde, Supermercado, Logística ou Crachá):';
+  L.Caption := '2. Modelo Específico para esta Impressora:';
   L.Font.Style := [fsBold];
   L.SetBounds(380, 14, 420, 18);
 
@@ -404,9 +512,7 @@ begin
   cbModeloEtiqueta.Parent := Self;
   cbModeloEtiqueta.Style := csDropDownList;
   cbModeloEtiqueta.SetBounds(380, 34, 420, 26);
-  for M := Low(TModeloEtiquetaSetorial) to High(TModeloEtiquetaSetorial) do
-    cbModeloEtiqueta.Items.Add(NomesModelosSetoriais[M]);
-  cbModeloEtiqueta.ItemIndex := Ord(AModelo);
+  PopularModelosCompativeis(AModo, AModelo);
   cbModeloEtiqueta.OnChange := @AtualizarInterface;
 
   lblDimensao := TLabel.Create(Self);
@@ -471,19 +577,81 @@ begin
   seCopias.Value := 1;
   seCopias.SetBounds(340, 428, 80, 26);
 
+  FPainelBanco := TPainelBancoFinalidade.Create(Self);
+  FPainelBanco.Parent := Self;
+  FPainelBanco.SetBounds(20, 466, 780, 72);
+  FPainelBanco.OnCarregarValores := @CarregarValoresBanco;
+  FPainelBanco.OnObterValores := @ObterValoresBanco;
+
   BtnGrafico := TButton.Create(Self);
   BtnGrafico.Parent := Self;
   BtnGrafico.Caption := 'Pré-visualizar / Imprimir Gráfico (Driver Windows)';
-  BtnGrafico.SetBounds(20, 490, 380, 38);
+  BtnGrafico.SetBounds(20, 548, 380, 38);
   BtnGrafico.OnClick := @VisualizarGraficoClick;
 
   BtnPOS := TButton.Create(Self);
   BtnPOS.Parent := Self;
   BtnPOS.Caption := 'Imprimir Direto via TAIPOSPrinter (ESC/POS ou ZPL)';
-  BtnPOS.SetBounds(420, 490, 380, 38);
+  BtnPOS.SetBounds(420, 548, 380, 38);
   BtnPOS.OnClick := @EnviarPOSDiretoClick;
 
   AtualizarInterface(nil);
+end;
+
+procedure TfrmEtiquetasSetoriais.CarregarValoresBanco(const Valores: array of string);
+var
+  I: Integer;
+begin
+  for I := 0 to 7 do
+  begin
+    if I <= High(Valores) then
+      edCampo[I].Text := Valores[I]
+    else
+      edCampo[I].Text := '';
+  end;
+  if (FModelo = msCrachaFuncionario) and (Length(Valores) > 8) then
+    FCaminhoFoto := Valores[8];
+end;
+
+procedure TfrmEtiquetasSetoriais.ObterValoresBanco(out Valores: TStringArray);
+var
+  I, Total: Integer;
+begin
+  if FModelo = msCrachaFuncionario then
+    Total := 9
+  else
+    Total := 8;
+  SetLength(Valores, Total);
+  for I := 0 to 7 do
+    Valores[I] := Trim(edCampo[I].Text);
+  if FModelo = msCrachaFuncionario then
+    Valores[8] := FCaminhoFoto;
+end;
+
+procedure TfrmEtiquetasSetoriais.PopularModelosCompativeis(
+  AModo: TModoImpressoraEtiqueta; ModeloAlvo: TModeloEtiquetaSetorial);
+var
+  M: TModeloEtiquetaSetorial;
+  Idx, AlvoIdx: Integer;
+begin
+  cbModeloEtiqueta.Items.BeginUpdate;
+  try
+    cbModeloEtiqueta.Items.Clear;
+    AlvoIdx := 0;
+    for M := Low(TModeloEtiquetaSetorial) to High(TModeloEtiquetaSetorial) do
+    begin
+      if ModeloCompativelComImpressora(AModo, M) then
+      begin
+        Idx := cbModeloEtiqueta.Items.AddObject(NomesModelosSetoriais[M], TObject(PtrInt(Ord(M))));
+        if M = ModeloAlvo then
+          AlvoIdx := Idx;
+      end;
+    end;
+    if cbModeloEtiqueta.Items.Count > 0 then
+      cbModeloEtiqueta.ItemIndex := AlvoIdx;
+  finally
+    cbModeloEtiqueta.Items.EndUpdate;
+  end;
 end;
 
 procedure TfrmEtiquetasSetoriais.AtualizarInterface(Sender: TObject);
@@ -491,13 +659,19 @@ var
   W, H: Double;
 begin
   FModo := TModoImpressoraEtiqueta(cbModoImpressora.ItemIndex);
-  FModelo := TModeloEtiquetaSetorial(cbModeloEtiqueta.ItemIndex);
+  if Sender = cbModoImpressora then
+    PopularModelosCompativeis(FModo, FModelo);
+  if (cbModeloEtiqueta.ItemIndex >= 0) and (cbModeloEtiqueta.ItemIndex < cbModeloEtiqueta.Items.Count) then
+    FModelo := TModeloEtiquetaSetorial(PtrInt(cbModeloEtiqueta.Items.Objects[cbModeloEtiqueta.ItemIndex]));
   DimensoesPapelSetorial(FModo, FModelo, W, H);
   lblDimensao.Caption := Format('Dimensão configurada para este modo: %.1f x %.1f mm | Motor: FortesReport + TAIPOSPrinter (CHATGPT)', [W, H]);
 
   btnGerarEANBalanca.Visible := (FModelo = msSupBalancaPadaria);
   btnFotoCracha.Visible := (FModelo in [msCrachaVisitanteHosp, msCrachaFuncionario]);
   chkFotoPB.Visible := btnFotoCracha.Visible;
+
+  if Assigned(FPainelBanco) then
+    FPainelBanco.DefinirFinalidade(ChaveTabelaSetorial(Ord(FModelo)));
 
   case FModelo of
     msLabTuboColeta:
@@ -747,6 +921,164 @@ begin
       edCampo[6].Text := 'ACESSO AUTORIZADO';
       edCampo[7].Text := 'MAT004821';
     end;
+    msEnvioML150x100:
+    begin
+      lblCampo[0].Caption := 'Destinatário / Comprador *';
+      lblCampo[1].Caption := 'Endereço Completo (Rua, Nº, Complemento) *';
+      lblCampo[2].Caption := 'Bairro, Cidade / UF e CEP *';
+      lblCampo[3].Caption := 'Remetente / Loja *';
+      lblCampo[4].Caption := 'Venda / Pedido / NF / Volume';
+      lblCampo[5].Caption := 'Transportadora / Modalidade / Rota';
+      lblCampo[6].Caption := 'Observação / Conteúdo';
+      lblCampo[7].Caption := 'Código de Rastreio / Etiqueta (Barras) *';
+      edCampo[0].Text := 'CARLOS EDUARDO SILVA';
+      edCampo[1].Text := 'RUA DAS FLORES, 450 - SALA 12';
+      edCampo[2].Text := 'CENTRO - SÃO PAULO / SP - CEP: 01001-000';
+      if FSetMain.EMPRESA <> '' then
+        edCampo[3].Text := FSetMain.EMPRESA
+      else
+        edCampo[3].Text := 'LOJA MODELO E-COMMERCE';
+      edCampo[4].Text := 'Venda #200000918273 | NF: 004512 | Vol: 1/1';
+      edCampo[5].Text := 'ENVIO RÁPIDO · ROTA SP-04';
+      edCampo[6].Text := 'Conteúdo: Mercadoria Comercial';
+      edCampo[7].Text := 'ML4829103948BR';
+    end;
+    msRibbonPatrimonio:
+    begin
+      lblCampo[0].Caption := 'Empresa / Instituição *';
+      lblCampo[1].Caption := 'Descrição do Bem / Equipamento *';
+      lblCampo[2].Caption := 'Setor / Localização';
+      lblCampo[3].Caption := 'Responsável / Centro de Custo';
+      lblCampo[4].Caption := 'Nº Série / Nota Fiscal';
+      lblCampo[5].Caption := 'Data de Aquisição / Tombamento';
+      lblCampo[6].Caption := 'Observação / Garantia';
+      lblCampo[7].Caption := 'Nº do Patrimônio (Barras) *';
+      if FSetMain.EMPRESA <> '' then
+        edCampo[0].Text := FSetMain.EMPRESA
+      else
+        edCampo[0].Text := 'EMPRESA / ATIVO IMOBILIZADO';
+      edCampo[1].Text := 'NOTEBOOK CORPORATIVO I7 16GB';
+      edCampo[2].Text := 'TECNOLOGIA DA INFORMAÇÃO';
+      edCampo[3].Text := 'CC 104 - INFRAESTRUTURA';
+      edCampo[4].Text := 'SN: BR992014X | NF 1102';
+      edCampo[5].Text := FormatDateTime('dd/mm/yyyy', Now);
+      edCampo[6].Text := 'RIBBON RESINA - NÃO REMOVER';
+      edCampo[7].Text := 'PAT001492';
+    end;
+    msTerm80ComandaPedido:
+    begin
+      lblCampo[0].Caption := 'Nº do Pedido / Mesa / Comanda *';
+      lblCampo[1].Caption := 'Cliente / Atendente';
+      lblCampo[2].Caption := 'Itens / Quantidades *';
+      lblCampo[3].Caption := 'Adicionais / Observações de Preparo';
+      lblCampo[4].Caption := 'Setor (Cozinha / Copa / Balcão)';
+      lblCampo[5].Caption := 'Data e Hora do Pedido';
+      lblCampo[6].Caption := 'Consumo Local / Viagem / Entrega';
+      lblCampo[7].Caption := 'Código da Comanda (Barras)';
+      edCampo[0].Text := 'COMANDA #048 - MESA 12';
+      edCampo[1].Text := 'Cliente: MARIANA | Garçom: Lucas';
+      edCampo[2].Text := '2x X-SALADA ARTESANAL + 1x SUCO LARANJA';
+      edCampo[3].Text := 'OBS: SEM CEBOLA / GELO E LIMÃO';
+      edCampo[4].Text := 'COZINHA QUENTE';
+      edCampo[5].Text := FormatDateTime('dd/mm/yyyy hh:nn', Now);
+      edCampo[6].Text := 'CONSUMO NO LOCAL';
+      edCampo[7].Text := 'CMD00048';
+    end;
+    msTerm80SenhaAtendimento:
+    begin
+      lblCampo[0].Caption := 'Estabelecimento / Unidade *';
+      lblCampo[1].Caption := 'Tipo de Atendimento *';
+      lblCampo[2].Caption := 'Número da Senha *';
+      lblCampo[3].Caption := 'Setor / Guichê';
+      lblCampo[4].Caption := 'Data e Hora da Emissão';
+      lblCampo[5].Caption := 'Observação / Fila';
+      lblCampo[6].Caption := 'Orientação ao Usuário';
+      lblCampo[7].Caption := 'Código de Chamada (Barras)';
+      edCampo[0].Text := 'ATENDIMENTO AO CLIENTE / RECEPÇÃO';
+      edCampo[1].Text := 'ATENDIMENTO PREFERENCIAL';
+      edCampo[2].Text := 'SENHA: P-014';
+      edCampo[3].Text := 'GUICHÊ 01 A 04 - TRIAGEM';
+      edCampo[4].Text := FormatDateTime('dd/mm/yyyy hh:nn', Now);
+      edCampo[5].Text := 'Aguarde ser chamado no painel';
+      edCampo[6].Text := 'Tenha seu documento em mãos';
+      edCampo[7].Text := 'SENHAP014';
+    end;
+    msTerm55SacolaDelivery:
+    begin
+      lblCampo[0].Caption := 'Loja / Restaurante *';
+      lblCampo[1].Caption := 'Nome do Cliente *';
+      lblCampo[2].Caption := 'Endereço / Referência *';
+      lblCampo[3].Caption := 'Telefone / WhatsApp';
+      lblCampo[4].Caption := 'Pedido / Volumes';
+      lblCampo[5].Caption := 'Pagamento / Troco';
+      lblCampo[6].Caption := 'Observação de Entrega';
+      lblCampo[7].Caption := 'Código do Pedido (Barras)';
+      edCampo[0].Text := 'DELIVERY EXPRESSO';
+      edCampo[1].Text := 'CLIENTE: BRUNO OLIVEIRA';
+      edCampo[2].Text := 'RUA SETE DE SETEMBRO, 89 - AP 21';
+      edCampo[3].Text := 'FONE: (16) 99999-0000';
+      edCampo[4].Text := 'PEDIDO #908 | SACOLA 1/1';
+      edCampo[5].Text := 'PAGO ONLINE - NÃO COBRAR';
+      edCampo[6].Text := 'ENTREGAR NA PORTARIA';
+      edCampo[7].Text := 'DEL00908';
+    end;
+    msTerm55PrecoCorredor:
+    begin
+      lblCampo[0].Caption := 'Descrição Curta do Produto *';
+      lblCampo[1].Caption := 'Unidade / Embalagem';
+      lblCampo[2].Caption := 'Preço de Venda *';
+      lblCampo[3].Caption := 'Preço Promocional / Clube';
+      lblCampo[4].Caption := 'Validade da Oferta';
+      lblCampo[5].Caption := 'Corredor / Seção';
+      lblCampo[6].Caption := 'Código Interno / PLU';
+      lblCampo[7].Caption := 'Código de Barras *';
+      edCampo[0].Text := 'ARROZ TIPO 1 5KG';
+      edCampo[1].Text := 'PACOTE 5 KG';
+      edCampo[2].Text := 'R$ 26,90';
+      edCampo[3].Text := 'CLUBE: R$ 23,90';
+      edCampo[4].Text := 'OFERTA HOJE';
+      edCampo[5].Text := 'CORREDOR 02';
+      edCampo[6].Text := 'PLU 01204';
+      edCampo[7].Text := '7891234500120';
+    end;
+    msTerm55ComandaCompacta:
+    begin
+      lblCampo[0].Caption := 'Nº da Comanda / Mesa *';
+      lblCampo[1].Caption := 'Cliente';
+      lblCampo[2].Caption := 'Itens / Observação *';
+      lblCampo[3].Caption := 'Atendente';
+      lblCampo[4].Caption := 'Data e Hora';
+      lblCampo[5].Caption := 'Total / Status';
+      lblCampo[6].Caption := 'Balcão / Mesa';
+      lblCampo[7].Caption := 'Código da Comanda (Barras)';
+      edCampo[0].Text := 'MESA 05 · #112';
+      edCampo[1].Text := 'Cliente: Paulo';
+      edCampo[2].Text := '1x Café Expresso + 2x Pão de Queijo';
+      edCampo[3].Text := 'Atend.: Carla';
+      edCampo[4].Text := FormatDateTime('dd/mm hh:nn', Now);
+      edCampo[5].Text := 'TOTAL: R$ 18,50';
+      edCampo[6].Text := 'BALCÃO';
+      edCampo[7].Text := 'M05112';
+    end;
+    msTerm55SenhaPortatil:
+    begin
+      lblCampo[0].Caption := 'Unidade / Evento *';
+      lblCampo[1].Caption := 'Senha / Ticket *';
+      lblCampo[2].Caption := 'Categoria';
+      lblCampo[3].Caption := 'Setor / Sala';
+      lblCampo[4].Caption := 'Data e Hora';
+      lblCampo[5].Caption := 'Observação';
+      lblCampo[6].Caption := 'Validade';
+      lblCampo[7].Caption := 'Código do Ticket (Barras)';
+      edCampo[0].Text := 'PORTARIA / RECEPÇÃO';
+      edCampo[1].Text := 'TICKET Nº 042';
+      edCampo[2].Text := 'ATENDIMENTO GERAL';
+      edCampo[3].Text := 'SALA 02';
+      edCampo[4].Text := FormatDateTime('dd/mm/yyyy hh:nn', Now);
+      edCampo[5].Text := 'Apresentar na entrada';
+      edCampo[6].Text := 'Válido hoje';
+      edCampo[7].Text := 'TCK0042';
+    end;
   end;
 end;
 
@@ -779,43 +1111,36 @@ begin
   end;
 end;
 
-procedure TfrmEtiquetasSetoriais.VisualizarGraficoClick(Sender: TObject);
+procedure TfrmEtiquetasSetoriais.ImprimirItemGrafico(AModelo: TModeloEtiquetaSetorial;
+  const C: TCamposSetoriais; const Foto: string; ApenasPrevia: Boolean);
 var
-  C: TCamposSetoriais;
-  I: Integer;
   R: TRLReport;
 begin
-  for I := 0 to 7 do C[I] := Trim(edCampo[I].Text);
-  if (FModelo = msEnvioDespachoVolumes) and (seCopias.Value > 1) then
-    C[5] := Format('VOLUME: 1/%d (Lote de %d volumes)', [seCopias.Value, seCopias.Value]);
+  R := CriarRelatorioSetorial(Self, FModo, AModelo, C, Foto, chkFotoPB.Checked);
   try
-    R := CriarRelatorioSetorial(Self, FModo, FModelo, C, FCaminhoFoto, chkFotoPB.Checked);
-    try
-      R.PreviewModal;
-    finally
-      R.Free;
-    end;
-  except
-    on E: Exception do
-      MessageDlg('Etiqueta Setorial', E.Message, mtError, [mbOK], 0);
+    R.PrintDialog := False;
+    if ApenasPrevia then
+      R.PreviewModal
+    else
+      R.Print;
+  finally
+    R.Free;
   end;
 end;
 
-procedure TfrmEtiquetasSetoriais.EnviarPOSDiretoClick(Sender: TObject);
+procedure TfrmEtiquetasSetoriais.ImprimirLotePOS(AModelo: TModeloEtiquetaSetorial;
+  Modo: TModoImpressoraEtiqueta; const Itens: array of TCamposSetoriais);
 var
   PosPrinter: TAIPOSPrinter;
   I, J, TotalVol: Integer;
   LinhaVol: string;
 begin
-  if Trim(edCampo[0].Text) = '' then
-  begin
-    MessageDlg('Atenção', 'Preencha ao menos o primeiro campo obrigatório.', mtWarning, [mbOK], 0);
-    Exit;
-  end;
+  TotalVol := Length(Itens);
+  if TotalVol = 0 then Exit;
 
   PosPrinter := TAIPOSPrinter.Create(Self);
   try
-    case FModo of
+    case Modo of
       miZebraRolo:
       begin
         PosPrinter.PrinterModel := pmElginL42DT;
@@ -851,39 +1176,38 @@ begin
       MessageDlg('Envio Direto TAIPOSPrinter',
         'Não foi possível abrir comunicação direta com a impressora (' +
         PosPrinter.LastError + ').' + sLineBreak +
-        'Use o botão "Pré-visualizar / Imprimir Gráfico" para imprimir via driver do Windows.',
+        'Use a saída gráfica para imprimir via driver do Windows.',
         mtWarning, [mbOK], 0);
       Exit;
     end;
 
-    TotalVol := seCopias.Value;
     try
-      for I := 1 to TotalVol do
+      for I := 0 to TotalVol - 1 do
       begin
         PosPrinter.AlignCenter;
         PosPrinter.SetBold(True);
-        PosPrinter.PrintTextLine(NomesModelosSetoriais[FModelo]);
+        PosPrinter.PrintTextLine(NomesModelosSetoriais[AModelo]);
         PosPrinter.SetBold(False);
         PosPrinter.AlignLeft;
         for J := 0 to 6 do
         begin
-          if Trim(edCampo[J].Text) <> '' then
+          if Trim(Itens[I][J]) <> '' then
           begin
-            if (FModelo = msEnvioDespachoVolumes) and (J = 5) then
+            if (AModelo = msEnvioDespachoVolumes) and (J = 5) and (TotalVol > 1) then
             begin
-              LinhaVol := Format('VOLUME: %d/%d', [I, TotalVol]);
+              LinhaVol := Format('VOLUME: %d/%d', [I + 1, TotalVol]);
               PosPrinter.SetBold(True);
               PosPrinter.PrintTextLine(LinhaVol);
               PosPrinter.SetBold(False);
             end
             else
-              PosPrinter.PrintTextLine(Trim(edCampo[J].Text));
+              PosPrinter.PrintTextLine(Trim(Itens[I][J]));
           end;
         end;
-        if Trim(edCampo[7].Text) <> '' then
+        if Trim(Itens[I][7]) <> '' then
         begin
           PosPrinter.AlignCenter;
-          PosPrinter.PrintBarcode(Trim(edCampo[7].Text), 65, 2, 2);
+          PosPrinter.PrintBarcode(Trim(Itens[I][7]), 65, 2, 2);
         end;
         PosPrinter.PrintTextLine('');
         PosPrinter.CutPaper;
@@ -896,6 +1220,143 @@ begin
   finally
     PosPrinter.Free;
   end;
+end;
+
+procedure TfrmEtiquetasSetoriais.ExecutarWizardSetorial(
+  const OpcaoPapel: TOpcaoPapelWizard; Modo: TModoImpressaoWizard;
+  Repeticoes: Integer; const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
+var
+  ModeloAlvo: TModeloEtiquetaSetorial;
+  Itens: array of TCamposSetoriais;
+  Fotos: array of string;
+  I, J, Qtd: Integer;
+  Dlg: TPrintDialog;
+begin
+  ModeloAlvo := TModeloEtiquetaSetorial(StrToIntDef(OpcaoPapel.Codigo, Ord(FModelo)));
+  if ModeloAlvo <> FModelo then
+  begin
+    PopularModelosCompativeis(FModo, ModeloAlvo);
+    AtualizarInterface(nil);
+  end;
+
+  if Modo = miwUmRegistroNVezes then
+  begin
+    Qtd := Max(1, Repeticoes);
+    SetLength(Itens, Qtd);
+    SetLength(Fotos, Qtd);
+    for I := 0 to Qtd - 1 do
+    begin
+      for J := 0 to 7 do
+        if J <= High(Registros[0].Valores) then
+          Itens[I][J] := Trim(Registros[0].Valores[J])
+        else
+          Itens[I][J] := '';
+      if (ModeloAlvo = msEnvioDespachoVolumes) and (Qtd > 1) then
+        Itens[I][5] := Format('VOLUME: %d/%d (Lote de %d volumes)', [I + 1, Qtd, Qtd]);
+      if (ModeloAlvo = msCrachaFuncionario) and (Length(Registros[0].Valores) > 8) and (Registros[0].Valores[8] <> '') then
+        Fotos[I] := Registros[0].Valores[8]
+      else
+        Fotos[I] := FCaminhoFoto;
+    end;
+  end
+  else
+  begin
+    Qtd := Length(Registros);
+    SetLength(Itens, Qtd);
+    SetLength(Fotos, Qtd);
+    for I := 0 to Qtd - 1 do
+    begin
+      for J := 0 to 7 do
+        if J <= High(Registros[I].Valores) then
+          Itens[I][J] := Trim(Registros[I].Valores[J])
+        else
+          Itens[I][J] := '';
+      if (ModeloAlvo = msCrachaFuncionario) and (Length(Registros[I].Valores) > 8) and (Registros[I].Valores[8] <> '') then
+        Fotos[I] := Registros[I].Valores[8]
+      else
+        Fotos[I] := FCaminhoFoto;
+    end;
+  end;
+
+  if Length(Itens) = 0 then Exit;
+
+  try
+    if FWizardPOS and (not ApenasPrevia) then
+    begin
+      ImprimirLotePOS(ModeloAlvo, FModo, Itens);
+      Exit;
+    end;
+
+    if ApenasPrevia then
+    begin
+      ImprimirItemGrafico(ModeloAlvo, Itens[0], Fotos[0], True);
+      Exit;
+    end;
+
+    Dlg := TPrintDialog.Create(Self);
+    try
+      if not Dlg.Execute then Exit;
+    finally
+      Dlg.Free;
+    end;
+
+    for I := 0 to High(Itens) do
+      ImprimirItemGrafico(ModeloAlvo, Itens[I], Fotos[I], False);
+
+    ShowMessage(Format('%d etiqueta(s) enviada(s) para impressão.', [Length(Itens)]));
+  except
+    on E: Exception do
+      MessageDlg('Etiqueta Setorial', E.Message, mtError, [mbOK], 0);
+  end;
+end;
+
+procedure TfrmEtiquetasSetoriais.AbrirWizardImpressao(SaidaPOS: Boolean);
+var
+  Opcoes: TOpcoesPapelWizard;
+  M: TModeloEtiquetaSetorial;
+  Count, IdxInicial: Integer;
+  ValoresAtuais: TStringArray;
+  Wiz: TfrmWizardImpressao;
+begin
+  FWizardPOS := SaidaPOS;
+  Count := 0;
+  IdxInicial := 0;
+  SetLength(Opcoes, 0);
+  for M := Low(TModeloEtiquetaSetorial) to High(TModeloEtiquetaSetorial) do
+  begin
+    if ModeloCompativelComImpressora(FModo, M) then
+    begin
+      SetLength(Opcoes, Count + 1);
+      Opcoes[Count].Codigo := IntToStr(Ord(M));
+      Opcoes[Count].Descricao := NomesModelosSetoriais[M];
+      Opcoes[Count].ChaveFinalidade := ChaveTabelaSetorial(Ord(M));
+      if M = FModelo then
+        IdxInicial := Count;
+      Inc(Count);
+    end;
+  end;
+
+  ObterValoresBanco(ValoresAtuais);
+  Wiz := TfrmWizardImpressao.CreateWizard(Self, ChaveTabelaSetorial(Ord(FModelo)),
+    Opcoes, IdxInicial, ValoresAtuais, seCopias.Value);
+  try
+    Wiz.OnExecutarImpressao := @ExecutarWizardSetorial;
+    Wiz.ShowModal;
+  finally
+    Wiz.Free;
+  end;
+  if Assigned(FPainelBanco) then
+    FPainelBanco.AtualizarLista;
+end;
+
+procedure TfrmEtiquetasSetoriais.VisualizarGraficoClick(Sender: TObject);
+begin
+  AbrirWizardImpressao(False);
+end;
+
+procedure TfrmEtiquetasSetoriais.EnviarPOSDiretoClick(Sender: TObject);
+begin
+  AbrirWizardImpressao(True);
 end;
 
 end.

@@ -10,10 +10,11 @@
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
     </BuildModes>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="4">
       <Item1><PackageName Value="Printer4Lazarus"/></Item1>
       <Item2><PackageName Value="lazbarcodes"/></Item2>
-      <Item3><PackageName Value="LCL"/></Item3>
+      <Item3><PackageName Value="zcomponent"/></Item3>
+      <Item4><PackageName Value="LCL"/></Item4>
     </RequiredPackages>
     <Units Count="1">
       <Unit0>

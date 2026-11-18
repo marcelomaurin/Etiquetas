@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Grids,
   ComCtrls, ExtCtrls, DBGrids, DBCtrls, Buttons, Menus, PrintersDlgs, relticket,
-  relticket02, DB, csvdataset, ZConnection, dmbase;
+  relticket02, DB, csvdataset, ZConnection, dmbase, crudfinalidade;
 
 type
 
@@ -69,6 +69,7 @@ type
     procedure btAddtoPrintClick(Sender: TObject);
     procedure tsSearchShow(Sender: TObject);
   private
+    procedure AbrirCrudTabelaClick(Sender: TObject);
 
   public
     procedure AddtoPrint();
@@ -225,11 +226,37 @@ begin
   //fdmbase.Free();
 end;
 
+procedure TfrmTicket.AbrirCrudTabelaClick(Sender: TObject);
+var
+  Dlg: TfrmCrudFinalidade;
+begin
+  Dlg := TfrmCrudFinalidade.CreateComFinalidade(Self, 'classica_product', False);
+  try
+    Dlg.ShowModal;
+  finally
+    Dlg.Free;
+  end;
+  fdmBase.product();
+end;
+
 procedure TfrmTicket.FormCreate(Sender: TObject);
+var
+  PnlRodape: TPanel;
+  BtnCrud: TButton;
 begin
   //fdmbase := TdmBase.create(self);
   PageControl1.ActivePage := tsSearch;
   fdmBase.opendb;
+  PnlRodape := TPanel.Create(Self);
+  PnlRodape.Parent := Self;
+  PnlRodape.Align := alBottom;
+  PnlRodape.Height := 40;
+  PnlRodape.BevelOuter := bvNone;
+  BtnCrud := TButton.Create(Self);
+  BtnCrud.Parent := PnlRodape;
+  BtnCrud.Caption := 'Gerenciar Tabela Produtos (CRUD / Importar / Exportar / Limpar)';
+  BtnCrud.SetBounds(8, 6, 420, 28);
+  BtnCrud.OnClick := @AbrirCrudTabelaClick;
 end;
 
 procedure TfrmTicket.Image1Click(Sender: TObject);

@@ -4,8 +4,9 @@ unit pulseira;
 
 interface
 
-uses Classes, SysUtils, Forms, Controls, StdCtrls, Graphics, Dialogs,
-  Spin, Printers, RLReport, RLBarcode, RLConsts, RLTypes;
+uses Classes, SysUtils, Math, Forms, Controls, StdCtrls, Graphics, Dialogs,
+  Spin, Printers, PrintersDlgs, RLReport, RLBarcode, RLConsts, RLTypes,
+  ExtCtrls, tabelafinalidade, crudfinalidade, wizardimpressao;
 
 type
   TPulseiraDados = record
@@ -17,6 +18,12 @@ type
   private
     Bebe, Mae, Identificador, DataNascimento, HoraNascimento: TEdit;
     Inicio, Area: TFloatSpinEdit;
+    FPainelBanco: TPainelBancoFinalidade;
+    procedure ExecutarWizardPulseira(const OpcaoPapel: TOpcaoPapelWizard;
+      Modo: TModoImpressaoWizard; Repeticoes: Integer;
+      const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
+    procedure CarregarValoresBanco(const Valores: array of string);
+    procedure ObterValoresBanco(out Valores: TStringArray);
     procedure Visualizar(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
@@ -149,7 +156,7 @@ begin
   Caption := 'Pulseira de bebê — Zebra — 25 × 285,03 mm';
   Position := poScreenCenter;
   BorderStyle := bsDialog;
-  ClientWidth := 570; ClientHeight := 500;
+  ClientWidth := 570; ClientHeight := 604;
   Bebe := Campo('Nome do bebê (em branco: RN de + nome da mãe)', 15);
   Mae := Campo('Nome da mãe *', 80);
   Identificador := Campo('Identificador / atendimento * (até 24 caracteres)', 145);
@@ -158,28 +165,145 @@ begin
   HoraNascimento := Campo('Hora de nascimento (hh:mm, opcional)', 275);
   Inicio := Medida('Início da impressão (mm)', 20, 10);
   Area := Medida('Comprimento da área útil (mm)', 295, 110);
+  FPainelBanco := TPainelBancoFinalidade.Create(Self);
+  FPainelBanco.Parent := Self;
+  FPainelBanco.SetBounds(20, 405, 530, 100);
+  FPainelBanco.OnCarregarValores := @CarregarValoresBanco;
+  FPainelBanco.OnObterValores := @ObterValoresBanco;
+  FPainelBanco.DefinirFinalidade('pulseira');
   with TLabel.Create(Self) do begin
     Parent := Self; WordWrap := True;
-    SetBounds(20, 405, 530, 42);
+    SetBounds(20, 512, 530, 42);
     Caption := 'Térmica branca, uma cor. Use o driver Zebra já utilizado no sistema, papel 25 × 285,03 mm e escala 100%. Ajuste a área útil à pulseira.';
   end;
   Botao := TButton.Create(Self); Botao.Parent := Self;
   Botao.Caption := 'Pré-visualizar / imprimir';
-  Botao.SetBounds(290, 458, 260, 30); Botao.OnClick := @Visualizar;
+  Botao.SetBounds(290, 560, 260, 30); Botao.OnClick := @Visualizar;
+end;
+
+procedure TfrmPulseira.CarregarValoresBanco(const Valores: array of string);
+begin
+  if Length(Valores) > 0 then Bebe.Text := Valores[0];
+  if Length(Valores) > 1 then Mae.Text := Valores[1];
+  if Length(Valores) > 2 then Identificador.Text := Valores[2];
+  if Length(Valores) > 3 then DataNascimento.Text := Valores[3];
+  if Length(Valores) > 4 then HoraNascimento.Text := Valores[4];
+  if (Length(Valores) > 5) and (Trim(Valores[5]) <> '') then
+    Inicio.Value := StrToFloatDef(StringReplace(Valores[5], ',', '.', [rfReplaceAll]), Inicio.Value);
+  if (Length(Valores) > 6) and (Trim(Valores[6]) <> '') then
+    Area.Value := StrToFloatDef(StringReplace(Valores[6], ',', '.', [rfReplaceAll]), Area.Value);
+end;
+
+procedure TfrmPulseira.ObterValoresBanco(out Valores: TStringArray);
+begin
+  SetLength(Valores, 7);
+  Valores[0] := Trim(Bebe.Text);
+  Valores[1] := Trim(Mae.Text);
+  Valores[2] := Trim(Identificador.Text);
+  Valores[3] := Trim(DataNascimento.Text);
+  Valores[4] := Trim(HoraNascimento.Text);
+  Valores[5] := FormatFloat('0.00', Inicio.Value);
+  Valores[6] := FormatFloat('0.00', Area.Value);
+end;
+
+procedure TfrmPulseira.ExecutarWizardPulseira(const OpcaoPapel: TOpcaoPapelWizard;
+  Modo: TModoImpressaoWizard; Repeticoes: Integer;
+  const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
+var
+  Itens: array of TPulseiraDados;
+  I, Qtd: Integer;
+  Relatorio: TRLReport;
+  Dlg: TPrintDialog;
+  function ConverterLinha(const L: TLinhaTabela): TPulseiraDados;
+  begin
+    if Length(L.Valores) > 0 then Result.Bebe := Trim(L.Valores[0]) else Result.Bebe := '';
+    if Length(L.Valores) > 1 then Result.Mae := Trim(L.Valores[1]) else Result.Mae := '';
+    if Length(L.Valores) > 2 then Result.Identificador := Trim(L.Valores[2]) else Result.Identificador := '';
+    if Length(L.Valores) > 3 then Result.DataNascimento := Trim(L.Valores[3]) else Result.DataNascimento := '';
+    if Length(L.Valores) > 4 then Result.HoraNascimento := Trim(L.Valores[4]) else Result.HoraNascimento := '';
+    if (Length(L.Valores) > 5) and (Trim(L.Valores[5]) <> '') then
+      Result.InicioMM := StrToFloatDef(StringReplace(L.Valores[5], ',', '.', [rfReplaceAll]), Inicio.Value)
+    else
+      Result.InicioMM := Inicio.Value;
+    if (Length(L.Valores) > 6) and (Trim(L.Valores[6]) <> '') then
+      Result.AreaMM := StrToFloatDef(StringReplace(L.Valores[6], ',', '.', [rfReplaceAll]), Area.Value)
+    else
+      Result.AreaMM := Area.Value;
+  end;
+begin
+  if Modo = miwUmRegistroNVezes then
+  begin
+    Qtd := Max(1, Repeticoes);
+    SetLength(Itens, Qtd);
+    for I := 0 to Qtd - 1 do
+      Itens[I] := ConverterLinha(Registros[0]);
+  end
+  else
+  begin
+    Qtd := Length(Registros);
+    SetLength(Itens, Qtd);
+    for I := 0 to Qtd - 1 do
+      Itens[I] := ConverterLinha(Registros[I]);
+  end;
+  if Length(Itens) = 0 then Exit;
+
+  try
+    if ApenasPrevia then
+    begin
+      Relatorio := CriarRelatorioPulseira(Self, Itens[0]);
+      try
+        Relatorio.PrintDialog := False;
+        Relatorio.PreviewModal;
+      finally
+        Relatorio.Free;
+      end;
+      Exit;
+    end;
+
+    Dlg := TPrintDialog.Create(Self);
+    try
+      if not Dlg.Execute then Exit;
+    finally
+      Dlg.Free;
+    end;
+
+    for I := 0 to High(Itens) do
+    begin
+      Relatorio := CriarRelatorioPulseira(Self, Itens[I]);
+      try
+        Relatorio.PrintDialog := False;
+        Relatorio.Print;
+      finally
+        Relatorio.Free;
+      end;
+    end;
+    ShowMessage(Format('%d pulseira(s) enviada(s) para impressão.', [Length(Itens)]));
+  except
+    on E: Exception do
+      MessageDlg('Pulseira', E.Message, mtError, [mbOK], 0);
+  end;
 end;
 
 procedure TfrmPulseira.Visualizar(Sender: TObject);
-var D: TPulseiraDados; Relatorio: TRLReport;
+var
+  Opcoes: TOpcoesPapelWizard;
+  ValoresAtuais: TStringArray;
+  Wiz: TfrmWizardImpressao;
 begin
-  D.Bebe := Trim(Bebe.Text); D.Mae := Trim(Mae.Text);
-  D.Identificador := Trim(Identificador.Text);
-  D.DataNascimento := Trim(DataNascimento.Text);
-  D.HoraNascimento := Trim(HoraNascimento.Text);
-  D.InicioMM := Inicio.Value; D.AreaMM := Area.Value;
+  SetLength(Opcoes, 1);
+  Opcoes[0].Codigo := 'pulseira';
+  Opcoes[0].Descricao := 'Pulseira Neonatal Zebra (25 x 285,03 mm)';
+  Opcoes[0].ChaveFinalidade := 'pulseira';
+  ObterValoresBanco(ValoresAtuais);
+  Wiz := TfrmWizardImpressao.CreateWizard(Self, 'pulseira', Opcoes, 0, ValoresAtuais, 1);
   try
-    Relatorio := CriarRelatorioPulseira(Self, D);
-    try Relatorio.PreviewModal; finally Relatorio.Free; end;
-  except on E: Exception do MessageDlg('Pulseira', E.Message, mtError, [mbOK], 0); end;
+    Wiz.OnExecutarImpressao := @ExecutarWizardPulseira;
+    Wiz.ShowModal;
+  finally
+    Wiz.Free;
+  end;
+  if Assigned(FPainelBanco) then
+    FPainelBanco.AtualizarLista;
 end;
 
 end.

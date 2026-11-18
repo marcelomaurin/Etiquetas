@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
   ExtDlgs, Dialogs, Spin, Printers, PrintersDlgs, ubarcodes, URIParser, LCLIntf, LCLType,
-  qrdesenho;
+  qrdesenho, tabelafinalidade, crudfinalidade, wizardimpressao;
 
 type
   TfrmQRMidia = class(TForm)
@@ -24,7 +24,14 @@ type
     FAviso: TLabel;
     FErro: string;
     FAtualizando: Boolean;
+    FCaminhoImagem: string;
+    FPainelBanco: TPainelBancoFinalidade;
     function PastaFundos: string;
+    procedure ExecutarWizardQR(const OpcaoPapel: TOpcaoPapelWizard;
+      Modo: TModoImpressaoWizard; Repeticoes: Integer;
+      const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
+    procedure CarregarValoresBanco(const Valores: array of string);
+    procedure ObterValoresBanco(out Valores: TStringArray);
     procedure Atualizar(Sender: TObject);
     procedure FinalidadeChange(Sender: TObject);
     procedure FormatoChange(Sender: TObject);
@@ -115,8 +122,18 @@ begin
   Rodape := TPanel.Create(Self);
   Rodape.Parent := Self;
   Rodape.Align := alBottom;
-  Rodape.Height := 100;
+  Rodape.Height := 178;
   Rodape.BevelOuter := bvNone;
+  FPainelBanco := TPainelBancoFinalidade.Create(Self);
+  FPainelBanco.Parent := Rodape;
+  FPainelBanco.Align := alBottom;
+  FPainelBanco.BorderSpacing.Left := 20;
+  FPainelBanco.BorderSpacing.Right := 20;
+  FPainelBanco.BorderSpacing.Bottom := 8;
+  FPainelBanco.Height := 72;
+  FPainelBanco.OnCarregarValores := @CarregarValoresBanco;
+  FPainelBanco.OnObterValores := @ObterValoresBanco;
+  FPainelBanco.DefinirFinalidade('qr_midia');
   Direita := TPanel.Create(Self);
   Direita.Parent := Self;
   Direita.Align := alClient;
@@ -415,13 +432,81 @@ end;
 procedure TfrmQRMidia.CarregarImagemArquivo(const Caminho: string);
 begin
   FImagem.LoadFromFile(Caminho);
+  FCaminhoImagem := Caminho;
   Atualizar(Self);
 end;
 
 procedure TfrmQRMidia.RemoverImagem(Sender: TObject);
 begin
   FImagem.Clear;
+  FCaminhoImagem := '';
   Atualizar(Self);
+end;
+
+procedure TfrmQRMidia.CarregarValoresBanco(const Valores: array of string);
+var
+  Idx: Integer;
+begin
+  FAtualizando := True;
+  try
+    if Length(Valores) > 0 then
+    begin
+      Idx := StrToIntDef(Valores[0], -1);
+      if (Idx >= 0) and (Idx < FFinalidade.Items.Count) then
+        FFinalidade.ItemIndex := Idx;
+    end;
+    if Length(Valores) > 1 then FLink.Text := Valores[1];
+    if Length(Valores) > 2 then FTitulo.Text := Valores[2];
+    if Length(Valores) > 3 then FTexto.Text := Valores[3];
+    if Length(Valores) > 4 then FChamada.Text := Valores[4];
+    if Length(Valores) > 5 then
+    begin
+      Idx := StrToIntDef(Valores[5], 0);
+      if (Idx >= 0) and (Idx < FFundo.Items.Count) then
+      begin
+        FFundo.ItemIndex := Idx;
+        FundoChange(nil);
+      end;
+    end;
+    if Length(Valores) > 6 then
+    begin
+      Idx := StrToIntDef(Valores[6], 0);
+      if (Idx >= 0) and (Idx < FFormato.Items.Count) then
+        FFormato.ItemIndex := Idx;
+    end;
+    if (Length(Valores) > 7) and (StrToIntDef(Valores[7], 0) > 0) then
+      FLargura.Value := StrToIntDef(Valores[7], FLargura.Value);
+    if (Length(Valores) > 8) and (StrToIntDef(Valores[8], 0) > 0) then
+      FAltura.Value := StrToIntDef(Valores[8], FAltura.Value);
+    if (Length(Valores) > 9) and (Trim(Valores[9]) <> '') and FileExists(Valores[9]) then
+    begin
+      FImagem.LoadFromFile(Valores[9]);
+      FCaminhoImagem := Valores[9];
+    end
+    else
+    begin
+      FImagem.Clear;
+      FCaminhoImagem := '';
+    end;
+  finally
+    FAtualizando := False;
+  end;
+  Atualizar(Self);
+end;
+
+procedure TfrmQRMidia.ObterValoresBanco(out Valores: TStringArray);
+begin
+  SetLength(Valores, 10);
+  Valores[0] := IntToStr(FFinalidade.ItemIndex);
+  Valores[1] := Trim(FLink.Text);
+  Valores[2] := Trim(FTitulo.Text);
+  Valores[3] := Trim(FTexto.Text);
+  Valores[4] := Trim(FChamada.Text);
+  Valores[5] := IntToStr(FFundo.ItemIndex);
+  Valores[6] := IntToStr(FFormato.ItemIndex);
+  Valores[7] := IntToStr(FLargura.Value);
+  Valores[8] := IntToStr(FAltura.Value);
+  Valores[9] := FCaminhoImagem;
 end;
 
 procedure TfrmQRMidia.AbrirLink(Sender: TObject);
@@ -454,34 +539,86 @@ begin
   end;
 end;
 
-procedure TfrmQRMidia.Imprimir(Sender: TObject);
-var D: TPrintDialog; W, H: Integer;
+procedure TfrmQRMidia.ExecutarWizardQR(const OpcaoPapel: TOpcaoPapelWizard;
+  Modo: TModoImpressaoWizard; Repeticoes: Integer;
+  const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
+var
+  D: TPrintDialog;
+  I, Qtd, W, H: Integer;
+  Itens: TListaLinhasTabela;
 begin
-  Atualizar(Self);
-  if FErro <> '' then Exit;
+  if Modo = miwUmRegistroNVezes then
+  begin
+    Qtd := Max(1, Repeticoes);
+    SetLength(Itens, Qtd);
+    for I := 0 to Qtd - 1 do Itens[I] := Registros[0];
+  end
+  else
+    Itens := Registros;
+
+  if Length(Itens) = 0 then Exit;
+
+  if ApenasPrevia then
+  begin
+    CarregarValoresBanco(Itens[0].Valores);
+    if FErro <> '' then
+      ShowMessage(FErro)
+    else
+      ShowMessage('Prévia atualizada na janela do editor de QR Code.');
+    Exit;
+  end;
+
   D := TPrintDialog.Create(Self);
   try
     D.Options := [poPrintToFile];
     if not D.Execute then Exit;
-    W := Round(FLargura.Value * Printer.XDPI / 25.4);
-    H := Round(FAltura.Value * Printer.YDPI / 25.4);
-    if (W > Printer.PageWidth) or (H > Printer.PageHeight) then
-    begin
-      ShowMessage('O formato excede a área imprimível. Ajuste o papel nas propriedades da impressora ou reduza as dimensões.');
-      Exit;
-    end;
-    Printer.Title := FTitulo.Text;
+    Printer.Title := 'Etiquetas QR Code';
     Printer.BeginDoc;
     try
-      Printer.Canvas.StretchDraw(Rect(0, 0, W, H), FPreview.Picture.Bitmap);
+      for I := 0 to High(Itens) do
+      begin
+        CarregarValoresBanco(Itens[I].Valores);
+        if FErro <> '' then
+          raise Exception.Create(FErro);
+        W := Round(FLargura.Value * Printer.XDPI / 25.4);
+        H := Round(FAltura.Value * Printer.YDPI / 25.4);
+        if (W > Printer.PageWidth) or (H > Printer.PageHeight) then
+          raise Exception.Create('O formato excede a área imprimível. Ajuste o papel ou reduza as dimensões.');
+        if I > 0 then
+          Printer.NewPage;
+        Printer.Canvas.StretchDraw(Rect(0, 0, W, H), FPreview.Picture.Bitmap);
+      end;
       Printer.EndDoc;
     except
       Printer.Abort;
       raise;
     end;
+    ShowMessage(Format('%d etiqueta(s) QR Code enviada(s) para impressão.', [Length(Itens)]));
   finally
     D.Free;
   end;
+end;
+
+procedure TfrmQRMidia.Imprimir(Sender: TObject);
+var
+  Opcoes: TOpcoesPapelWizard;
+  ValoresAtuais: TStringArray;
+  Wiz: TfrmWizardImpressao;
+begin
+  SetLength(Opcoes, 1);
+  Opcoes[0].Codigo := 'qr_midia';
+  Opcoes[0].Descricao := Format('QR Code (%d x %d mm)', [FLargura.Value, FAltura.Value]);
+  Opcoes[0].ChaveFinalidade := 'qr_midia';
+  ObterValoresBanco(ValoresAtuais);
+  Wiz := TfrmWizardImpressao.CreateWizard(Self, 'qr_midia', Opcoes, 0, ValoresAtuais, 1);
+  try
+    Wiz.OnExecutarImpressao := @ExecutarWizardQR;
+    Wiz.ShowModal;
+  finally
+    Wiz.Free;
+  end;
+  if Assigned(FPainelBanco) then
+    FPainelBanco.AtualizarLista;
 end;
 
 end.

@@ -4,8 +4,9 @@ unit etiquetasmedicas;
 
 interface
 
-uses Classes, SysUtils, Forms, Controls, StdCtrls, Graphics, Dialogs,
-  Printers, RLReport, RLBarcode, RLConsts, RLTypes;
+uses Classes, SysUtils, Math, Forms, Controls, StdCtrls, Graphics, Dialogs,
+  Printers, PrintersDlgs, RLReport, RLBarcode, RLConsts, RLTypes,
+  tabelafinalidade, crudfinalidade, wizardimpressao;
 
 type
   TModeloMedico = (emDespacho, emExame);
@@ -14,6 +15,12 @@ type
   private
     FModelo: TModeloMedico;
     FCampos: array[0..11] of TEdit;
+    FPainelBanco: TPainelBancoFinalidade;
+    procedure ExecutarWizardMedico(const OpcaoPapel: TOpcaoPapelWizard;
+      Modo: TModoImpressaoWizard; Repeticoes: Integer;
+      const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
+    procedure CarregarValoresBanco(const Valores: array of string);
+    procedure ObterValoresBanco(out Valores: TStringArray);
     procedure Visualizar(Sender: TObject);
   public
     constructor CreateModelo(AOwner: TComponent; Modelo: TModeloMedico);
@@ -187,10 +194,10 @@ begin
   Position := poScreenCenter; BorderStyle := bsDialog;
   if Modelo = emDespacho then begin
     Caption := 'Despacho médico e laboratorial — 100 × 150 mm';
-    ClientWidth := 820; ClientHeight := 505; Ultimo := 11;
+    ClientWidth := 820; ClientHeight := 590; Ultimo := 11;
   end else begin
     Caption := 'Exame laboratorial — 51 × 25 mm';
-    ClientWidth := 550; ClientHeight := 370; Ultimo := 3;
+    ClientWidth := 550; ClientHeight := 482; Ultimo := 3;
   end;
   for I := 0 to Ultimo do
   begin
@@ -205,25 +212,161 @@ begin
     FCampos[I].MaxLength := 300;
   end;
   if Modelo = emDespacho then begin FCampos[7].Text := '1'; FCampos[8].Text := '1'; end;
+  FPainelBanco := TPainelBancoFinalidade.Create(Self);
+  FPainelBanco.Parent := Self;
+  FPainelBanco.OnCarregarValores := @CarregarValoresBanco;
+  FPainelBanco.OnObterValores := @ObterValoresBanco;
+  if Modelo = emDespacho then
+  begin
+    FPainelBanco.SetBounds(20, 405, ClientWidth - 40, 72);
+    FPainelBanco.DefinirFinalidade('medica_despacho');
+  end
+  else
+  begin
+    FPainelBanco.SetBounds(20, 276, ClientWidth - 40, 100);
+    FPainelBanco.DefinirFinalidade('medica_exame');
+  end;
   L := TLabel.Create(Self); L.Parent := Self; L.WordWrap := True;
-  L.SetBounds(20, ClientHeight - 105, ClientWidth - 40, 58);
+  L.SetBounds(20, ClientHeight - 102, ClientWidth - 40, 56);
   if Modelo = emDespacho then
     L.Caption := 'Etiqueta própria de despacho. Informe conservação e observações conforme o produto. Selecione papel 100 × 150 mm na impressora, em escala 100%.'
-  else L.Caption := 'Papel 51 × 25 mm, escala 100%. Use identificador curto; números em quantidade par ocupam menos espaço no código de barras. Os dados são usados somente nesta impressão.';
+  else L.Caption := 'Papel 51 × 25 mm, escala 100%. Use identificador curto; números em quantidade par ocupam menos espaço no código de barras.';
   B := TButton.Create(Self); B.Parent := Self;
   B.Caption := 'Pré-visualizar / imprimir';
   B.SetBounds(ClientWidth - 280, ClientHeight - 42, 260, 30);
   B.OnClick := @Visualizar;
 end;
 
-procedure TfrmEtiquetasMedicas.Visualizar(Sender: TObject);
-var C: TCamposMedicos; I: Integer; R: TRLReport;
+procedure TfrmEtiquetasMedicas.CarregarValoresBanco(const Valores: array of string);
+var
+  I, Ultimo: Integer;
 begin
-  for I := 0 to High(C) do if Assigned(FCampos[I]) then C[I] := Trim(FCampos[I].Text) else C[I] := '';
+  if FModelo = emDespacho then Ultimo := 11 else Ultimo := 3;
+  for I := 0 to Ultimo do
+    if Assigned(FCampos[I]) then
+    begin
+      if I <= High(Valores) then
+        FCampos[I].Text := Valores[I]
+      else
+        FCampos[I].Text := '';
+    end;
+end;
+
+procedure TfrmEtiquetasMedicas.ObterValoresBanco(out Valores: TStringArray);
+var
+  I, Ultimo: Integer;
+begin
+  if FModelo = emDespacho then Ultimo := 11 else Ultimo := 3;
+  SetLength(Valores, Ultimo + 1);
+  for I := 0 to Ultimo do
+    if Assigned(FCampos[I]) then
+      Valores[I] := Trim(FCampos[I].Text)
+    else
+      Valores[I] := '';
+end;
+
+procedure TfrmEtiquetasMedicas.ExecutarWizardMedico(
+  const OpcaoPapel: TOpcaoPapelWizard; Modo: TModoImpressaoWizard;
+  Repeticoes: Integer; const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
+var
+  Itens: array of TCamposMedicos;
+  I, J, Qtd: Integer;
+  R: TRLReport;
+  Dlg: TPrintDialog;
+begin
+  if Modo = miwUmRegistroNVezes then
+  begin
+    Qtd := Max(1, Repeticoes);
+    SetLength(Itens, Qtd);
+    for I := 0 to Qtd - 1 do
+      for J := 0 to High(Itens[I]) do
+        if J <= High(Registros[0].Valores) then
+          Itens[I][J] := Trim(Registros[0].Valores[J])
+        else
+          Itens[I][J] := '';
+  end
+  else
+  begin
+    Qtd := Length(Registros);
+    SetLength(Itens, Qtd);
+    for I := 0 to Qtd - 1 do
+      for J := 0 to High(Itens[I]) do
+        if J <= High(Registros[I].Valores) then
+          Itens[I][J] := Trim(Registros[I].Valores[J])
+        else
+          Itens[I][J] := '';
+  end;
+  if Length(Itens) = 0 then Exit;
+
   try
-    R := RelatorioMedico(Self, FModelo, C);
-    try R.PreviewModal; finally R.Free; end;
-  except on E: Exception do MessageDlg('Etiqueta', E.Message, mtError, [mbOK], 0); end;
+    if ApenasPrevia then
+    begin
+      R := RelatorioMedico(Self, FModelo, Itens[0]);
+      try
+        R.PrintDialog := False;
+        R.PreviewModal;
+      finally
+        R.Free;
+      end;
+      Exit;
+    end;
+
+    Dlg := TPrintDialog.Create(Self);
+    try
+      if not Dlg.Execute then Exit;
+    finally
+      Dlg.Free;
+    end;
+
+    for I := 0 to High(Itens) do
+    begin
+      R := RelatorioMedico(Self, FModelo, Itens[I]);
+      try
+        R.PrintDialog := False;
+        R.Print;
+      finally
+        R.Free;
+      end;
+    end;
+    ShowMessage(Format('%d etiqueta(s) enviada(s) para impressão.', [Length(Itens)]));
+  except
+    on E: Exception do
+      MessageDlg('Etiqueta', E.Message, mtError, [mbOK], 0);
+  end;
+end;
+
+procedure TfrmEtiquetasMedicas.Visualizar(Sender: TObject);
+var
+  Opcoes: TOpcoesPapelWizard;
+  ValoresAtuais: TStringArray;
+  Chave: string;
+  Wiz: TfrmWizardImpressao;
+begin
+  SetLength(Opcoes, 1);
+  if FModelo = emDespacho then
+  begin
+    Chave := 'medica_despacho';
+    Opcoes[0].Codigo := Chave;
+    Opcoes[0].Descricao := 'Despacho médico e laboratorial (100 x 150 mm)';
+  end
+  else
+  begin
+    Chave := 'medica_exame';
+    Opcoes[0].Codigo := Chave;
+    Opcoes[0].Descricao := 'Exame laboratorial (51 x 25 mm)';
+  end;
+  Opcoes[0].ChaveFinalidade := Chave;
+
+  ObterValoresBanco(ValoresAtuais);
+  Wiz := TfrmWizardImpressao.CreateWizard(Self, Chave, Opcoes, 0, ValoresAtuais, 1);
+  try
+    Wiz.OnExecutarImpressao := @ExecutarWizardMedico;
+    Wiz.ShowModal;
+  finally
+    Wiz.Free;
+  end;
+  if Assigned(FPainelBanco) then
+    FPainelBanco.AtualizarLista;
 end;
 
 end.

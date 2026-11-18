@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
   Buttons, DBCtrls, StdCtrls, DBGrids, Menus, ubarcodes, AnchorDockPanel,
   Printers, PrintersDlgs, LCLIntf, LCLType,
-  rxduallist, dmbase, DB, setmain, etfarm, aiposprinter, imp_generico;
+  dmbase, DB, setmain, etfarm, aiposprinter, imp_generico,
+  crudfinalidade;
 
 type
 
@@ -119,6 +120,7 @@ type
     procedure rgTipoEtiquetaClick(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
   private
+    procedure AbrirCrudTabelaClick(Sender: TObject);
 
   public
     procedure Pesquisar();
@@ -143,7 +145,23 @@ begin
   Close;
 end;
 
+procedure Tfrmetqlab.AbrirCrudTabelaClick(Sender: TObject);
+var
+  Dlg: TfrmCrudFinalidade;
+begin
+  Dlg := TfrmCrudFinalidade.CreateComFinalidade(Self, 'classica_etqlab', False);
+  try
+    Dlg.ShowModal;
+  finally
+    Dlg.Free;
+  end;
+  dsetqlab.DataSet.Close;
+  dsetqlab.DataSet.Open;
+end;
+
 procedure Tfrmetqlab.FormCreate(Sender: TObject);
+var
+  BtnCrud: TButton;
 begin
   pcMalaDireta.ActivePage := Wizzard;
   fdmbase.zseletqlab.Close();
@@ -151,6 +169,11 @@ begin
   dsetqlab.DataSet.Close();
   dsetqlab.DataSet.Open();
   CarregarConfiguracao();
+  BtnCrud := TButton.Create(Self);
+  BtnCrud.Parent := Panel1;
+  BtnCrud.Caption := 'Gerenciar Tabela (CRUD / CSV / Limpar)';
+  BtnCrud.SetBounds(360, 9, 265, 32);
+  BtnCrud.OnClick := @AbrirCrudTabelaClick;
 end;
 
 procedure Tfrmetqlab.CarregarConfiguracao();

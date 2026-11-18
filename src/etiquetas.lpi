@@ -22,8 +22,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="20"/>
-      <StringTable ProductName="Etiquetas" ProductVersion="0120" FileDescription="Etiquetas 0120"/>
+      <MinorVersionNr Value="21"/>
+      <StringTable ProductName="Etiquetas" ProductVersion="0121" FileDescription="Etiquetas 0121"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
@@ -35,7 +35,7 @@
     <RunParams>
       <FormatVersion Value="2"/>
     </RunParams>
-    <RequiredPackages Count="10">
+    <RequiredPackages Count="9">
       <Item1>
         <PackageName Value="Printer4Lazarus"/>
       </Item1>
@@ -49,25 +49,22 @@
         <PackageName Value="fortes324forlaz"/>
       </Item4>
       <Item5>
-        <PackageName Value="rxnew"/>
+        <PackageName Value="lnetvisual"/>
       </Item5>
       <Item6>
-        <PackageName Value="lnetvisual"/>
+        <PackageName Value="FCL"/>
       </Item6>
       <Item7>
-        <PackageName Value="FCL"/>
+        <PackageName Value="zcomponent"/>
       </Item7>
       <Item8>
-        <PackageName Value="zcomponent"/>
+        <PackageName Value="lazbarcodes"/>
       </Item8>
       <Item9>
-        <PackageName Value="lazbarcodes"/>
-      </Item9>
-      <Item10>
         <PackageName Value="LCL"/>
-      </Item10>
+      </Item9>
     </RequiredPackages>
-    <Units Count="30">
+    <Units Count="33">
       <Unit0>
         <Filename Value="etiquetas.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -243,6 +240,18 @@
         <Filename Value="enviosarquivo.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit29>
+      <Unit30>
+        <Filename Value="tabelafinalidade.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="crudfinalidade.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="wizardimpressao.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit32>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

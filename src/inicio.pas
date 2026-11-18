@@ -58,10 +58,10 @@ const
   Suave = $796B60;
   Azul = $C66A26;
   Borda = $E9E2DA;
-  NomesImp: array[0..3] of string = ('Zebra / rolo', 'Térmica 80 mm',
-    'Térmica 58 mm', 'Laser / jato de tinta');
-  InfoImp: array[0..3] of string = ('Etiquetas adesivas em rolo', 'Bobina para balcão e PDV',
-    'Bobina compacta / portátil', 'Folhas Pimaco A4 e Carta');
+  NomesImp: array[0..3] of string = ('Zebra / Ribbon (rolo)', 'Térmica 80 mm (80 col)',
+    'Térmica 55 / 58 mm', 'Convencional · Papel A4');
+  InfoImp: array[0..3] of string = ('Etiquetas adesivas com ou sem ribbon', 'Bobina térmica 80 mm (PDV / balcão)',
+    'Bobina compacta 55/58 mm (40–55 col)', 'Exclusivo Papel A4 / Carta (Laser e Jato)');
 
 constructor TCartaoInicio.Create(AOwner: TComponent);
 begin
@@ -348,46 +348,84 @@ begin
     FModelos.Delete(0);
   end;
   Modelo('Manuais e vídeos · QR Code', 'Link, título, texto e imagem em uma etiqueta', 'Conteúdo digital', 7, 1000);
-  Modelo('Mercado Livre · envios', 'Importar etiqueta original PDF, ZIP ou ZPL', 'Logística', 5, 1002);
-  if FTipo < 3 then
-  begin
-    case FTipo of
-      0: S := 'Rolo adesivo';
-      1: S := 'Bobina 80 mm';
-      2: S := 'Bobina 58 mm';
+  case FTipo of
+    0:
+    begin
+      S := 'Rolo adesivo / Ribbon';
+      Modelo('Mercado Livre · envios', 'Importar etiqueta original PDF, ZIP ou ZPL', 'Logística', 5, 1002);
+      Modelo('Preços e gôndola', S + ' · preço por kg / litro', 'Varejo', 0, 7);
+      Modelo('Padaria e açougue', S + ' · código EAN-13', 'Varejo', 1, 8);
+      Modelo('Validade de produtos', S + ' · lote e conservação', 'Varejo', 2, 9);
+      Modelo('Tubos de coleta', S + ' · identificação de amostras', 'Saúde', 3, 0);
+      Modelo('Lâminas de laboratório', 'Exclusivo Ribbon · biópsia e citologia (25×15 mm)', 'Saúde', 3, 1);
+      Modelo('Bolsas de sangue', 'Exclusivo Ribbon · hemoterapia (100×70 mm)', 'Saúde', 4, 2);
+      Modelo('Transporte biológico', 'Exclusivo Ribbon · UN 3373 (100×100 mm)', 'Saúde', 5, 3);
+      Modelo('Medicamentos', S + ' · posologia', 'Saúde', 4, 4);
+      Modelo('Dose unitária', S + ' · fracionamento', 'Saúde', 4, 5);
+      Modelo('Soro e infusão', S + ' · identificação hospitalar', 'Saúde', 4, 6);
+      Modelo('Envio e despacho', S + ' · volumes e destinatário (100×150 mm)', 'Logística', 5, 10);
+      Modelo('Etiqueta tipo ML (150 × 100 mm)', S + ' · 150 mm comprimento × 100 mm altura', 'Logística', 5, 13);
+      Modelo('Patrimônio e ativo fixo', 'Exclusivo Ribbon · etiqueta durável (50×25 mm)', 'Identificação', 1, 14);
+      Modelo('Crachá de visitante', S + ' · visitante / acompanhante', 'Identificação', 6, 11);
+      Modelo('Crachá com foto', S + ' · funcionário / operador', 'Identificação', 6, 12);
+      Modelo('Pulseiras de bebê', 'Exclusivo Ribbon/Zebra · neonatal 25 × 285 mm', 'Saúde', 6, 1001);
     end;
-    Modelo('Preços e gôndola', S + ' · preço por kg / litro', 'Varejo', 0, 7);
-    Modelo('Padaria e açougue', S + ' · código EAN-13', 'Varejo', 1, 8);
-    Modelo('Validade de produtos', S + ' · lote e conservação', 'Varejo', 2, 9);
-    Modelo('Tubos de coleta', S + ' · identificação de amostras', 'Saúde', 3, 0);
-    Modelo('Lâminas de laboratório', S + ' · biópsia e citologia', 'Saúde', 3, 1);
-    Modelo('Bolsas de sangue', S + ' · hemoterapia', 'Saúde', 4, 2);
-    Modelo('Transporte biológico', S + ' · identificação UN 3373', 'Saúde', 5, 3);
-    Modelo('Medicamentos', S + ' · posologia', 'Saúde', 4, 4);
-    Modelo('Dose unitária', S + ' · fracionamento', 'Saúde', 4, 5);
-    Modelo('Soro e infusão', S + ' · identificação hospitalar', 'Saúde', 4, 6);
-    Modelo('Envio e despacho', S + ' · volumes e destinatário', 'Logística', 5, 10);
-    Modelo('Crachá de visitante', S + ' · visitante / acompanhante', 'Identificação', 6, 11);
-    Modelo('Crachá com foto', S + ' · funcionário / operador', 'Identificação', 6, 12);
-    if FTipo = 0 then
-      Modelo('Pulseiras de bebê', 'Identificação neonatal · 25 x 285 mm', 'Saúde', 6, 1001);
-  end
+    1:
+    begin
+      S := 'Bobina térmica 80 mm';
+      Modelo('Comanda e pedido 80 mm', 'Exclusivo Térmica 80 col · cozinha e balcão', 'Varejo', 1, 15);
+      Modelo('Senha de atendimento 80 mm', 'Exclusivo Térmica 80 col · recepção e fila', 'Identificação', 6, 16);
+      Modelo('Preços e gôndola', S + ' · preço por kg / litro', 'Varejo', 0, 7);
+      Modelo('Padaria e açougue', S + ' · código EAN-13', 'Varejo', 1, 8);
+      Modelo('Validade de produtos', S + ' · lote e conservação', 'Varejo', 2, 9);
+      Modelo('Tubos / comprovante coleta', S + ' · identificação de amostras', 'Saúde', 3, 0);
+      Modelo('Transporte biológico', S + ' · identificação UN 3373', 'Saúde', 5, 3);
+      Modelo('Medicamentos', S + ' · posologia', 'Saúde', 4, 4);
+      Modelo('Dose unitária', S + ' · fracionamento', 'Saúde', 4, 5);
+      Modelo('Soro e infusão', S + ' · identificação hospitalar', 'Saúde', 4, 6);
+      Modelo('Envio e despacho', S + ' · volumes e destinatário', 'Logística', 5, 10);
+      Modelo('Etiqueta tipo ML (80 mm)', S + ' · expedição em bobina 80 col', 'Logística', 5, 13);
+      Modelo('Crachá de visitante', S + ' · visitante / acompanhante', 'Identificação', 6, 11);
+      Modelo('Crachá de operador', S + ' · portaria / funcionário', 'Identificação', 6, 12);
+    end;
+    2:
+    begin
+      S := 'Bobina 55 / 58 mm';
+      Modelo('Sacola e delivery 55 mm', 'Exclusivo 55/58 mm · entrega compacta', 'Logística', 5, 17);
+      Modelo('Preço rápido corredor 55 mm', 'Exclusivo 55/58 mm · gôndola móvel', 'Varejo', 0, 18);
+      Modelo('Comanda resumida 55 mm', 'Exclusivo 55/58 mm · pedido portátil', 'Varejo', 1, 19);
+      Modelo('Senha / ticket portátil 55 mm', 'Exclusivo 55/58 mm · portaria e fila', 'Identificação', 6, 20);
+      Modelo('Preços e gôndola', S + ' · preço por kg / litro', 'Varejo', 0, 7);
+      Modelo('Padaria e açougue', S + ' · código EAN-13', 'Varejo', 1, 8);
+      Modelo('Validade de produtos', S + ' · lote e conservação', 'Varejo', 2, 9);
+      Modelo('Coleta domiciliar', S + ' · amostra portátil', 'Saúde', 3, 0);
+      Modelo('Medicamentos', S + ' · posologia', 'Saúde', 4, 4);
+      Modelo('Dose unitária', S + ' · beira-leito', 'Saúde', 4, 5);
+      Modelo('Soro e infusão', S + ' · identificação hospitalar', 'Saúde', 4, 6);
+      Modelo('Envio / sacola logística', S + ' · despacho compacto', 'Logística', 5, 10);
+      Modelo('Crachá de visitante', S + ' · passe rápido', 'Identificação', 6, 11);
+      Modelo('Crachá operador', S + ' · identificação compacta', 'Identificação', 6, 12);
+    end;
   else
-  begin
-    { Codes: purpose * 100 + sheet model, matching etiquetaspimaco enums. }
-    Modelo('Preços e gôndola', 'Pimaco A4255 · 27 por folha', 'Varejo', 0, 2);
-    Modelo('Código de barras', 'Pimaco A4251 · 65 por folha', 'Varejo', 1, 1);
-    Modelo('Preços em folha Carta', 'Pimaco 6180 · 30 por folha', 'Varejo', 0, 7);
-    Modelo('Cartaz de oferta', 'A4 inteiro · destaque de preço', 'Varejo', 0, 9);
-    Modelo('Validade de produtos', 'Pimaco A4255 · 27 por folha', 'Varejo', 2, 102);
-    Modelo('Lâminas e microtubos', 'Pimaco A4248 · 96 por folha', 'Saúde', 3, 200);
-    Modelo('Tubos de coleta', 'Pimaco A4251 · 65 por folha', 'Saúde', 3, 201);
-    Modelo('Medicamentos', 'Pimaco A4260 · 21 por folha', 'Saúde', 4, 303);
-    Modelo('Soro e farmácia', 'Pimaco A4262 · 14 por folha', 'Saúde', 4, 304);
-    Modelo('Envio e despacho', 'Pimaco A4268 · 4 por folha', 'Logística', 5, 406);
-    Modelo('Mala direta', 'Pimaco A4260 · 21 por folha', 'Logística', 5, 403);
-    Modelo('Envelopes e expedição', 'Pimaco Carta 6182 · 14 por folha', 'Logística', 5, 408);
-    Modelo('Crachás e identificação', 'Pimaco A4263 · 10 por folha', 'Identificação', 6, 505);
+    begin
+      { Codes: purpose * 100 + sheet model, matching etiquetaspimaco enums (Exclusivo Papel A4 / Carta). }
+      Modelo('Mercado Livre · PDF A4', 'Importar etiqueta original PDF em folha A4', 'Logística', 5, 1002);
+      Modelo('Etiqueta tipo ML em A4 (150 × 100 mm)', 'Exclusivo Papel A4 · 2 por folha (150 × 100 mm)', 'Logística', 5, 410);
+      Modelo('Aviso / identificação A4', 'Exclusivo Papel A4 · folha A4 inteira para caixa/setor', 'Logística', 5, 609);
+      Modelo('Preços e gôndola', 'Pimaco A4255 · 27 por folha A4', 'Varejo', 0, 2);
+      Modelo('Código de barras', 'Pimaco A4251 · 65 por folha A4', 'Varejo', 1, 1);
+      Modelo('Preços em folha Carta', 'Pimaco 6180 · 30 por folha', 'Varejo', 0, 7);
+      Modelo('Cartaz de oferta A4', 'Exclusivo Papel A4 · folha inteira de oferta', 'Varejo', 0, 9);
+      Modelo('Validade de produtos', 'Pimaco A4255 · 27 por folha A4', 'Varejo', 2, 102);
+      Modelo('Lâminas e microtubos', 'Pimaco A4248 · 96 por folha A4', 'Saúde', 3, 200);
+      Modelo('Tubos de coleta', 'Pimaco A4251 · 65 por folha A4', 'Saúde', 3, 201);
+      Modelo('Medicamentos', 'Pimaco A4260 · 21 por folha A4', 'Saúde', 4, 303);
+      Modelo('Soro e farmácia', 'Pimaco A4262 · 14 por folha A4', 'Saúde', 4, 304);
+      Modelo('Envio e despacho', 'Pimaco A4268 · 4 por folha A4', 'Logística', 5, 406);
+      Modelo('Mala direta', 'Pimaco A4260 · 21 por folha A4', 'Logística', 5, 403);
+      Modelo('Envelopes e expedição', 'Pimaco Carta 6182 · 14 por folha', 'Logística', 5, 408);
+      Modelo('Crachás e identificação', 'Pimaco A4263 · 10 por folha A4', 'Identificação', 6, 505);
+    end;
   end;
 end;
 

@@ -66,8 +66,12 @@ type
     function ImportReportDS(): boolean;
     function ImportEderecoDS(): boolean;
     function ImportEtqLabDS(): boolean;
+    function FindTemplateDatabase(): string;
+    function ResolveSQLiteLibrary(): string;
+    procedure EnsureSchema();
 
   public
+    function EnsureLocalDatabase(const ADestino: string = ''): boolean;
     procedure opendb();
     procedure closedb();
     procedure product();
@@ -95,22 +99,158 @@ implementation
 
 { TdmBase }
 
-uses main;
+uses main, FileUtil, tabelafinalidade;
+
+function TdmBase.FindTemplateDatabase(): string;
+var
+  AppDir: string;
+  Candidatos: array[0..2] of string;
+  I: Integer;
+begin
+  Result := '';
+  AppDir := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
+  Candidatos[0] := AppDir + 'db' + PathDelim + 'etiqueta.db';
+  Candidatos[1] := ExpandFileName(AppDir + '..' + PathDelim + 'db' + PathDelim + 'etiqueta.db');
+  Candidatos[2] := IncludeTrailingPathDelimiter(GetAppConfigDir(True)) + 'db' + PathDelim + 'etiqueta.db';
+
+  for I := Low(Candidatos) to High(Candidatos) do
+  begin
+    if FileExists(Candidatos[I]) then
+      Exit(Candidatos[I]);
+  end;
+end;
+
+function TdmBase.ResolveSQLiteLibrary(): string;
+var
+  AppDir: string;
+  Candidatos: array[0..2] of string;
+  I: Integer;
+begin
+  Result := Trim(FSetMain.SQLLITEDLL);
+  if (Result <> '') and FileExists(Result) then
+    Exit;
+
+  {$IFDEF WINDOWS}
+  AppDir := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
+  {$IFDEF WIN64}
+  Candidatos[0] := AppDir + 'sqlite\win64\sqlite3.dll';
+  Candidatos[2] := AppDir + 'libs\sqlite\win64\sqlite3.dll';
+  {$ELSE}
+  Candidatos[0] := AppDir + 'sqlite\win32\sqlite3.dll';
+  Candidatos[2] := AppDir + 'libs\sqlite\win32\sqlite3.dll';
+  {$ENDIF}
+  Candidatos[1] := AppDir + 'sqlite3.dll';
+
+  for I := Low(Candidatos) to High(Candidatos) do
+  begin
+    if FileExists(Candidatos[I]) then
+    begin
+      FSetMain.SQLLITEDLL := Candidatos[I];
+      Exit(Candidatos[I]);
+    end;
+  end;
+  {$ELSE}
+  if Result = '' then
+    Result := 'libsqlite3.so';
+  {$ENDIF}
+end;
+
+function TdmBase.EnsureLocalDatabase(const ADestino: string = ''): boolean;
+var
+  TargetDB, DirDB, TemplateDB: string;
+begin
+  TargetDB := Trim(ADestino);
+  if TargetDB = '' then
+    TargetDB := Trim(FSetMain.DB);
+  if TargetDB = '' then
+  begin
+    TargetDB := BancoLocalPadrao;
+    FSetMain.DB := TargetDB;
+  end;
+
+  DirDB := ExtractFilePath(TargetDB);
+  if (DirDB <> '') and (not DirectoryExists(DirDB)) then
+  begin
+    if not ForceDirectories(DirDB) then
+      Exit(False);
+  end;
+
+  if not FileExists(TargetDB) then
+  begin
+    TemplateDB := FindTemplateDatabase();
+    if (TemplateDB <> '') and (not SameText(TemplateDB, TargetDB)) and FileExists(TemplateDB) then
+      CopyFile(TemplateDB, TargetDB);
+  end;
+
+  Result := (DirDB = '') or DirectoryExists(DirDB);
+end;
+
+procedure TdmBase.EnsureSchema();
+const
+  DDLSelecao: array[0..2] of string = (
+    'CREATE TABLE IF NOT EXISTS selproduct (' +
+    '  idproduto INTEGER PRIMARY KEY AUTOINCREMENT,' +
+    '  productDesc char(20) not null,' +
+    '  productDetail char(40),' +
+    '  Detail01 char(20),' +
+    '  Detail02 char(20),' +
+    '  price char(20)' +
+    ')',
+    'CREATE TABLE IF NOT EXISTS selendereco (' +
+    '  Ind INTEGER PRIMARY KEY,' +
+    '  Nome var(40) NOT NULL,' +
+    '  TipoPessoa INTEGER NOT NULL,' +
+    '  Documento char(40),' +
+    '  Logradouro char(40),' +
+    '  Bairro char(40),' +
+    '  Cidade char(40),' +
+    '  CEP char(20),' +
+    '  Referencia char(40),' +
+    '  BARCODE STRING(20),' +
+    '  QRCODE STRING(200),' +
+    '  descprod STRING(200)' +
+    ')',
+    'CREATE TABLE IF NOT EXISTS seletqlab (' +
+    '  id INTEGER PRIMARY KEY AUTOINCREMENT,' +
+    '  rotulo01 STRING(60),' +
+    '  rotulo02 STRING(60),' +
+    '  barcode STRING(20)' +
+    ')'
+  );
+var
+  Q: TZQuery;
+  I: Integer;
+begin
+  if not zcon.Connected then
+    Exit;
+
+  CriarTodasTabelasFinalidade(zcon);
+
+  Q := TZQuery.Create(nil);
+  try
+    Q.Connection := zcon;
+    for I := Low(DDLSelecao) to High(DDLSelecao) do
+    begin
+      Q.SQL.Text := DDLSelecao[I];
+      Q.ExecSQL;
+    end;
+  finally
+    Q.Free;
+  end;
+end;
 
 procedure TdmBase.DataModuleCreate(Sender: TObject);
 begin
+  GConexaoFinalidade := zcon;
+  EnsureLocalDatabase(FSetMain.DB);
   zcon.Database := FSetMain.db;
-  zcon.LibraryLocation := FSetMain.SQLLITEDLL;
-
-  if (not FileExists(FSetMain.SQLLITEDLL)) or (not FileExists(FSetMain.DB)) then
-  begin
-    if Assigned(frmMain) then
-      frmMain.config();
-  end;
+  zcon.LibraryLocation := ResolveSQLiteLibrary();
 end;
 
 procedure TdmBase.DataModuleDestroy(Sender: TObject);
 begin
+  if GConexaoFinalidade = zcon then
+    GConexaoFinalidade := nil;
   zcon.Disconnect;
 end;
 
@@ -257,39 +397,41 @@ begin
   if zcon.Connected then
     zcon.Disconnect;
 
-  // Define os caminhos do banco de dados e da biblioteca SQLite
-  zcon.Database := FSetMain.DB;
-  zcon.LibraryLocation := FSetMain.SQLLITEDLL;
-
-  // Verifica se o arquivo do banco de dados e a biblioteca SQLite existem
-  if not FileExists(zcon.Database) or not FileExists(zcon.LibraryLocation) then
+  if not EnsureLocalDatabase(FSetMain.DB) then
   begin
-    ShowMessage('Arquivo de banco de dados ou biblioteca SQLite não encontrados. Configurando...');
-    config; // Chama a função de configuração se os arquivos não existirem
-    Exit;   // Sai do procedimento para evitar erros na conexão
+    ShowMessage('Não foi possível criar a pasta do banco de dados (' + ExtractFilePath(FSetMain.DB) + '). Configurando...');
+    config;
+    Exit;
   end;
 
-  // Conexão com o banco de dados se os arquivos existirem
-  if FileExists(zcon.LibraryLocation) then
+  // Define os caminhos do banco de dados e da biblioteca SQLite
+  zcon.Database := FSetMain.DB;
+  zcon.LibraryLocation := ResolveSQLiteLibrary();
+
+  {$IFDEF WINDOWS}
+  if (zcon.LibraryLocation = '') or (not FileExists(zcon.LibraryLocation)) then
   begin
-    try
-      zcon.Connect;
-      if zcon.Connected then
-      begin
-        selproduct();
-        Endereco();
-      end
-      else
-      begin
-        ShowMessage('Falha ao conectar ao banco de dados');
-      end;
-    except
+    ShowMessage('Biblioteca SQLite não encontrada. Configurando...');
+    config;
+    Exit;
+  end;
+  {$ENDIF}
+
+  try
+    zcon.Connect;
+    if zcon.Connected then
+    begin
+      EnsureSchema();
+      selproduct();
+      Endereco();
+    end
+    else
+    begin
       ShowMessage('Falha ao conectar ao banco de dados');
     end;
-  end
-  else
-  begin
-    ShowMessage('Biblioteca SQLite não encontrada');
+  except
+    on E: Exception do
+      ShowMessage('Falha ao conectar ao banco de dados: ' + E.Message);
   end;
 end;
 

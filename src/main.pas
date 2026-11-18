@@ -11,7 +11,7 @@ uses
   etiquetasnovas, etiquetaspimaco, inicio, qrmidia, mercadolivre;
 
 const
-  versao = '0120';
+  versao = '0121';
 
 type
 
@@ -276,19 +276,48 @@ procedure TfrmMain.ConfigurarMenuEAbasPorImpressora;
 
   procedure PopularMenuImpressora(MenuImp: TMenuItem; AModo: TModoImpressoraEtiqueta);
   begin
-    AddItemSetorial(MenuImp, 'Supermercado: Gôndola Preço + Kg/Litro', AModo, msSupGondolaKg);
-    AddItemSetorial(MenuImp, 'Supermercado: Balança Padaria/Açougue (EAN-13)', AModo, msSupBalancaPadaria);
-    AddItemSetorial(MenuImp, 'Supermercado/Saúde: Validade ANVISA RDC 216', AModo, msSupValidadeANVISA);
-    AddItemSetorial(MenuImp, 'Laboratório: Tubo de Coleta / Vacutainer', AModo, msLabTuboColeta);
-    AddItemSetorial(MenuImp, 'Laboratório: Lâmina de Biópsia / Citologia', AModo, msLabLaminaBiopsia);
-    AddItemSetorial(MenuImp, 'Laboratório: Bolsa de Sangue / Hemoterapia', AModo, msLabBolsaSangue);
-    AddItemSetorial(MenuImp, 'Laboratório: Transporte Biológico UN 3373', AModo, msLabTransporteBio);
-    AddItemSetorial(MenuImp, 'Farmácia: Medicamento Avulso / Posologia', AModo, msMedAvulsoPosologia);
-    AddItemSetorial(MenuImp, 'Farmácia Hospitalar: Dose Unitária / Fracionamento', AModo, msMedFracionamento);
-    AddItemSetorial(MenuImp, 'Hospitalar: Rótulo de Soro / Infusão EV', AModo, msMedSoroInfusao);
-    AddItemSetorial(MenuImp, 'Logística: Envio e Despacho de Produtos (Volumes)', AModo, msEnvioDespachoVolumes);
-    AddItemSetorial(MenuImp, 'Crachá: Visitante / Acompanhante Hospitalar', AModo, msCrachaVisitanteHosp);
-    AddItemSetorial(MenuImp, 'Crachá: Funcionário / Operador c/ Foto IA', AModo, msCrachaFuncionario);
+    if ModeloCompativelComImpressora(AModo, msSupGondolaKg) then
+      AddItemSetorial(MenuImp, 'Supermercado: Gôndola Preço + Kg/Litro', AModo, msSupGondolaKg);
+    if ModeloCompativelComImpressora(AModo, msSupBalancaPadaria) then
+      AddItemSetorial(MenuImp, 'Supermercado: Balança Padaria/Açougue (EAN-13)', AModo, msSupBalancaPadaria);
+    if ModeloCompativelComImpressora(AModo, msSupValidadeANVISA) then
+      AddItemSetorial(MenuImp, 'Supermercado/Saúde: Validade ANVISA RDC 216', AModo, msSupValidadeANVISA);
+    if ModeloCompativelComImpressora(AModo, msLabTuboColeta) then
+      AddItemSetorial(MenuImp, 'Laboratório: Tubo de Coleta / Vacutainer', AModo, msLabTuboColeta);
+    if ModeloCompativelComImpressora(AModo, msLabLaminaBiopsia) then
+      AddItemSetorial(MenuImp, 'Laboratório: Lâmina de Biópsia / Citologia', AModo, msLabLaminaBiopsia);
+    if ModeloCompativelComImpressora(AModo, msLabBolsaSangue) then
+      AddItemSetorial(MenuImp, 'Laboratório: Bolsa de Sangue / Hemoterapia', AModo, msLabBolsaSangue);
+    if ModeloCompativelComImpressora(AModo, msLabTransporteBio) then
+      AddItemSetorial(MenuImp, 'Laboratório: Transporte Biológico UN 3373', AModo, msLabTransporteBio);
+    if ModeloCompativelComImpressora(AModo, msMedAvulsoPosologia) then
+      AddItemSetorial(MenuImp, 'Farmácia: Medicamento Avulso / Posologia', AModo, msMedAvulsoPosologia);
+    if ModeloCompativelComImpressora(AModo, msMedFracionamento) then
+      AddItemSetorial(MenuImp, 'Farmácia Hospitalar: Dose Unitária / Fracionamento', AModo, msMedFracionamento);
+    if ModeloCompativelComImpressora(AModo, msMedSoroInfusao) then
+      AddItemSetorial(MenuImp, 'Hospitalar: Rótulo de Soro / Infusão EV', AModo, msMedSoroInfusao);
+    if ModeloCompativelComImpressora(AModo, msEnvioDespachoVolumes) then
+      AddItemSetorial(MenuImp, 'Logística: Envio e Despacho de Produtos (Volumes)', AModo, msEnvioDespachoVolumes);
+    if ModeloCompativelComImpressora(AModo, msEnvioML150x100) then
+      AddItemSetorial(MenuImp, 'Logística: Etiqueta Tipo ML (150 x 100 mm)', AModo, msEnvioML150x100);
+    if ModeloCompativelComImpressora(AModo, msRibbonPatrimonio) then
+      AddItemSetorial(MenuImp, 'Ribbon / Zebra: Patrimônio e Ativo Fixo (50 x 25 mm)', AModo, msRibbonPatrimonio);
+    if ModeloCompativelComImpressora(AModo, msTerm80ComandaPedido) then
+      AddItemSetorial(MenuImp, 'Térmica 80 col: Comanda / Pedido de Cozinha e Balcão', AModo, msTerm80ComandaPedido);
+    if ModeloCompativelComImpressora(AModo, msTerm80SenhaAtendimento) then
+      AddItemSetorial(MenuImp, 'Térmica 80 col: Senha / Ficha de Atendimento', AModo, msTerm80SenhaAtendimento);
+    if ModeloCompativelComImpressora(AModo, msTerm55SacolaDelivery) then
+      AddItemSetorial(MenuImp, 'Térmica 55/58 mm: Sacola / Delivery Compacta', AModo, msTerm55SacolaDelivery);
+    if ModeloCompativelComImpressora(AModo, msTerm55PrecoCorredor) then
+      AddItemSetorial(MenuImp, 'Térmica 55/58 mm: Preço Rápido de Corredor', AModo, msTerm55PrecoCorredor);
+    if ModeloCompativelComImpressora(AModo, msTerm55ComandaCompacta) then
+      AddItemSetorial(MenuImp, 'Térmica 55/58 mm: Comanda Resumida Portátil', AModo, msTerm55ComandaCompacta);
+    if ModeloCompativelComImpressora(AModo, msTerm55SenhaPortatil) then
+      AddItemSetorial(MenuImp, 'Térmica 55/58 mm: Senha / Ticket Portátil', AModo, msTerm55SenhaPortatil);
+    if ModeloCompativelComImpressora(AModo, msCrachaVisitanteHosp) then
+      AddItemSetorial(MenuImp, 'Crachá: Visitante / Acompanhante Hospitalar', AModo, msCrachaVisitanteHosp);
+    if ModeloCompativelComImpressora(AModo, msCrachaFuncionario) then
+      AddItemSetorial(MenuImp, 'Crachá: Funcionário / Operador c/ Foto IA', AModo, msCrachaFuncionario);
   end;
 
 var
@@ -301,20 +330,20 @@ begin
 
   // Renomeia as abas principais por tipo de impressora
   tbSobre.Caption := 'Sobre';
-  tbZebra.Caption := '1. Zebra (Rolo)';
+  tbZebra.Caption := '1. Zebra / Ribbon';
   tbThermal.Caption := '2. Térmica 80 Col (80mm)';
-  tsPrinter.Caption := '4. Laser / Jato (Pimaco A4)';
+  tsPrinter.Caption := '4. Convencional (Papel A4)';
 
-  // Cria a 3ª aba de impressora: Térmica 40 Colunas (Maquininha de Cartão 58mm)
+  // Cria a 3ª aba de impressora: Térmica 55/58 mm (40-55 Colunas)
   tbThermal40 := TTabSheet.Create(PageControl1);
   tbThermal40.PageControl := PageControl1;
-  tbThermal40.Caption := '3. Térmica 40 Col (Maquininha)';
+  tbThermal40.Caption := '3. Térmica 55/58 mm';
 
   LInfo40 := TLabel.Create(Self);
   LInfo40.Parent := tbThermal40;
   LInfo40.Font.Style := [fsBold];
-  LInfo40.SetBounds(16, 14, 500, 20);
-  LInfo40.Caption := 'Impressora Térmica 40 Colunas / 58mm (Tipo Maquininha de Cartão / Portátil)';
+  LInfo40.SetBounds(16, 14, 520, 20);
+  LInfo40.Caption := 'Impressora Térmica 55 / 58 mm (40–55 Colunas / Portátil)';
 
   CriarBotaoSetorial(tbThermal40, 'Supermercado: Preço Rápido / Gôndola 58mm', 16, 44, 245, 36, miTermica40Col, msSupGondolaKg);
   CriarBotaoSetorial(tbThermal40, 'Supermercado: Padaria/Açougue EAN-13 58mm', 275, 44, 245, 36, miTermica40Col, msSupBalancaPadaria);
@@ -326,6 +355,8 @@ begin
   CriarBotaoSetorial(tbThermal40, 'Logística: Etiqueta Sacola / Despacho 58mm', 275, 176, 245, 36, miTermica40Col, msEnvioDespachoVolumes);
   CriarBotaoSetorial(tbThermal40, 'Portaria: Crachá Visitante / Acompanhante', 16, 220, 245, 36, miTermica40Col, msCrachaVisitanteHosp);
   CriarBotaoSetorial(tbThermal40, 'Crachá Funcionário / Operador 58mm', 275, 220, 245, 36, miTermica40Col, msCrachaFuncionario);
+  CriarBotaoSetorial(tbThermal40, 'Delivery / Sacola Compacta 55mm', 16, 264, 245, 36, miTermica40Col, msTerm55SacolaDelivery);
+  CriarBotaoSetorial(tbThermal40, 'Preço Rápido de Corredor 55mm', 275, 264, 245, 36, miTermica40Col, msTerm55PrecoCorredor);
 
   // Adiciona os novos botões nas sub-abas de 1. Zebra (tbZebra)
   TabSheet7.Caption := 'Supermercado / Varejo';
@@ -350,6 +381,8 @@ begin
   CriarBotaoSetorial(TabSheet9, 'Despacho Produtos Multi-Volumes (100x150)', 250, 24, 265, 36, miZebraRolo, msEnvioDespachoVolumes);
   CriarBotaoSetorial(TabSheet9, 'Crachá Visitante / Acompanhante (80x50)', 250, 68, 265, 36, miZebraRolo, msCrachaVisitanteHosp);
   CriarBotaoSetorial(TabSheet9, 'Crachá Funcionário c/ Foto IA (54x86)', 250, 112, 265, 36, miZebraRolo, msCrachaFuncionario);
+  CriarBotaoSetorial(TabSheet9, 'Etiqueta Tipo ML (150 x 100 mm)', 250, 156, 265, 36, miZebraRolo, msEnvioML150x100);
+  CriarBotaoSetorial(TabSheet9, 'Patrimônio / Ativo Fixo Ribbon (50x25)', 250, 200, 265, 36, miZebraRolo, msRibbonPatrimonio);
 
   // Adiciona os novos botões nas sub-abas de 2. Térmica 80 Colunas (tbThermal)
   TabSheet5.Caption := 'Supermercado 80 Col';
@@ -359,6 +392,7 @@ begin
   CriarBotaoSetorial(TabSheet5, 'Gôndola / Promoção 80 Colunas', 20, 24, 245, 36, miTermica80Col, msSupGondolaKg);
   CriarBotaoSetorial(TabSheet5, 'Comanda / Balança Padaria EAN-13', 275, 24, 245, 36, miTermica80Col, msSupBalancaPadaria);
   CriarBotaoSetorial(TabSheet5, 'Validade ANVISA RDC 216 (80mm)', 20, 68, 245, 36, miTermica80Col, msSupValidadeANVISA);
+  CriarBotaoSetorial(TabSheet5, 'Comanda / Pedido Cozinha 80mm', 275, 68, 245, 36, miTermica80Col, msTerm80ComandaPedido);
 
   CriarBotaoSetorial(TabSheet4, 'Medicamento Avulso / Posologia 80mm', 248, 86, 260, 34, miTermica80Col, msMedAvulsoPosologia);
   CriarBotaoSetorial(TabSheet4, 'Dose Unitária / Fracionamento 80mm', 248, 126, 260, 34, miTermica80Col, msMedFracionamento);
@@ -369,6 +403,8 @@ begin
   CriarBotaoSetorial(TabSheet6, 'Transporte Biológico UN 3373 (80mm)', 275, 24, 245, 36, miTermica80Col, msLabTransporteBio);
   CriarBotaoSetorial(TabSheet6, 'Crachá Visitante / Acompanhante 80mm', 20, 68, 245, 36, miTermica80Col, msCrachaVisitanteHosp);
   CriarBotaoSetorial(TabSheet6, 'Crachá Funcionário / Operador 80mm', 275, 68, 245, 36, miTermica80Col, msCrachaFuncionario);
+  CriarBotaoSetorial(TabSheet6, 'Etiqueta Tipo ML (150x100mm) 80mm', 20, 112, 245, 36, miTermica80Col, msEnvioML150x100);
+  CriarBotaoSetorial(TabSheet6, 'Senha / Ficha de Atendimento 80mm', 275, 112, 245, 36, miTermica80Col, msTerm80SenhaAtendimento);
 
   // Adiciona os novos botões nas sub-abas de 4. Laser / Jato de Tinta - Pimaco (tsPrinter)
   TabSheet1.Caption := 'Supermercado (Pimaco/A4)';
@@ -394,6 +430,8 @@ begin
   CriarBotaoPimaco(TabSheet3, 'Pimaco A4268 (4/folha) - Despacho e Envio de Produtos', 180, 24, 330, 38, fpDespacho, pmA4268);
   CriarBotaoPimaco(TabSheet3, 'Pimaco A4260 (21/folha) - Mala Direta / Endereçamento', 180, 72, 330, 38, fpDespacho, pmA4260);
   CriarBotaoPimaco(TabSheet3, 'Pimaco Carta 6182 (14/folha) - Expedição / Envelopes', 180, 120, 330, 38, fpDespacho, pmCarta6182);
+  CriarBotaoPimaco(TabSheet3, 'Folha A4 - Etiqueta Tipo ML (2/folha · 150x100mm)', 180, 168, 330, 38, fpDespacho, pmA4ML150x100);
+  CriarBotaoPimaco(TabSheet3, 'Folha A4 Inteira - Aviso / Identificação de Setor', 180, 216, 330, 38, fpAvisoA4, pmCartazA4);
 
   CriarBotaoPimaco(TabSheet2, 'Pimaco A4263 (10/folha) - Crachá Visitante / Acompanhante', 20, 24, 480, 40, fpCracha, pmA4263);
   CriarBotaoPimaco(TabSheet2, 'Pimaco A4263 (10/folha) - Crachá Funcionário c/ Foto IA', 20, 74, 480, 40, fpCracha, pmA4263);
@@ -434,7 +472,7 @@ begin
 
   // Menus no topo separados pelas 4 impressoras
   miZebraMenu := TMenuItem.Create(Self);
-  miZebraMenu.Caption := '1. Impressora Zebra (Rolo)';
+  miZebraMenu.Caption := '1. Zebra / Ribbon (Rolo)';
   PopularMenuImpressora(miZebraMenu, miZebraRolo);
   MainMenu1.Items.Insert(1, miZebraMenu);
 
@@ -444,12 +482,14 @@ begin
   MainMenu1.Items.Insert(2, miTerm80Menu);
 
   miTerm40Menu := TMenuItem.Create(Self);
-  miTerm40Menu.Caption := '3. Térmica 40 Col (Maquininha)';
+  miTerm40Menu.Caption := '3. Térmica 55 / 58 mm (40–55 Col)';
   PopularMenuImpressora(miTerm40Menu, miTermica40Col);
   MainMenu1.Items.Insert(3, miTerm40Menu);
 
   miLaserPimacoMenu := TMenuItem.Create(Self);
-  miLaserPimacoMenu.Caption := '4. Laser / Jato (Pimaco A4)';
+  miLaserPimacoMenu.Caption := '4. Convencional (Exclusivo Papel A4 / Carta)';
+  AddItemPimaco(miLaserPimacoMenu, 'Folha A4 — Etiqueta Tipo ML (2/folha · 150 x 100 mm)', fpDespacho, pmA4ML150x100);
+  AddItemPimaco(miLaserPimacoMenu, 'Folha A4 — Aviso / Identificação de Caixa e Setor', fpAvisoA4, pmCartazA4);
   AddItemPimaco(miLaserPimacoMenu, 'Pimaco A4255 (27/folha) — Supermercado / Gôndola', fpSupermercado, pmA4255);
   AddItemPimaco(miLaserPimacoMenu, 'Pimaco A4251 (65/folha) — Preço / Código EAN-13', fpSupermercado, pmA4251);
   AddItemPimaco(miLaserPimacoMenu, 'Pimaco A4255 (27/folha) — Validade ANVISA RDC 216', fpValidadeANVISA, pmA4255);

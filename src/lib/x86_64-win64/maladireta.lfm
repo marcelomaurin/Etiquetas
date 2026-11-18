@@ -4435,6 +4435,14 @@ object frmMalaDireta: TfrmMalaDireta
             }
             OnClick = btAddtoPrintClick
           end
+          object btCadastrar: TSpeedButton
+            Left = 256
+            Height = 32
+            Top = 84
+            Width = 128
+            Caption = 'Cadastrar (CRUD)'
+            OnClick = btCadastrarClick
+          end
         end
         object DBGrid1: TDBGrid
           Left = 1

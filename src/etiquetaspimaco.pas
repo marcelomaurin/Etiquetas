@@ -5,9 +5,9 @@ unit etiquetaspimaco;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Spin, Graphics,
-  Dialogs, ExtDlgs, Printers, DB, RLReport, RLBarcode, RLConsts, RLTypes,
-  dmbase, setmain, imagefilters;
+  Classes, SysUtils, Math, Forms, Controls, StdCtrls, ExtCtrls, Spin, Graphics,
+  Dialogs, ExtDlgs, Printers, PrintersDlgs, DB, RLReport, RLBarcode, RLConsts, RLTypes,
+  dmbase, setmain, imagefilters, tabelafinalidade, crudfinalidade, wizardimpressao;
 
 type
   TModeloPimaco = (
@@ -20,7 +20,8 @@ type
     pmA4268,     // A4 -  4 etq (99,0 x 139,0 mm) - 2 col x 2 lin
     pmCarta6180, // Carta - 30 etq (66,7 x 25,4 mm) - 3 col x 10 lin
     pmCarta6182, // Carta - 14 etq (101,6 x 33,9 mm) - 2 col x 7 lin
-    pmCartazA4   // Cartaz Oferta A4 (190,0 x 277,0 mm) - 1 col x 1 lin
+    pmCartazA4,  // Cartaz Oferta A4 (190,0 x 277,0 mm) - 1 col x 1 lin
+    pmA4ML150x100// Papel A4 Exclusivo - 2 etq Tipo ML (150,0 x 100,0 mm) - 1 col x 2 lin
   );
 
   TFinalidadePimaco = (
@@ -29,7 +30,8 @@ type
     fpLaboratorio,    // Tubos de coleta, lâminas, amostras
     fpMedicamento,    // Medicamento avulso, posologia, dose unitária
     fpDespacho,       // Envio e despacho de produtos / logística
-    fpCracha          // Crachás de visitantes, acompanhantes e funcionários
+    fpCracha,         // Crachás de visitantes, acompanhantes e funcionários
+    fpAvisoA4         // Exclusivo A4: Aviso / Identificação de Caixa e Prateleira
   );
 
   TSpecPimaco = record
@@ -70,6 +72,12 @@ type
     chkFotoPB: TCheckBox;
     btnCarregarFoto: TButton;
     FCaminhoFoto: string;
+    FPainelBanco: TPainelBancoFinalidade;
+    procedure ExecutarWizardPimaco(const OpcaoPapel: TOpcaoPapelWizard;
+      Modo: TModoImpressaoWizard; Repeticoes: Integer;
+      const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
+    procedure CarregarValoresBanco(const Valores: array of string);
+    procedure ObterValoresBanco(out Valores: TStringArray);
     procedure AtualizarCampos(Sender: TObject);
     procedure AtualizarLimitesPosicao(Sender: TObject);
     procedure CarregarFotoClick(Sender: TObject);
@@ -116,7 +124,10 @@ const
      MargemEsq: 4.0; MargemTopo: 21.1; LarguraEtq: 101.6; AlturaEtq: 33.9; PassoH: 104.0; PassoV: 33.9),
     (Nome: 'Cartaz Promocional Supermercado A4 (Folha Inteira 210 x 297 mm - Oferta Gôndola)';
      PapelW: 210.0; PapelH: 297.0; Colunas: 1; Linhas: 1;
-     MargemEsq: 10.0; MargemTopo: 10.0; LarguraEtq: 190.0; AlturaEtq: 277.0; PassoH: 190.0; PassoV: 277.0)
+     MargemEsq: 10.0; MargemTopo: 10.0; LarguraEtq: 190.0; AlturaEtq: 277.0; PassoH: 190.0; PassoV: 277.0),
+    (Nome: 'Folha A4 Exclusiva · Etiqueta Tipo ML (A4 - 2 etq: 150,0 x 100,0 mm - 1x2)';
+     PapelW: 210.0; PapelH: 297.0; Colunas: 1; Linhas: 2;
+     MargemEsq: 30.0; MargemTopo: 38.5; LarguraEtq: 150.0; AlturaEtq: 100.0; PassoH: 150.0; PassoV: 120.0)
   );
 
 function MM(V: Double): Integer;
@@ -212,7 +223,10 @@ begin
     Borda.Pen.Width := 3;
     Borda.SetBounds(MM(X), MM(Y), MM(W), MM(H));
 
-    CriarLabel('OFERTA ESPECIAL', 5, 10, W - 10, 34, True, True);
+    if D.Finalidade = fpAvisoA4 then
+      CriarLabel('AVISO / IDENTIFICAÇÃO A4', 5, 14, W - 10, 28, True, True)
+    else
+      CriarLabel('OFERTA ESPECIAL', 5, 10, W - 10, 34, True, True);
     CriarLabel(TextoL1, 8, 45, W - 16, 26, True, True);
     CriarLabel(TextoL2, 8, 72, W - 16, 16, False, True);
     CriarLabel(TextoL4, 8, 115, W - 16, 68, True, True);
@@ -424,6 +438,16 @@ var
   PosX, PosY: Double;
   L1, L2, L3, L4, L5, Cod: string;
   UsouBanco: Boolean;
+  SpecTab: TTabelaFinalidade;
+  LinhasTab: TListaLinhasTabela;
+  DadosItem: TDadosPimaco;
+  function ValCampo(const Linha: TLinhaTabela; Idx: Integer): string;
+  begin
+    if Idx <= High(Linha.Valores) then
+      Result := Linha.Valores[Idx]
+    else
+      Result := '';
+  end;
 begin
   Spec := ObterSpecPimaco(D.Modelo);
   CapacidadeFolha := Spec.Colunas * Spec.Linhas;
@@ -448,7 +472,33 @@ begin
     UsouBanco := False;
     if D.UsarBancoSelecionado and Assigned(fdmBase) then
     begin
-      if (D.Finalidade = fpSupermercado) and fdmBase.zselproduct.Active and (not fdmBase.zselproduct.IsEmpty) then
+      if fdmBase.zcon.Connected and ObterTabelaFinalidade(ChaveTabelaPimaco(Ord(D.Finalidade)), SpecTab) then
+      begin
+        LinhasTab := CarregarRegistrosTabela(fdmBase.zcon, SpecTab, '');
+        if Length(LinhasTab) > 0 then
+        begin
+          UsouBanco := True;
+          SlotAtual := SlotInicial;
+          for I := High(LinhasTab) downto 0 do
+          begin
+            if SlotAtual >= CapacidadeFolha then Break;
+            Lin := SlotAtual div Spec.Colunas;
+            Col := SlotAtual mod Spec.Colunas;
+            PosX := Spec.MargemEsq + Col * Spec.PassoH;
+            PosY := Spec.MargemTopo + Lin * Spec.PassoV;
+            DadosItem := D;
+            if (D.Finalidade = fpCracha) and (ValCampo(LinhasTab[I], 6) <> '') then
+              DadosItem.CaminhoFoto := ValCampo(LinhasTab[I], 6);
+            DesenharCelulaPimaco(Result, Spec, DadosItem, PosX, PosY,
+              ValCampo(LinhasTab[I], 0), ValCampo(LinhasTab[I], 1),
+              ValCampo(LinhasTab[I], 2), ValCampo(LinhasTab[I], 3),
+              ValCampo(LinhasTab[I], 4), ValCampo(LinhasTab[I], 5), 1, 1);
+            Inc(SlotAtual);
+          end;
+        end;
+      end;
+
+      if (not UsouBanco) and (D.Finalidade = fpSupermercado) and fdmBase.zselproduct.Active and (not fdmBase.zselproduct.IsEmpty) then
       begin
         UsouBanco := True;
         SlotAtual := SlotInicial;
@@ -552,11 +602,11 @@ var
   BtnImprimir: TButton;
 begin
   inherited CreateNew(AOwner);
-  Caption := 'Laser / Jato de Tinta — Folhas Pimaco (A4 / Carta) e Cartazes';
+  Caption := 'Impressoras Convencionais — Exclusivo Papel A4 / Carta (Laser / Jato de Tinta)';
   Position := poScreenCenter;
   BorderStyle := bsDialog;
-  ClientWidth := 820;
-  ClientHeight := 560;
+  ClientWidth := 840;
+  ClientHeight := 648;
 
   L := TLabel.Create(Self);
   L.Parent := Self;
@@ -589,6 +639,7 @@ begin
   cbFinalidade.Items.Add('Medicamento Avulso / Posologia');
   cbFinalidade.Items.Add('Envio e Despacho de Produtos');
   cbFinalidade.Items.Add('Crachás (Visitante / Hospital / Varejo)');
+  cbFinalidade.Items.Add('Aviso / Identificação A4 (Exclusivo Papel A4)');
   cbFinalidade.ItemIndex := Ord(AFinalidade);
   cbFinalidade.OnChange := @AtualizarCampos;
 
@@ -676,20 +727,59 @@ begin
   btnCarregarFoto.SetBounds(22, 250, 200, 30);
   btnCarregarFoto.OnClick := @CarregarFotoClick;
 
+  FPainelBanco := TPainelBancoFinalidade.Create(Self);
+  FPainelBanco.Parent := Self;
+  FPainelBanco.SetBounds(20, 474, 800, 72);
+  FPainelBanco.OnCarregarValores := @CarregarValoresBanco;
+  FPainelBanco.OnObterValores := @ObterValoresBanco;
+
   L := TLabel.Create(Self);
   L.Parent := Self;
   L.WordWrap := True;
-  L.SetBounds(20, 480, 520, 42);
+  L.SetBounds(20, 554, 520, 42);
   L.Caption := 'Dica: Você pode reaproveitar folhas Pimaco já iniciadas informando a Linha e Coluna inicial da primeira etiqueta disponível na folha.';
 
   BtnImprimir := TButton.Create(Self);
   BtnImprimir.Parent := Self;
   BtnImprimir.Caption := 'Pré-visualizar / Imprimir Folha Pimaco';
-  BtnImprimir.SetBounds(540, 505, 260, 36);
+  BtnImprimir.SetBounds(560, 598, 260, 36);
   BtnImprimir.OnClick := @VisualizarClick;
 
   AtualizarLimitesPosicao(nil);
   AtualizarCampos(nil);
+end;
+
+procedure TfrmEtiquetasPimaco.CarregarValoresBanco(const Valores: array of string);
+var
+  I: Integer;
+begin
+  for I := 0 to 5 do
+  begin
+    if I <= High(Valores) then
+      edCampo[I].Text := Valores[I]
+    else
+      edCampo[I].Text := '';
+  end;
+  if (TFinalidadePimaco(cbFinalidade.ItemIndex) = fpCracha) and (Length(Valores) > 6) then
+  begin
+    FCaminhoFoto := Valores[6];
+    ProcessarFotoPreview;
+  end;
+end;
+
+procedure TfrmEtiquetasPimaco.ObterValoresBanco(out Valores: TStringArray);
+var
+  I, Total: Integer;
+begin
+  if TFinalidadePimaco(cbFinalidade.ItemIndex) = fpCracha then
+    Total := 7
+  else
+    Total := 6;
+  SetLength(Valores, Total);
+  for I := 0 to 5 do
+    Valores[I] := Trim(edCampo[I].Text);
+  if TFinalidadePimaco(cbFinalidade.ItemIndex) = fpCracha then
+    Valores[6] := FCaminhoFoto;
 end;
 
 procedure TfrmEtiquetasPimaco.AtualizarLimitesPosicao(Sender: TObject);
@@ -714,6 +804,8 @@ var
 begin
   Fin := TFinalidadePimaco(cbFinalidade.ItemIndex);
   pnlFoto.Visible := (Fin = fpCracha);
+  if Assigned(FPainelBanco) then
+    FPainelBanco.DefinirFinalidade(ChaveTabelaPimaco(Ord(Fin)));
   case Fin of
     fpSupermercado:
     begin
@@ -809,6 +901,21 @@ begin
       edCampo[5].Text := 'VIS20260304';
       ProcessarFotoPreview;
     end;
+    fpAvisoA4:
+    begin
+      lblCampo[0].Caption := 'Título Principal do Aviso / Caixa *';
+      lblCampo[1].Caption := 'Setor / Subtítulo';
+      lblCampo[2].Caption := 'Descrição / Instrução';
+      lblCampo[3].Caption := 'Destaque / Identificação *';
+      lblCampo[4].Caption := 'Responsável / Data';
+      lblCampo[5].Caption := 'Código de Barras (Opcional)';
+      edCampo[0].Text := 'IDENTIFICAÇÃO DE CAIXA / PALETE';
+      edCampo[1].Text := 'ALMOXARIFADO CENTRAL - SETOR B';
+      edCampo[2].Text := 'MANTER EM LOCAL SECO E AREJADO';
+      edCampo[3].Text := 'CORREDOR 03 · PRATELEIRA A';
+      edCampo[4].Text := 'Conferido em ' + FormatDateTime('dd/mm/yyyy', Now);
+      edCampo[5].Text := 'CX20260301';
+    end;
   end;
 end;
 
@@ -856,36 +963,155 @@ begin
     imgFotoProc.Picture.Assign(imgFotoOrig.Picture);
 end;
 
-procedure TfrmEtiquetasPimaco.VisualizarClick(Sender: TObject);
+procedure TfrmEtiquetasPimaco.ExecutarWizardPimaco(
+  const OpcaoPapel: TOpcaoPapelWizard; Modo: TModoImpressaoWizard;
+  Repeticoes: Integer; const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
 var
   D: TDadosPimaco;
+  Spec: TSpecPimaco;
+  ItensExpandidos: TListaLinhasTabela;
+  I, TotalItens, PosLista, SlotAtual, Capacidade, Offset, QtdPagina: Integer;
   R: TRLReport;
+  Dlg: TPrintDialog;
+  DadosItem: TDadosPimaco;
+  PosX, PosY: Double;
+  Lin, Col: Integer;
+  function ValCampo(const Linha: TLinhaTabela; Idx: Integer): string;
+  begin
+    if Idx <= High(Linha.Valores) then Result := Linha.Valores[Idx] else Result := '';
+  end;
 begin
-  D.Modelo := TModeloPimaco(cbModelo.ItemIndex);
+  D.Modelo := TModeloPimaco(StrToIntDef(OpcaoPapel.Codigo, cbModelo.ItemIndex));
+  if Ord(D.Modelo) <> cbModelo.ItemIndex then
+  begin
+    cbModelo.ItemIndex := Ord(D.Modelo);
+    AtualizarLimitesPosicao(nil);
+  end;
   D.Finalidade := TFinalidadePimaco(cbFinalidade.ItemIndex);
   D.LinhaInicial := seLinhaIni.Value;
   D.ColunaInicial := seColunaIni.Value;
   D.Quantidade := seQuantidade.Value;
-  D.UsarBancoSelecionado := chkUsarBanco.Checked;
-  D.Linha1 := Trim(edCampo[0].Text);
-  D.Linha2 := Trim(edCampo[1].Text);
-  D.Linha3 := Trim(edCampo[2].Text);
-  D.Linha4 := Trim(edCampo[3].Text);
-  D.Linha5 := Trim(edCampo[4].Text);
-  D.CodigoBarras := Trim(edCampo[5].Text);
+  D.UsarBancoSelecionado := False;
   D.CaminhoFoto := FCaminhoFoto;
   D.FotoPB := chkFotoPB.Checked;
-  try
-    R := CriarRelatorioPimaco(Self, D);
+
+  if Modo = miwUmRegistroNVezes then
+  begin
+    TotalItens := Max(1, Repeticoes);
+    SetLength(ItensExpandidos, TotalItens);
+    for I := 0 to TotalItens - 1 do
+      ItensExpandidos[I] := Registros[0];
+  end
+  else
+  begin
+    TotalItens := Length(Registros);
+    ItensExpandidos := Registros;
+  end;
+
+  if TotalItens = 0 then Exit;
+  Spec := ObterSpecPimaco(D.Modelo);
+  Capacidade := Spec.Colunas * Spec.Linhas;
+  Offset := (D.LinhaInicial - 1) * Spec.Colunas + (D.ColunaInicial - 1);
+  if (Offset < 0) or (Offset >= Capacidade) then
+  begin
+    MessageDlg('Etiquetas Pimaco / A4', 'Posição inicial excede a capacidade da folha.', mtWarning, [mbOK], 0);
+    Exit;
+  end;
+
+  if not ApenasPrevia then
+  begin
+    Dlg := TPrintDialog.Create(Self);
     try
-      R.PreviewModal;
+      if not Dlg.Execute then Exit;
     finally
-      R.Free;
+      Dlg.Free;
     end;
+  end;
+
+  PosLista := 0;
+  try
+    while PosLista < TotalItens do
+    begin
+      QtdPagina := Min(Capacidade - Offset, TotalItens - PosLista);
+      R := TRLReport.Create(Self);
+      try
+        R.PageSetup.PaperSize := fpCustom;
+        R.PageSetup.Orientation := poPortrait;
+        R.PageSetup.PaperWidth := Spec.PapelW;
+        R.PageSetup.PaperHeight := Spec.PapelH;
+        R.Margins.LeftMargin := 0;
+        R.Margins.TopMargin := 0;
+        R.Margins.RightMargin := 0;
+        R.Margins.BottomMargin := 0;
+        R.PrintDialog := False;
+
+        for I := 0 to QtdPagina - 1 do
+        begin
+          SlotAtual := Offset + I;
+          Lin := SlotAtual div Spec.Colunas;
+          Col := SlotAtual mod Spec.Colunas;
+          PosX := Spec.MargemEsq + Col * Spec.PassoH;
+          PosY := Spec.MargemTopo + Lin * Spec.PassoV;
+          DadosItem := D;
+          if (D.Finalidade = fpCracha) and (ValCampo(ItensExpandidos[PosLista + I], 6) <> '') then
+            DadosItem.CaminhoFoto := ValCampo(ItensExpandidos[PosLista + I], 6);
+          DesenharCelulaPimaco(R, Spec, DadosItem, PosX, PosY,
+            ValCampo(ItensExpandidos[PosLista + I], 0),
+            ValCampo(ItensExpandidos[PosLista + I], 1),
+            ValCampo(ItensExpandidos[PosLista + I], 2),
+            ValCampo(ItensExpandidos[PosLista + I], 3),
+            ValCampo(ItensExpandidos[PosLista + I], 4),
+            ValCampo(ItensExpandidos[PosLista + I], 5),
+            PosLista + I + 1, TotalItens);
+        end;
+
+        if ApenasPrevia then
+        begin
+          R.PreviewModal;
+          Break;
+        end
+        else
+          R.Print;
+      finally
+        R.Free;
+      end;
+
+      Inc(PosLista, QtdPagina);
+      Offset := 0;
+    end;
+    if not ApenasPrevia then
+      ShowMessage(Format('%d etiqueta(s) enviada(s) para impressão.', [TotalItens]));
   except
     on E: Exception do
-      MessageDlg('Etiquetas Pimaco / Laser', E.Message, mtError, [mbOK], 0);
+      MessageDlg('Etiquetas Pimaco / A4', E.Message, mtError, [mbOK], 0);
   end;
+end;
+
+procedure TfrmEtiquetasPimaco.VisualizarClick(Sender: TObject);
+var
+  Opcoes: TOpcoesPapelWizard;
+  M: TModeloPimaco;
+  ValoresAtuais: TStringArray;
+  Wiz: TfrmWizardImpressao;
+begin
+  SetLength(Opcoes, Ord(High(TModeloPimaco)) + 1);
+  for M := Low(TModeloPimaco) to High(TModeloPimaco) do
+  begin
+    Opcoes[Ord(M)].Codigo := IntToStr(Ord(M));
+    Opcoes[Ord(M)].Descricao := SpecsPimaco[M].Nome;
+    Opcoes[Ord(M)].ChaveFinalidade := ChaveTabelaPimaco(cbFinalidade.ItemIndex);
+  end;
+  ObterValoresBanco(ValoresAtuais);
+  Wiz := TfrmWizardImpressao.CreateWizard(Self, ChaveTabelaPimaco(cbFinalidade.ItemIndex),
+    Opcoes, cbModelo.ItemIndex, ValoresAtuais, seQuantidade.Value);
+  try
+    Wiz.OnExecutarImpressao := @ExecutarWizardPimaco;
+    Wiz.ShowModal;
+  finally
+    Wiz.Free;
+  end;
+  if Assigned(FPainelBanco) then
+    FPainelBanco.AtualizarLista;
 end;
 
 end.

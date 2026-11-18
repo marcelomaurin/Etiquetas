@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, EditBtn,
-  Buttons, ComCtrls, ExtCtrls, rxfolderlister, rxtoolbar, setmain, fileutil,
+  Buttons, ComCtrls, ExtCtrls, setmain, fileutil,
   PrintersDlgs;
 
 type
@@ -56,6 +56,8 @@ var
 
 implementation
 
+uses dmbase;
+
 {$R *.lfm}
 
 { Tfrmconfig }
@@ -72,13 +74,18 @@ begin
 end;
 
 procedure Tfrmconfig.CreateDB(local: String; destino: String);
+var
+  DirDestino, Origem: string;
 begin
-  {$IFDEF WINDOWS}
-    CopyFile(local+'etiqueta.db',destino);
-  {$ENDIF}
-  {$IFDEF LINUX}
-    CopyFile(local+'etiqueta.db',destino);
-  {$ENDIF}
+  DirDestino := ExtractFilePath(destino);
+  if (DirDestino <> '') and (not DirectoryExists(DirDestino)) then
+    ForceDirectories(DirDestino);
+
+  Origem := IncludeTrailingPathDelimiter(local) + 'etiqueta.db';
+  if FileExists(Origem) then
+    CopyFile(Origem, destino)
+  else if Assigned(fdmBase) then
+    fdmBase.EnsureLocalDatabase(destino);
 end;
 
 procedure Tfrmconfig.DropDB(destino: string);
@@ -102,21 +109,20 @@ end;
 
 procedure Tfrmconfig.btSaveClick(Sender: TObject);
 begin
+  if Trim(edDB.Text) = '' then
+    edDB.Text := BancoLocalPadrao;
+
   if not FileExists(edDB.text) then
-  begin
-   {$IFDEF WINDOWS}
-      CreateDB(ExtractFilePath(application.exename)+'db\',edDB.text);
-   {$ENDIF}
-   {$IFDEF LINUX}
-      CreateDB(ExtractFilePath(application.exename)+'db\',edDB.text);
-   {$ENDIF}
-  end;
+    CreateDB(IncludeTrailingPathDelimiter(ExtractFilePath(application.exename)) + 'db' + PathDelim, edDB.text);
+
   FSetMain.SQLLITEDLL:= edDLL.Text;
   FSetMain.db         := edDB.Text;
   FSetMain.EMPRESA    := edPessoa.Text;    // Novo: EMPRESA
   FSetMain.ENDERECO1  := edEndereco1.Text; // Novo: ENDERECO1
   FSetMain.ENDERECO2  := edEndereco2.Text; // Novo: ENDERECO2
   FSetMain.SalvaContexto(false);
+  if Assigned(fdmBase) {$IFDEF WINDOWS} and FileExists(FSetMain.SQLLITEDLL) {$ENDIF} then
+    fdmBase.opendb();
   close;
 end;
 

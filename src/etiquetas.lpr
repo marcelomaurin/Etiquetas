@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, anchordockpkg, rxnew, fortes324forlaz, lnetvisual, zcomponent,
+  Forms, anchordockpkg, fortes324forlaz, lnetvisual, zcomponent,
   main, etiquetasnovas, etiquetaspimaco
   { you can add units after this };
 
