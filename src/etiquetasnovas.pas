@@ -9,7 +9,7 @@ uses
   Spin, Graphics, Dialogs, ExtDlgs, Printers, PrintersDlgs, LCLType,
   RLReport, RLBarcode, RLConsts, RLTypes,
   setmain, aiposprinter, imp_generico, aiserial, imagefilters,
-  tabelafinalidade, crudfinalidade, wizardimpressao;
+  tabelafinalidade, crudfinalidade, wizardimpressao, saidaimpressora;
 
 type
   TModoImpressoraEtiqueta = (
@@ -81,8 +81,7 @@ type
     cbModeloEtiqueta: TComboBox;
     lblDimensao: TLabel;
     lblModoResumo: TLabel;
-    cbPortaPOS: TComboBox;
-    edHostPOS: TEdit;
+    pnlSaida: TPainelSaidaImpressora;   // protocolo + campos do TAIPOSPrinter
     seCopias: TSpinEdit;
 
     { Passo 2: Campos + CRUD + Seleção de Itens }
@@ -150,6 +149,7 @@ type
     procedure ObterValoresBanco(out Valores: TStringArray);
     procedure PopularModelosCompativeis(AModo: TModoImpressoraEtiqueta; ModeloAlvo: TModeloEtiquetaSetorial);
     procedure AtualizarInterface(Sender: TObject);
+    procedure SelecionarProtocoloPadrao(AModo: TModoImpressoraEtiqueta);
     procedure GerarEANBalancaClick(Sender: TObject);
     procedure SelecionarFotoClick(Sender: TObject);
     procedure PreviaGraficaClick(Sender: TObject);
@@ -724,35 +724,24 @@ begin
   L.Font.Style := [fsBold];
   L.SetBounds(28, 178, 400, 20);
 
-  L := TLabel.Create(Self);
-  L.Parent := tsPasso1;
-  L.Caption := 'Porta Serial / USB (TAIPOSPrinter):';
-  L.SetBounds(28, 210, 220, 18);
-  cbPortaPOS := TComboBox.Create(Self);
-  cbPortaPOS.Parent := tsPasso1;
-  cbPortaPOS.SetBounds(28, 232, 160, 26);
-  cbPortaPOS.Items.AddStrings(['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM10']);
-  cbPortaPOS.ItemIndex := 0;
+  { Protocolo primeiro; o painel mostra só os campos do protocolo escolhido. }
+  pnlSaida := TPainelSaidaImpressora.Create(Self);
+  pnlSaida.Parent := tsPasso1;
+  pnlSaida.Left := 28;
+  pnlSaida.Top := 210;
+  SelecionarProtocoloPadrao(AModo);
 
-  L := TLabel.Create(Self);
-  L.Parent := tsPasso1;
-  L.Caption := 'Ou IP Rede (Porta 9100, opcional):';
-  L.SetBounds(268, 210, 230, 18);
-  edHostPOS := TEdit.Create(Self);
-  edHostPOS.Parent := tsPasso1;
-  edHostPOS.SetBounds(268, 232, 200, 26);
-  edHostPOS.Text := '';
-
+  { Cópias sempre visível, em linha própria (não depende do protocolo). }
   L := TLabel.Create(Self);
   L.Parent := tsPasso1;
   L.Caption := 'Cópias / Volumes por item:';
-  L.SetBounds(508, 210, 200, 18);
+  L.SetBounds(28, 276, 200, 18);
   seCopias := TSpinEdit.Create(Self);
   seCopias.Parent := tsPasso1;
   seCopias.MinValue := 1;
   seCopias.MaxValue := 500;
   seCopias.Value := 1;
-  seCopias.SetBounds(508, 232, 100, 26);
+  seCopias.SetBounds(28, 298, 100, 26);
 
   { ================= PASSO 2: CRUD + Seleção de Itens ================= }
   pnlCrudTopo := TPanel.Create(Self);
@@ -959,6 +948,17 @@ begin
   end;
 end;
 
+procedure TfrmEtiquetasSetoriais.SelecionarProtocoloPadrao(AModo: TModoImpressoraEtiqueta);
+begin
+  if not Assigned(pnlSaida) then Exit;
+  { Sugestão inicial; o usuário pode trocar o protocolo no combo. }
+  case AModo of
+    miZebraRolo: pnlSaida.Protocolo := ppZpl;
+  else
+    pnlSaida.Protocolo := ppEscPos;
+  end;
+end;
+
 procedure TfrmEtiquetasSetoriais.AtualizarInterface(Sender: TObject);
 var
   W, H: Double;
@@ -966,7 +966,10 @@ var
 begin
   FModo := TModoImpressoraEtiqueta(cbModoImpressora.ItemIndex);
   if Sender = cbModoImpressora then
+  begin
     PopularModelosCompativeis(FModo, FModelo);
+    SelecionarProtocoloPadrao(FModo);
+  end;
   if (cbModeloEtiqueta.ItemIndex >= 0) and (cbModeloEtiqueta.ItemIndex < cbModeloEtiqueta.Items.Count) then
     FModelo := TModeloEtiquetaSetorial(PtrInt(cbModeloEtiqueta.Items.Objects[cbModeloEtiqueta.ItemIndex]));
   DimensoesPapelSetorial(FModo, FModelo, W, H);
@@ -1481,25 +1484,17 @@ begin
       end;
     end;
 
-    if Trim(edHostPOS.Text) <> '' then
-    begin
-      PosPrinter.InterfaceType := piEthernet;
-      PosPrinter.Host := Trim(edHostPOS.Text);
-      PosPrinter.Port := 9100;
-    end
-    else
-    begin
-      PosPrinter.InterfaceType := piSerial;
-      PosPrinter.DeviceName := TAISerialModem.NormalizeDeviceName(cbPortaPOS.Text);
-      PosPrinter.SerialBaud := 9600;
-    end;
+    { Protocolo e parâmetros vêm do Passo 1 (painel de saída): serial, rede
+      ou Padrão Windows (ppNative, impressora instalada escolhida). }
+    if not pnlSaida.Validar then Exit;
+    pnlSaida.ConfigurarPOS(PosPrinter);
 
     if not PosPrinter.OpenConnection then
     begin
       MessageDlg('Envio Direto TAIPOSPrinter',
         'Não foi possível abrir comunicação direta com a impressora (' +
-        PosPrinter.LastError + ').' + sLineBreak +
-        'Use a saída gráfica para imprimir via driver do Windows.',
+        pnlSaida.Descricao + ': ' + PosPrinter.LastError + ').' + sLineBreak +
+        'Confira o protocolo e os dados de conexão no Passo 1.',
         mtWarning, [mbOK], 0);
       Exit;
     end;
@@ -1539,7 +1534,8 @@ begin
       PosPrinter.CloseConnection;
     end;
 
-    ShowMessage(Format('Sucesso! %d etiqueta(s) enviada(s) via TAIPOSPrinter.', [TotalVol]));
+    ShowMessage(Format('Sucesso! %d etiqueta(s) enviada(s) via TAIPOSPrinter (%s).',
+      [TotalVol, pnlSaida.Descricao]));
   finally
     PosPrinter.Free;
   end;
@@ -1593,6 +1589,9 @@ procedure TfrmEtiquetasSetoriais.AvancarClick(Sender: TObject);
 var
   I, Marcados: Integer;
 begin
+  if (pcWizard.ActivePageIndex = 0) and not pnlSaida.Validar then
+    Exit;
+
   if pcWizard.ActivePageIndex = 1 then
   begin
     if ModeloUsaCrudLista(FModelo) then
@@ -1989,6 +1988,9 @@ var
 begin
   MontarLoteImpressao(Itens, Fotos);
   if Length(Itens) = 0 then Exit;
+  { No Padrão Windows, o diálogo já abre com a impressora escolhida no Passo 1. }
+  if pnlSaida.Protocolo = ppNative then
+    pnlSaida.AplicarImpressoraWindows;
   Dlg := TPrintDialog.Create(Self);
   try
     if not Dlg.Execute then Exit;

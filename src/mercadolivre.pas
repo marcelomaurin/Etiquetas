@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls, Dialogs,
-  Printers, PrintersDlgs, LCLIntf, enviosarquivo
+  Printers, PrintersDlgs, LCLIntf, enviosarquivo,
+  aiposprinter, imp_generico, saidaimpressora
   {$IFDEF WINDOWS}, Windows, WinSpool{$ENDIF};
 
 type
@@ -20,6 +21,9 @@ type
     FStatus: TLabel;
     FResumo: TMemo;
     FAcao: TButton;
+    FSaida: TPainelSaidaImpressora;
+    procedure EnviarZPLWindows(const NomeImpressora: string);
+    procedure EnviarZPLDireto;
     procedure Importar(Sender: TObject);
     procedure Selecionar(Sender: TObject);
     procedure Executar(Sender: TObject);
@@ -80,7 +84,7 @@ begin
   P := TPanel.Create(Self);
   P.Parent := Self;
   P.Align := alBottom;
-  P.Height := 124;
+  P.Height := 184;
   P.BevelOuter := bvNone;
   FStatus := TLabel.Create(Self);
   FStatus.Parent := P;
@@ -89,9 +93,18 @@ begin
   FStatus.WordWrap := True;
   FStatus.Caption := 'Nenhum arquivo importado. Etiqueta de envio Brasil: normalmente 100 x 150 mm. '
     + 'Bobinas de 58 / 80 mm não comportam esse formato; use uma Zebra de 100 mm ou PDF em A4.';
+  { Saída do ZPL: protocolo primeiro (ZPL por serial/rede ou Padrão Windows).
+    Só aparece para arquivo ZPL; PDF continua abrindo no leitor instalado. }
+  FSaida := TPainelSaidaImpressora.Create(Self);
+  FSaida.Parent := P;
+  FSaida.Left := 24;
+  FSaida.Top := 72;
+  FSaida.DefinirProtocolos([ppZpl, ppNative]);
+  FSaida.Protocolo := ppNative; // mantém o comportamento anterior (Zebra instalada no Windows)
+  FSaida.Visible := False;
   FAcao := TButton.Create(Self);
   FAcao.Parent := P;
-  FAcao.SetBounds(24, 78, 300, 34);
+  FAcao.SetBounds(24, 136, 300, 34);
   FAcao.Caption := 'Selecione uma etiqueta';
   FAcao.Enabled := False;
   FAcao.OnClick := @Executar;
@@ -154,6 +167,7 @@ procedure TfrmMercadoLivre.Selecionar(Sender: TObject);
 var Formato, Entrada: string;
 begin
   FAcao.Enabled := False;
+  FSaida.Visible := False;
   if (FLista.ItemIndex < 0) or (FCaminho.Count = 0) then Exit;
   Entrada := FLista.Items[FLista.ItemIndex];
   try
@@ -177,6 +191,7 @@ begin
         + LineEnding + LineEnding + 'Para conferir uma prévia visual no computador, importe a versão PDF da etiqueta.';
       FAcao.Caption := 'Enviar ZPL à impressora Zebra';
       FAcao.Enabled := FTipo = 0;
+      FSaida.Visible := FTipo = 0;
     end;
     FStatus.Caption := Formato + ' importado · ' + IntToStr(FDados.Size) + ' bytes · conteúdo original preservado.';
     if (Formato = 'ZPL') and (FTipo <> 0) then
@@ -191,16 +206,80 @@ begin
   end;
 end;
 
-procedure TfrmMercadoLivre.Executar(Sender: TObject);
+procedure TfrmMercadoLivre.EnviarZPLWindows(const NomeImpressora: string);
+{$IFDEF WINDOWS}
 var
-  Caminho: string;
-  D: TPrintDialog;
-  {$IFDEF WINDOWS}
   H: THandle;
   Doc: DOC_INFO_1W;
   Nome: UnicodeString;
   Enviado, Posicao: DWORD;
-  {$ENDIF}
+begin
+  Nome := UTF8Decode(NomeImpressora);
+  if not OpenPrinterW(PWideChar(Nome), @H, nil) then RaiseLastOSError;
+  try
+    FillChar(Doc, SizeOf(Doc), 0);
+    Doc.pDocName := 'Etiqueta Mercado Livre';
+    Doc.pDatatype := 'RAW';
+    if StartDocPrinterW(H, 1, @Doc) = 0 then RaiseLastOSError;
+    try
+      if not StartPagePrinter(H) then RaiseLastOSError;
+      Posicao := 0;
+      while Posicao < FDados.Size do
+      begin
+        if not WritePrinter(H, PByte(FDados.Memory) + Posicao, FDados.Size - Posicao, @Enviado) then RaiseLastOSError;
+        if Enviado = 0 then raise Exception.Create('A impressora não recebeu os dados.');
+        Inc(Posicao, Enviado);
+      end;
+      if not EndPagePrinter(H) then RaiseLastOSError;
+      if not EndDocPrinter(H) then RaiseLastOSError;
+    except
+      AbortPrinter(H);
+      raise;
+    end;
+  finally
+    ClosePrinter(H);
+  end;
+  FStatus.Caption := 'Etiqueta enviada à fila de impressão: ' + NomeImpressora;
+end;
+{$ELSE}
+begin
+  ShowMessage('Envio pelo Padrão Windows disponível apenas no Windows. Use ZPL por serial/rede ou a versão PDF.');
+end;
+{$ENDIF}
+
+procedure TfrmMercadoLivre.EnviarZPLDireto;
+var
+  PosPrinter: TAIPOSPrinter;
+  Bytes: array of Byte;
+begin
+  PosPrinter := TAIPOSPrinter.Create(Self);
+  try
+    PosPrinter.PrinterModel := pmElginL42DT;
+    FSaida.ConfigurarPOS(PosPrinter);
+    if not PosPrinter.OpenConnection then
+      raise Exception.Create('Não foi possível conectar à impressora (' +
+        FSaida.Descricao + '): ' + PosPrinter.LastError);
+    try
+      { OpenConnection já envia "^XA" (InitPrint do ZPL); "^XZ" fecha esse
+        formato vazio, sem imprimir, antes do arquivo original. }
+      PosPrinter.SendRawString('^XZ' + #10);
+      SetLength(Bytes, FDados.Size);
+      if FDados.Size > 0 then
+        Move(FDados.Memory^, Bytes[0], FDados.Size);
+      if not PosPrinter.SendRawBytes(Bytes) then
+        raise Exception.Create('Falha ao enviar o ZPL (' + FSaida.Descricao + '): ' + PosPrinter.LastError);
+    finally
+      PosPrinter.CloseConnection;
+    end;
+    FStatus.Caption := 'Etiqueta ZPL enviada: ' + FSaida.Descricao;
+  finally
+    PosPrinter.Free;
+  end;
+end;
+
+procedure TfrmMercadoLivre.Executar(Sender: TObject);
+var
+  Caminho: string;
 begin
   if not FAcao.Enabled then Exit;
   if TArquivoEnvio.Formato(FDados) = 'PDF' then
@@ -215,42 +294,19 @@ begin
     Exit;
   end;
   if FTipo <> 0 then Exit;
-  {$IFDEF WINDOWS}
-  D := TPrintDialog.Create(Self);
+  if not FSaida.Validar then Exit;
   try
-    if not D.Execute then Exit;
-    Nome := UTF8Decode(Printer.Printers[Printer.PrinterIndex]);
-    if not OpenPrinterW(PWideChar(Nome), @H, nil) then RaiseLastOSError;
-    try
-      FillChar(Doc, SizeOf(Doc), 0);
-      Doc.pDocName := 'Etiqueta Mercado Livre';
-      Doc.pDatatype := 'RAW';
-      if StartDocPrinterW(H, 1, @Doc) = 0 then RaiseLastOSError;
-      try
-        if not StartPagePrinter(H) then RaiseLastOSError;
-        Posicao := 0;
-        while Posicao < FDados.Size do
-        begin
-          if not WritePrinter(H, PByte(FDados.Memory) + Posicao, FDados.Size - Posicao, @Enviado) then RaiseLastOSError;
-          if Enviado = 0 then raise Exception.Create('A impressora não recebeu os dados.');
-          Inc(Posicao, Enviado);
-        end;
-        if not EndPagePrinter(H) then RaiseLastOSError;
-        if not EndDocPrinter(H) then RaiseLastOSError;
-      except
-        AbortPrinter(H);
-        raise;
-      end;
-    finally
-      ClosePrinter(H);
+    if FSaida.Protocolo = ppNative then
+      EnviarZPLWindows(FSaida.ImpressoraWindows)
+    else
+      EnviarZPLDireto;
+  except
+    on E: Exception do
+    begin
+      FStatus.Caption := 'Falha no envio: ' + E.Message;
+      MessageDlg('Mercado Livre · envio ZPL', E.Message, mtError, [mbOK], 0);
     end;
-    FStatus.Caption := 'Etiqueta enviada à fila de impressão: ' + UTF8Encode(Nome);
-  finally
-    D.Free;
   end;
-  {$ELSE}
-  ShowMessage('Envio direto ZPL disponível no Windows. Use a versão PDF neste sistema.');
-  {$ENDIF}
 end;
 
 procedure TfrmMercadoLivre.Ajuda(Sender: TObject);
