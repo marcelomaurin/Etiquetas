@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
   ExtDlgs, Dialogs, Spin, Printers, PrintersDlgs, ubarcodes, URIParser, LCLIntf, LCLType,
-  qrdesenho, tabelafinalidade, crudfinalidade, wizardimpressao;
+  qrdesenho, tabelafinalidade, crudfinalidade, wizardimpressao,
+  RLReport, RLTypes, RLConsts;
 
 type
   TfrmQRMidia = class(TForm)
@@ -26,6 +27,13 @@ type
     FAtualizando: Boolean;
     FCaminhoImagem: string;
     FPainelBanco: TPainelBancoFinalidade;
+    { Relatório Windows (FortesReport): uma página por etiqueta renderizada. }
+    FPaginasRel: TList;
+    FIndiceRel: Integer;
+    FImagemRel: TRLImage;
+    procedure RelatorioNeedData(Sender: TObject; var MoreData: Boolean);
+    procedure BandaBeforePrint(Sender: TObject; var PrintIt: Boolean);
+    procedure ImprimirRelatorio(ApenasPrevia: Boolean);
     function PastaFundos: string;
     procedure ExecutarWizardQR(const OpcaoPapel: TOpcaoPapelWizard;
       Modo: TModoImpressaoWizard; Repeticoes: Integer;
@@ -539,13 +547,87 @@ begin
   end;
 end;
 
+function MMRel(V: Double): Integer;
+begin
+  Result := Round(V * ScreenPPI / 25.4);
+end;
+
+procedure TfrmQRMidia.RelatorioNeedData(Sender: TObject; var MoreData: Boolean);
+begin
+  Inc(FIndiceRel);
+  MoreData := Assigned(FPaginasRel) and (FIndiceRel < FPaginasRel.Count);
+end;
+
+procedure TfrmQRMidia.BandaBeforePrint(Sender: TObject; var PrintIt: Boolean);
+begin
+  PrintIt := (FIndiceRel >= 0) and (FIndiceRel < FPaginasRel.Count);
+  if PrintIt then
+    FImagemRel.Picture.Assign(TBitmap(FPaginasRel[FIndiceRel]));
+end;
+
+{ Impressão pelo Windows no formato relatório (FortesReport), igual ao
+  Convencional/A4 e à impressão gráfica do assistente: página do tamanho do
+  formato escolhido (largura x altura em mm), sem margens, uma etiqueta por
+  página, com pré-visualização e escolha da impressora instalada. }
+procedure TfrmQRMidia.ImprimirRelatorio(ApenasPrevia: Boolean);
+var
+  R: TRLReport;
+  Banda: TRLBand;
+  W, H: Integer;
+begin
+  if (FPaginasRel = nil) or (FPaginasRel.Count = 0) then Exit;
+  W := FLargura.Value;
+  H := FAltura.Value;
+  R := TRLReport.Create(Self);
+  try
+    R.Title := 'Etiquetas QR Code';
+    R.PageSetup.PaperSize := fpCustom;
+    R.PageSetup.Orientation := poPortrait;
+    R.PageSetup.PaperWidth := W;
+    R.PageSetup.PaperHeight := H;
+    R.Margins.LeftMargin := 0;
+    R.Margins.TopMargin := 0;
+    R.Margins.RightMargin := 0;
+    R.Margins.BottomMargin := 0;
+    if (FFormato.ItemIndex = 1) and (W <= 190) and (H <= 277) then
+    begin
+      { Cartaz A4: folha A4 real, arte centralizada com margens. }
+      R.PageSetup.PaperSize := fpA4;
+      R.Margins.LeftMargin := (210 - W) / 2;
+      R.Margins.TopMargin := (297 - H) / 2;
+    end;
+    R.PrintDialog := True; // escolha da impressora instalada no Windows
+    R.OnNeedData := @RelatorioNeedData;
+
+    Banda := TRLBand.Create(R);
+    Banda.Parent := R;
+    Banda.BandType := btDetail;
+    Banda.Height := MMRel(H);
+    Banda.BeforePrint := @BandaBeforePrint;
+
+    FImagemRel := TRLImage.Create(R);
+    FImagemRel.Parent := Banda;
+    FImagemRel.Stretch := True;
+    FImagemRel.SetBounds(0, 0, MMRel(W), MMRel(H));
+
+    FIndiceRel := -1;
+    if ApenasPrevia then
+      R.PreviewModal
+    else
+      R.Print;
+  finally
+    FImagemRel := nil;
+    R.Free;
+  end;
+end;
+
 procedure TfrmQRMidia.ExecutarWizardQR(const OpcaoPapel: TOpcaoPapelWizard;
   Modo: TModoImpressaoWizard; Repeticoes: Integer;
   const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
 var
-  D: TPrintDialog;
-  I, Qtd, W, H: Integer;
+  I, Qtd: Integer;
   Itens: TListaLinhasTabela;
+  B: TBitmap;
 begin
   if Modo = miwUmRegistroNVezes then
   begin
@@ -558,44 +640,24 @@ begin
 
   if Length(Itens) = 0 then Exit;
 
-  if ApenasPrevia then
-  begin
-    CarregarValoresBanco(Itens[0].Valores);
-    if FErro <> '' then
-      ShowMessage(FErro)
-    else
-      ShowMessage('Prévia atualizada na janela do editor de QR Code.');
-    Exit;
-  end;
-
-  D := TPrintDialog.Create(Self);
+  { Renderiza cada etiqueta igual à prévia (fundo, imagem, título, texto,
+    QR Code e chamada) e entrega as páginas ao relatório. }
+  FPaginasRel := TList.Create;
   try
-    D.Options := [poPrintToFile];
-    if not D.Execute then Exit;
-    Printer.Title := 'Etiquetas QR Code';
-    Printer.BeginDoc;
-    try
-      for I := 0 to High(Itens) do
-      begin
-        CarregarValoresBanco(Itens[I].Valores);
-        if FErro <> '' then
-          raise Exception.Create(FErro);
-        W := Round(FLargura.Value * Printer.XDPI / 25.4);
-        H := Round(FAltura.Value * Printer.YDPI / 25.4);
-        if (W > Printer.PageWidth) or (H > Printer.PageHeight) then
-          raise Exception.Create('O formato excede a área imprimível. Ajuste o papel ou reduza as dimensões.');
-        if I > 0 then
-          Printer.NewPage;
-        Printer.Canvas.StretchDraw(Rect(0, 0, W, H), FPreview.Picture.Bitmap);
-      end;
-      Printer.EndDoc;
-    except
-      Printer.Abort;
-      raise;
+    for I := 0 to High(Itens) do
+    begin
+      CarregarValoresBanco(Itens[I].Valores);
+      if FErro <> '' then
+        raise Exception.Create(FErro);
+      B := TBitmap.Create;
+      FPaginasRel.Add(B);
+      B.Assign(FPreview.Picture.Bitmap);
     end;
-    ShowMessage(Format('%d etiqueta(s) QR Code enviada(s) para impressão.', [Length(Itens)]));
+    ImprimirRelatorio(ApenasPrevia);
   finally
-    D.Free;
+    for I := 0 to FPaginasRel.Count - 1 do
+      TBitmap(FPaginasRel[I]).Free;
+    FreeAndNil(FPaginasRel);
   end;
 end;
 
