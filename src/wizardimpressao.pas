@@ -382,7 +382,7 @@ begin
 
   btnAbrirCrud := TButton.Create(Self);
   btnAbrirCrud.Parent := PnlBotoesSel;
-  btnAbrirCrud.Caption := 'Gerenciar Tabela (CRUD / CSV)';
+  btnAbrirCrud.Caption := 'Gerenciar registros...';
   btnAbrirCrud.SetBounds(384, 1, 210, 26);
   btnAbrirCrud.OnClick := @AbrirCrudClick;
 

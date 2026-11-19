@@ -41,6 +41,22 @@ function ChaveTabelaPimaco(FinalidadeIndex: Integer): string;
 function ObterTabelaFinalidade(const Chave: string; out Spec: TTabelaFinalidade): Boolean;
 function ListarTodasTabelasFinalidade: TTabelasFinalidade;
 
+const
+  { Grupos exibidos no menu Cadastros e no gerenciador de tabelas, nesta ordem }
+  GRUPOS_TABELA_FINALIDADE: array[0..8] of string = (
+    'Supermercado / Varejo',
+    'Laboratório',
+    'Hospital & Farmácia',
+    'Logística / Envio',
+    'Crachás',
+    'Atendimento (Comanda / Senha)',
+    'QR Code e PIX',
+    'Outros',
+    'Clássicos'
+  );
+
+function GrupoTabelaFinalidade(const Spec: TTabelaFinalidade): string;
+
 function GerarSQLCriarTabela(const Spec: TTabelaFinalidade): string;
 procedure CriarTodasTabelasFinalidade(Conn: TZConnection);
 
@@ -539,6 +555,43 @@ function ListarTodasTabelasFinalidade: TTabelasFinalidade;
 begin
   InicializarRegistroTabelas;
   Result := Copy(GRegistroTabelas, 0, Length(GRegistroTabelas));
+end;
+
+function GrupoTabelaFinalidade(const Spec: TTabelaFinalidade): string;
+var
+  C: string;
+begin
+  C := LowerCase(Spec.Chave);
+  if Copy(C, 1, 9) = 'classica_' then
+    Exit('Clássicos');
+
+  if (C = 'setorial_7') or (C = 'setorial_8') or (C = 'setorial_9') or
+     (C = 'setorial_18') or (C = 'pimaco_0') or (C = 'pimaco_1') then
+    Exit('Supermercado / Varejo');
+
+  if (C = 'setorial_0') or (C = 'setorial_1') or (C = 'setorial_2') or
+     (C = 'setorial_3') or (C = 'pimaco_2') or (C = 'medica_exame') then
+    Exit('Laboratório');
+
+  if (C = 'setorial_4') or (C = 'setorial_5') or (C = 'setorial_6') or
+     (C = 'pimaco_3') or (C = 'pulseira') then
+    Exit('Hospital & Farmácia');
+
+  if (C = 'setorial_10') or (C = 'setorial_13') or (C = 'setorial_17') or
+     (C = 'pimaco_4') or (C = 'medica_despacho') then
+    Exit('Logística / Envio');
+
+  if (C = 'setorial_11') or (C = 'setorial_12') or (C = 'pimaco_5') then
+    Exit('Crachás');
+
+  if (C = 'setorial_15') or (C = 'setorial_16') or (C = 'setorial_19') or
+     (C = 'setorial_20') then
+    Exit('Atendimento (Comanda / Senha)');
+
+  if (C = 'qr_midia') or (C = 'pix') then
+    Exit('QR Code e PIX');
+
+  Result := 'Outros';
 end;
 
 function GerarSQLCriarTabela(const Spec: TTabelaFinalidade): string;

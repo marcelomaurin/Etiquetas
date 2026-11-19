@@ -254,8 +254,8 @@ begin
   PnlRodape.BevelOuter := bvNone;
   BtnCrud := TButton.Create(Self);
   BtnCrud.Parent := PnlRodape;
-  BtnCrud.Caption := 'Gerenciar Tabela Produtos (CRUD / Importar / Exportar / Limpar)';
-  BtnCrud.SetBounds(8, 6, 420, 28);
+  BtnCrud.Caption := 'Gerenciar registros de produtos...';
+  BtnCrud.SetBounds(8, 6, 240, 28);
   BtnCrud.OnClick := @AbrirCrudTabelaClick;
 end;
 

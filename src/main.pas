@@ -110,6 +110,9 @@ type
     procedure AbrirSetorialTag(Sender: TObject);
     procedure AbrirPimacoTag(Sender: TObject);
     procedure SelecionarAbaImpressoraClick(Sender: TObject);
+    procedure ConfigurarMenuCadastros;
+    procedure AbrirGerenciadorTabelasClick(Sender: TObject);
+    procedure AbrirCadastroTag(Sender: TObject);
   public
     aplicacao : string;
     procedure Config();
@@ -126,6 +129,9 @@ var
 implementation
 
 {$R *.lfm}
+
+uses
+  tabelafinalidade, crudfinalidade;
 
 { TfrmMain }
 
@@ -191,6 +197,67 @@ begin
     3: if Assigned(tbThermal40) then PageControl1.ActivePage := tbThermal40;
     4: PageControl1.ActivePage := tsPrinter;
   end;
+end;
+
+procedure TfrmMain.ConfigurarMenuCadastros;
+var
+  MenuCadastros, MenuGrupo, Item: TMenuItem;
+  Tabelas: TTabelasFinalidade;
+  G, I: Integer;
+
+  function NovoItem(Pai: TMenuItem; const Titulo: string; Evento: TNotifyEvent): TMenuItem;
+  begin
+    Result := TMenuItem.Create(Self);
+    Result.Caption := Titulo;
+    Result.OnClick := Evento;
+    Pai.Add(Result);
+  end;
+
+begin
+  { Menu Cadastros: ponto único para gerenciar as tabelas de apoio das etiquetas }
+  MenuCadastros := TMenuItem.Create(Self);
+  MenuCadastros.Caption := 'Cadastros';
+
+  Item := NovoItem(MenuCadastros, 'Gerenciar todas as tabelas...', @AbrirGerenciadorTabelasClick);
+  Item.ShortCut := Menus.ShortCut(Ord('T'), [ssCtrl]);
+  NovoItem(MenuCadastros, '-', nil);
+
+  Tabelas := ListarTodasTabelasFinalidade;
+  for G := Low(GRUPOS_TABELA_FINALIDADE) to High(GRUPOS_TABELA_FINALIDADE) do
+  begin
+    MenuGrupo := nil;
+    for I := 0 to High(Tabelas) do
+    begin
+      if GrupoTabelaFinalidade(Tabelas[I]) <> GRUPOS_TABELA_FINALIDADE[G] then
+        Continue;
+      if MenuGrupo = nil then
+        MenuGrupo := NovoItem(MenuCadastros, GRUPOS_TABELA_FINALIDADE[G], nil);
+      Item := NovoItem(MenuGrupo, Tabelas[I].Titulo + '...', @AbrirCadastroTag);
+      Item.Tag := I;
+    end;
+  end;
+
+  NovoItem(MenuCadastros, '-', nil);
+  NovoItem(MenuCadastros, 'Importar / Exportar CSV...', @AbrirGerenciadorTabelasClick);
+
+  { Fica logo depois de "Impressoras" e antes de "Ferramentas" }
+  MainMenu1.Items.Insert(2, MenuCadastros);
+end;
+
+procedure TfrmMain.AbrirGerenciadorTabelasClick(Sender: TObject);
+begin
+  AbrirGerenciadorTabelas(Self);
+end;
+
+procedure TfrmMain.AbrirCadastroTag(Sender: TObject);
+var
+  Tabelas: TTabelasFinalidade;
+  Idx: Integer;
+begin
+  Tabelas := ListarTodasTabelasFinalidade;
+  Idx := TComponent(Sender).Tag;
+  if (Idx >= 0) and (Idx <= High(Tabelas)) then
+    AbrirGerenciarRegistros(Self, Tabelas[Idx].Chave);
 end;
 
 procedure TfrmMain.AbrirModeloInicio(Sender: TObject);
@@ -598,6 +665,7 @@ begin
   MainMenu1.Items.Remove(miExameMedico);
   MenuFerramentas.Add(miExameMedico);
   MainMenu1.Items.Insert(2, MenuFerramentas);
+  ConfigurarMenuCadastros;
   Panel1.Visible := False;
   Panel2.Visible := False;
   Constraints.MinWidth := 760;
@@ -617,7 +685,7 @@ begin
   miconfig.Add(MenuLayout);
   miconfig.Caption := 'Configurações';
   misetup.Caption := 'Preferências';
-  miImport.Caption := 'Importar dados';
+  miImport.Caption := 'Importar dados (telas clássicas)';
   miexit.Caption := 'Sair';
 end;
 

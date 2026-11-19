@@ -193,8 +193,8 @@ begin
   fdmbase.zselendereco.open;
   BtnCrud := TButton.Create(Self);
   BtnCrud.Parent := Panel1;
-  BtnCrud.Caption := 'Gerenciar Tabela (CRUD / CSV / Limpar)';
-  BtnCrud.SetBounds(360, 9, 265, 32);
+  BtnCrud.Caption := 'Gerenciar registros...';
+  BtnCrud.SetBounds(360, 9, 180, 32);
   BtnCrud.OnClick := @AbrirCrudTabelaClick;
 end;
 

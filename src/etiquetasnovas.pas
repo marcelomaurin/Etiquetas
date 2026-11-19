@@ -5,8 +5,9 @@ unit etiquetasnovas;
 interface
 
 uses
-  Classes, SysUtils, Math, Forms, Controls, StdCtrls, ExtCtrls, Spin, Graphics,
-  Dialogs, ExtDlgs, Printers, PrintersDlgs, RLReport, RLBarcode, RLConsts, RLTypes,
+  Classes, SysUtils, Math, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Grids,
+  Spin, Graphics, Dialogs, ExtDlgs, Printers, PrintersDlgs, LCLType,
+  RLReport, RLBarcode, RLConsts, RLTypes,
   setmain, aiposprinter, imp_generico, aiserial, imagefilters,
   tabelafinalidade, crudfinalidade, wizardimpressao;
 
@@ -42,6 +43,7 @@ type
   );
 
   TCamposSetoriais = array[0..7] of string;
+  TCamposSetoriaisArray = array of TCamposSetoriais;
 
   { TfrmEtiquetasSetoriais }
 
@@ -49,36 +51,110 @@ type
   private
     FModo: TModoImpressoraEtiqueta;
     FModelo: TModeloEtiquetaSetorial;
+    FSpec: TTabelaFinalidade;
+    FSpecValido: Boolean;
+    FLinhas: TListaLinhasTabela;
+    FMarcados: array of Boolean;
+    FIdEdicao: string;
+
+    { Cabeçalho e Rodapé do Wizard }
+    pnlTopo: TPanel;
+    lblPassoTitulo: TLabel;
+    lblPassoSub: TLabel;
+    lblIndicador: TLabel;
+    pnlRodape: TPanel;
+    btnVoltar: TButton;
+    btnAvancar: TButton;
+    btnPreviaGrafica: TButton;
+    btnImprimirGrafico: TButton;
+    btnImprimirPOS: TButton;
+    btnFechar: TButton;
+
+    { Páginas do Wizard }
+    pcWizard: TPageControl;
+    tsPasso1: TTabSheet;
+    tsPasso2: TTabSheet;
+    tsPasso3: TTabSheet;
+
+    { Passo 1: Impressora e Tamanho/Modelo }
     cbModoImpressora: TComboBox;
     cbModeloEtiqueta: TComboBox;
     lblDimensao: TLabel;
-    lblCampo: array[0..7] of TLabel;
-    edCampo: array[0..7] of TEdit;
-    seCopias: TSpinEdit;
+    lblModoResumo: TLabel;
     cbPortaPOS: TComboBox;
     edHostPOS: TEdit;
+    seCopias: TSpinEdit;
+
+    { Passo 2: Campos + CRUD + Seleção de Itens }
+    pnlCrudTopo: TPanel;
+    lblCampo: array[0..7] of TLabel;
+    edCampo: array[0..7] of TEdit;
     btnGerarEANBalanca: TButton;
     btnFotoCracha: TButton;
     chkFotoPB: TCheckBox;
     FCaminhoFoto: string;
-    FPainelBanco: TPainelBancoFinalidade;
-    FWizardPOS: Boolean;
-    procedure AbrirWizardImpressao(SaidaPOS: Boolean);
-    procedure ExecutarWizardSetorial(const OpcaoPapel: TOpcaoPapelWizard;
-      Modo: TModoImpressaoWizard; Repeticoes: Integer;
-      const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
+    pnlCrudBotoes: TPanel;
+    btnCrudNovo: TButton;
+    btnCrudSalvar: TButton;
+    btnCrudExcluir: TButton;
+    btnCrudCancelar: TButton;
+    btnCrudAtualizar: TButton;
+    btnCrudImportar: TButton;
+    btnCrudExportar: TButton;
+    pnlCrudGrade: TPanel;
+    edFiltroCrud: TEdit;
+    btnBuscarCrud: TButton;
+    btnMarcarTodos: TButton;
+    btnDesmarcarTodos: TButton;
+    lblContagemCrud: TLabel;
+    FGrid: TStringGrid;
+    lblModoEmissao: TLabel;
+
+    { Passo 3: Preview e Impressão }
+    lblResumoPrevia: TLabel;
+    mmoPrevia: TMemo;
+
+    procedure AtualizarWizardUI;
+    procedure CarregarTabelaCrud;
+    procedure RenderizarGradeCrud;
+    procedure AtualizarContagemCrud;
+    procedure AlternarMarcacaoCrud(RowIdx: Integer);
+    procedure CarregarLinhaParaEdicao(RowIdx: Integer);
+    procedure MontarLoteImpressao(out Itens: TCamposSetoriaisArray;
+      out Fotos: TStringArray);
+    procedure AtualizarResumoPrevia;
+
+    procedure VoltarClick(Sender: TObject);
+    procedure AvancarClick(Sender: TObject);
+    procedure FecharClick(Sender: TObject);
+    procedure CrudNovoClick(Sender: TObject);
+    procedure CrudSalvarClick(Sender: TObject);
+    procedure CrudExcluirClick(Sender: TObject);
+    procedure CrudCancelarClick(Sender: TObject);
+    procedure CrudAtualizarClick(Sender: TObject);
+    procedure CrudImportarClick(Sender: TObject);
+    procedure CrudExportarClick(Sender: TObject);
+    procedure BuscarCrudClick(Sender: TObject);
+    procedure FiltroCrudKeyPress(Sender: TObject; var Key: Char);
+    procedure MarcarTodosCrudClick(Sender: TObject);
+    procedure DesmarcarTodosCrudClick(Sender: TObject);
+    procedure GridCrudMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure GridCrudDblClick(Sender: TObject);
+    procedure GridCrudKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+
     procedure ImprimirItemGrafico(AModelo: TModeloEtiquetaSetorial;
       const C: TCamposSetoriais; const Foto: string; ApenasPrevia: Boolean);
     procedure ImprimirLotePOS(AModelo: TModeloEtiquetaSetorial;
       Modo: TModoImpressoraEtiqueta; const Itens: array of TCamposSetoriais);
-    procedure CarregarValoresBanco(const Valores: array of string);
     procedure ObterValoresBanco(out Valores: TStringArray);
     procedure PopularModelosCompativeis(AModo: TModoImpressoraEtiqueta; ModeloAlvo: TModeloEtiquetaSetorial);
     procedure AtualizarInterface(Sender: TObject);
     procedure GerarEANBalancaClick(Sender: TObject);
     procedure SelecionarFotoClick(Sender: TObject);
-    procedure VisualizarGraficoClick(Sender: TObject);
-    procedure EnviarPOSDiretoClick(Sender: TObject);
+    procedure PreviaGraficaClick(Sender: TObject);
+    procedure ImprimirGraficoClick(Sender: TObject);
+    procedure ImprimirPOSClick(Sender: TObject);
   public
     constructor CreateSetorial(AOwner: TComponent;
       AModo: TModoImpressoraEtiqueta; AModelo: TModeloEtiquetaSetorial);
@@ -86,6 +162,7 @@ type
 
 function ModeloCompativelComImpressora(AModo: TModoImpressoraEtiqueta;
   AModelo: TModeloEtiquetaSetorial): Boolean;
+function ModeloUsaCrudLista(AModelo: TModeloEtiquetaSetorial): Boolean;
 function CalcularEAN13Balanca(const CodigoPLU: string; ValorOuPeso: Double): string;
 function CriarRelatorioSetorial(AOwner: TComponent;
   AModo: TModoImpressoraEtiqueta; AModelo: TModeloEtiquetaSetorial;
@@ -143,6 +220,29 @@ end;
 function MM(V: Double): Integer;
 begin
   Result := Round(V * ScreenPPI / 25.4);
+end;
+
+function ModeloUsaCrudLista(AModelo: TModeloEtiquetaSetorial): Boolean;
+begin
+  case AModelo of
+    msLabTuboColeta,
+    msLabLaminaBiopsia,
+    msLabBolsaSangue,
+    msLabTransporteBio,
+    msMedFracionamento,
+    msCrachaVisitanteHosp:
+      Result := False; // Emissão 1 a 1: preenche o item na tela e gera a etiqueta diretamente
+    msMedAvulsoPosologia,
+    msMedSoroInfusao,
+    msSupGondolaKg,
+    msSupBalancaPadaria,
+    msSupValidadeANVISA,
+    msEnvioDespachoVolumes,
+    msCrachaFuncionario:
+      Result := True;  // Cadastro CRUD / lista de múltiplos itens
+  else
+    Result := True;
+  end;
 end;
 
 function CalcularEAN13Balanca(const CodigoPLU: string; ValorOuPeso: Double): string;
@@ -475,27 +575,118 @@ constructor TfrmEtiquetasSetoriais.CreateSetorial(AOwner: TComponent;
 var
   I: Integer;
   L: TLabel;
-  BtnGrafico, BtnPOS: TButton;
 begin
   inherited CreateNew(AOwner);
   FModo := AModo;
   FModelo := AModelo;
-  Caption := 'Emissão de Etiquetas — Ribbon/Zebra, Térmica 80mm e Térmica 55/58mm';
+  FIdEdicao := '';
+  Caption := 'Emissão de Etiquetas — Assistente em 3 Etapas';
   Position := poScreenCenter;
   BorderStyle := bsDialog;
-  ClientWidth := 820;
-  ClientHeight := 604;
+  ClientWidth := 920;
+  ClientHeight := 640;
 
+  { Cabeçalho do Wizard }
+  pnlTopo := TPanel.Create(Self);
+  pnlTopo.Parent := Self;
+  pnlTopo.Align := alTop;
+  pnlTopo.Height := 62;
+  pnlTopo.BevelOuter := bvLowered;
+  pnlTopo.Color := $00F4EFEA;
+
+  lblPassoTitulo := TLabel.Create(Self);
+  lblPassoTitulo.Parent := pnlTopo;
+  lblPassoTitulo.Font.Size := 12;
+  lblPassoTitulo.Font.Style := [fsBold];
+  lblPassoTitulo.SetBounds(16, 8, 760, 22);
+
+  lblPassoSub := TLabel.Create(Self);
+  lblPassoSub.Parent := pnlTopo;
+  lblPassoSub.Font.Color := clGrayText;
+  lblPassoSub.SetBounds(16, 34, 760, 18);
+
+  lblIndicador := TLabel.Create(Self);
+  lblIndicador.Parent := pnlTopo;
+  lblIndicador.Font.Size := 11;
+  lblIndicador.Font.Style := [fsBold];
+  lblIndicador.Font.Color := clNavy;
+  lblIndicador.Alignment := Classes.taRightJustify;
+  lblIndicador.AutoSize := False;
+  lblIndicador.SetBounds(800, 18, 100, 24);
+
+  { Rodapé do Wizard }
+  pnlRodape := TPanel.Create(Self);
+  pnlRodape.Parent := Self;
+  pnlRodape.Align := alBottom;
+  pnlRodape.Height := 52;
+  pnlRodape.BevelOuter := bvRaised;
+
+  btnVoltar := TButton.Create(Self);
+  btnVoltar.Parent := pnlRodape;
+  btnVoltar.Caption := '< Voltar';
+  btnVoltar.SetBounds(16, 11, 100, 30);
+  btnVoltar.OnClick := @VoltarClick;
+
+  btnAvancar := TButton.Create(Self);
+  btnAvancar.Parent := pnlRodape;
+  btnAvancar.Caption := 'Avançar >';
+  btnAvancar.SetBounds(124, 11, 110, 30);
+  btnAvancar.OnClick := @AvancarClick;
+
+  btnPreviaGrafica := TButton.Create(Self);
+  btnPreviaGrafica.Parent := pnlRodape;
+  btnPreviaGrafica.Caption := 'Pré-visualizar (FortesReport)';
+  btnPreviaGrafica.SetBounds(124, 11, 195, 30);
+  btnPreviaGrafica.OnClick := @PreviaGraficaClick;
+
+  btnImprimirGrafico := TButton.Create(Self);
+  btnImprimirGrafico.Parent := pnlRodape;
+  btnImprimirGrafico.Caption := 'Imprimir Gráfico (Windows)';
+  btnImprimirGrafico.SetBounds(327, 11, 185, 30);
+  btnImprimirGrafico.OnClick := @ImprimirGraficoClick;
+
+  btnImprimirPOS := TButton.Create(Self);
+  btnImprimirPOS.Parent := pnlRodape;
+  btnImprimirPOS.Caption := 'Imprimir Direto (POS / ZPL)';
+  btnImprimirPOS.SetBounds(520, 11, 185, 30);
+  btnImprimirPOS.OnClick := @ImprimirPOSClick;
+
+  btnFechar := TButton.Create(Self);
+  btnFechar.Parent := pnlRodape;
+  btnFechar.Caption := 'Fechar';
+  btnFechar.SetBounds(808, 11, 96, 30);
+  btnFechar.OnClick := @FecharClick;
+
+  { PageControl do Wizard }
+  pcWizard := TPageControl.Create(Self);
+  pcWizard.Parent := Self;
+  pcWizard.Align := alClient;
+  pcWizard.ShowTabs := False;
+
+  tsPasso1 := TTabSheet.Create(pcWizard);
+  tsPasso1.PageControl := pcWizard;
+  tsPasso1.Caption := 'Passo 1';
+
+  tsPasso2 := TTabSheet.Create(pcWizard);
+  tsPasso2.PageControl := pcWizard;
+  tsPasso2.Caption := 'Passo 2';
+
+  tsPasso3 := TTabSheet.Create(pcWizard);
+  tsPasso3.PageControl := pcWizard;
+  tsPasso3.Caption := 'Passo 3';
+
+  { ================= PASSO 1: Impressora e Tamanho ================= }
   L := TLabel.Create(Self);
-  L.Parent := Self;
-  L.Caption := '1. Tipo de Impressora Selecionada:';
+  L.Parent := tsPasso1;
+  L.Caption := '1. Tipo de Impressora:';
+  L.Font.Size := 10;
   L.Font.Style := [fsBold];
-  L.SetBounds(20, 14, 280, 18);
+  L.SetBounds(28, 28, 380, 20);
 
   cbModoImpressora := TComboBox.Create(Self);
-  cbModoImpressora.Parent := Self;
+  cbModoImpressora.Parent := tsPasso1;
   cbModoImpressora.Style := csDropDownList;
-  cbModoImpressora.SetBounds(20, 34, 340, 26);
+  cbModoImpressora.SetBounds(28, 52, 410, 28);
   cbModoImpressora.Items.Add('Impressora Zebra / Ribbon (Rolo Adesivo)');
   cbModoImpressora.Items.Add('Impressora Térmica 80 Colunas (Bobina 80mm)');
   cbModoImpressora.Items.Add('Impressora Térmica 55 / 58 mm (40–55 col · Portátil)');
@@ -503,114 +694,228 @@ begin
   cbModoImpressora.OnChange := @AtualizarInterface;
 
   L := TLabel.Create(Self);
-  L.Parent := Self;
-  L.Caption := '2. Modelo Específico para esta Impressora:';
+  L.Parent := tsPasso1;
+  L.Caption := '2. Modelo e Tamanho da Etiqueta:';
+  L.Font.Size := 10;
   L.Font.Style := [fsBold];
-  L.SetBounds(380, 14, 420, 18);
+  L.SetBounds(464, 28, 420, 20);
 
   cbModeloEtiqueta := TComboBox.Create(Self);
-  cbModeloEtiqueta.Parent := Self;
+  cbModeloEtiqueta.Parent := tsPasso1;
   cbModeloEtiqueta.Style := csDropDownList;
-  cbModeloEtiqueta.SetBounds(380, 34, 420, 26);
+  cbModeloEtiqueta.SetBounds(464, 52, 420, 28);
   PopularModelosCompativeis(AModo, AModelo);
   cbModeloEtiqueta.OnChange := @AtualizarInterface;
 
   lblDimensao := TLabel.Create(Self);
-  lblDimensao.Parent := Self;
-  lblDimensao.SetBounds(20, 68, 780, 18);
+  lblDimensao.Parent := tsPasso1;
+  lblDimensao.Font.Style := [fsBold];
+  lblDimensao.SetBounds(28, 102, 856, 20);
 
-  for I := 0 to 7 do
-  begin
-    lblCampo[I] := TLabel.Create(Self);
-    lblCampo[I].Parent := Self;
-    lblCampo[I].SetBounds(20 + (I div 4) * 400, 96 + (I mod 4) * 64, 380, 18);
-    edCampo[I] := TEdit.Create(Self);
-    edCampo[I].Parent := Self;
-    edCampo[I].SetBounds(20 + (I div 4) * 400, 116 + (I mod 4) * 64, 380, 26);
-  end;
-
-  btnGerarEANBalanca := TButton.Create(Self);
-  btnGerarEANBalanca.Parent := Self;
-  btnGerarEANBalanca.Caption := 'Calcular EAN-13 de Balança (Prefixo 2)';
-  btnGerarEANBalanca.SetBounds(20, 360, 280, 28);
-  btnGerarEANBalanca.OnClick := @GerarEANBalancaClick;
-
-  btnFotoCracha := TButton.Create(Self);
-  btnFotoCracha.Parent := Self;
-  btnFotoCracha.Caption := 'Carregar Foto 3x4 para Crachá...';
-  btnFotoCracha.SetBounds(315, 360, 230, 28);
-  btnFotoCracha.OnClick := @SelecionarFotoClick;
-
-  chkFotoPB := TCheckBox.Create(Self);
-  chkFotoPB.Parent := Self;
-  chkFotoPB.Caption := 'Otimizar foto P&B para térmica (imagefilters CHATGPT)';
-  chkFotoPB.Checked := True;
-  chkFotoPB.SetBounds(560, 364, 250, 22);
+  lblModoResumo := TLabel.Create(Self);
+  lblModoResumo.Parent := tsPasso1;
+  lblModoResumo.Font.Color := clNavy;
+  lblModoResumo.SetBounds(28, 128, 856, 20);
 
   L := TLabel.Create(Self);
-  L.Parent := Self;
+  L.Parent := tsPasso1;
+  L.Caption := '3. Configurações de Saída e Cópias:';
+  L.Font.Size := 10;
+  L.Font.Style := [fsBold];
+  L.SetBounds(28, 178, 400, 20);
+
+  L := TLabel.Create(Self);
+  L.Parent := tsPasso1;
   L.Caption := 'Porta Serial / USB (TAIPOSPrinter):';
-  L.SetBounds(20, 408, 200, 18);
+  L.SetBounds(28, 210, 220, 18);
   cbPortaPOS := TComboBox.Create(Self);
-  cbPortaPOS.Parent := Self;
-  cbPortaPOS.SetBounds(20, 428, 120, 26);
+  cbPortaPOS.Parent := tsPasso1;
+  cbPortaPOS.SetBounds(28, 232, 160, 26);
   cbPortaPOS.Items.AddStrings(['COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM10']);
   cbPortaPOS.ItemIndex := 0;
 
   L := TLabel.Create(Self);
-  L.Parent := Self;
+  L.Parent := tsPasso1;
   L.Caption := 'Ou IP Rede (Porta 9100, opcional):';
-  L.SetBounds(160, 408, 200, 18);
+  L.SetBounds(268, 210, 230, 18);
   edHostPOS := TEdit.Create(Self);
-  edHostPOS.Parent := Self;
-  edHostPOS.SetBounds(160, 428, 160, 26);
+  edHostPOS.Parent := tsPasso1;
+  edHostPOS.SetBounds(268, 232, 200, 26);
   edHostPOS.Text := '';
 
   L := TLabel.Create(Self);
-  L.Parent := Self;
-  L.Caption := 'Quantidade / Volumes:';
-  L.SetBounds(340, 408, 140, 18);
+  L.Parent := tsPasso1;
+  L.Caption := 'Cópias / Volumes por item:';
+  L.SetBounds(508, 210, 200, 18);
   seCopias := TSpinEdit.Create(Self);
-  seCopias.Parent := Self;
+  seCopias.Parent := tsPasso1;
   seCopias.MinValue := 1;
   seCopias.MaxValue := 500;
   seCopias.Value := 1;
-  seCopias.SetBounds(340, 428, 80, 26);
+  seCopias.SetBounds(508, 232, 100, 26);
 
-  FPainelBanco := TPainelBancoFinalidade.Create(Self);
-  FPainelBanco.Parent := Self;
-  FPainelBanco.SetBounds(20, 466, 780, 72);
-  FPainelBanco.OnCarregarValores := @CarregarValoresBanco;
-  FPainelBanco.OnObterValores := @ObterValoresBanco;
+  { ================= PASSO 2: CRUD + Seleção de Itens ================= }
+  pnlCrudTopo := TPanel.Create(Self);
+  pnlCrudTopo.Parent := tsPasso2;
+  pnlCrudTopo.Align := alTop;
+  pnlCrudTopo.Height := 252;
+  pnlCrudTopo.BevelOuter := bvNone;
 
-  BtnGrafico := TButton.Create(Self);
-  BtnGrafico.Parent := Self;
-  BtnGrafico.Caption := 'Pré-visualizar / Imprimir Gráfico (Driver Windows)';
-  BtnGrafico.SetBounds(20, 548, 380, 38);
-  BtnGrafico.OnClick := @VisualizarGraficoClick;
-
-  BtnPOS := TButton.Create(Self);
-  BtnPOS.Parent := Self;
-  BtnPOS.Caption := 'Imprimir Direto via TAIPOSPrinter (ESC/POS ou ZPL)';
-  BtnPOS.SetBounds(420, 548, 380, 38);
-  BtnPOS.OnClick := @EnviarPOSDiretoClick;
-
-  AtualizarInterface(nil);
-end;
-
-procedure TfrmEtiquetasSetoriais.CarregarValoresBanco(const Valores: array of string);
-var
-  I: Integer;
-begin
   for I := 0 to 7 do
   begin
-    if I <= High(Valores) then
-      edCampo[I].Text := Valores[I]
-    else
-      edCampo[I].Text := '';
+    lblCampo[I] := TLabel.Create(Self);
+    lblCampo[I].Parent := pnlCrudTopo;
+    lblCampo[I].SetBounds(14 + (I div 4) * 326, 8 + (I mod 4) * 52, 314, 16);
+    edCampo[I] := TEdit.Create(Self);
+    edCampo[I].Parent := pnlCrudTopo;
+    edCampo[I].SetBounds(14 + (I div 4) * 326, 26 + (I mod 4) * 52, 314, 24);
   end;
-  if (FModelo = msCrachaFuncionario) and (Length(Valores) > 8) then
-    FCaminhoFoto := Valores[8];
+
+  btnGerarEANBalanca := TButton.Create(Self);
+  btnGerarEANBalanca.Parent := pnlCrudTopo;
+  btnGerarEANBalanca.Caption := 'Calcular EAN-13 Balança (Prefixo 2)';
+  btnGerarEANBalanca.SetBounds(14, 218, 240, 26);
+  btnGerarEANBalanca.OnClick := @GerarEANBalancaClick;
+
+  btnFotoCracha := TButton.Create(Self);
+  btnFotoCracha.Parent := pnlCrudTopo;
+  btnFotoCracha.Caption := 'Carregar Foto 3x4...';
+  btnFotoCracha.SetBounds(264, 218, 160, 26);
+  btnFotoCracha.OnClick := @SelecionarFotoClick;
+
+  chkFotoPB := TCheckBox.Create(Self);
+  chkFotoPB.Parent := pnlCrudTopo;
+  chkFotoPB.Caption := 'Foto P&B térmica';
+  chkFotoPB.Checked := True;
+  chkFotoPB.SetBounds(434, 221, 140, 20);
+
+  pnlCrudBotoes := TPanel.Create(Self);
+  pnlCrudBotoes.Parent := pnlCrudTopo;
+  pnlCrudBotoes.SetBounds(668, 8, 232, 236);
+  pnlCrudBotoes.BevelOuter := bvLowered;
+
+  btnCrudNovo := TButton.Create(Self);
+  btnCrudNovo.Parent := pnlCrudBotoes;
+  btnCrudNovo.Caption := 'Novo';
+  btnCrudNovo.SetBounds(12, 10, 208, 30);
+  btnCrudNovo.OnClick := @CrudNovoClick;
+
+  btnCrudSalvar := TButton.Create(Self);
+  btnCrudSalvar.Parent := pnlCrudBotoes;
+  btnCrudSalvar.Caption := 'Salvar';
+  btnCrudSalvar.SetBounds(12, 46, 208, 30);
+  btnCrudSalvar.OnClick := @CrudSalvarClick;
+
+  btnCrudExcluir := TButton.Create(Self);
+  btnCrudExcluir.Parent := pnlCrudBotoes;
+  btnCrudExcluir.Caption := 'Excluir';
+  btnCrudExcluir.SetBounds(12, 82, 208, 30);
+  btnCrudExcluir.OnClick := @CrudExcluirClick;
+
+  btnCrudCancelar := TButton.Create(Self);
+  btnCrudCancelar.Parent := pnlCrudBotoes;
+  btnCrudCancelar.Caption := 'Cancelar';
+  btnCrudCancelar.SetBounds(12, 118, 208, 30);
+  btnCrudCancelar.OnClick := @CrudCancelarClick;
+
+  btnCrudAtualizar := TButton.Create(Self);
+  btnCrudAtualizar.Parent := pnlCrudBotoes;
+  btnCrudAtualizar.Caption := 'Atualizar Lista';
+  btnCrudAtualizar.SetBounds(12, 154, 208, 30);
+  btnCrudAtualizar.OnClick := @CrudAtualizarClick;
+
+  btnCrudImportar := TButton.Create(Self);
+  btnCrudImportar.Parent := pnlCrudBotoes;
+  btnCrudImportar.Caption := 'Importar CSV';
+  btnCrudImportar.SetBounds(12, 194, 100, 28);
+  btnCrudImportar.OnClick := @CrudImportarClick;
+
+  btnCrudExportar := TButton.Create(Self);
+  btnCrudExportar.Parent := pnlCrudBotoes;
+  btnCrudExportar.Caption := 'Exportar CSV';
+  btnCrudExportar.SetBounds(120, 194, 100, 28);
+  btnCrudExportar.OnClick := @CrudExportarClick;
+
+  pnlCrudGrade := TPanel.Create(Self);
+  pnlCrudGrade.Parent := tsPasso2;
+  pnlCrudGrade.Align := alClient;
+  pnlCrudGrade.BevelOuter := bvNone;
+
+  L := TLabel.Create(Self);
+  L.Parent := pnlCrudGrade;
+  L.Caption := 'Filtrar / Selecionar itens para impressão (clique em [X] para marcar, duplo clique para alterar):';
+  L.Font.Style := [fsBold];
+  L.SetBounds(14, 4, 620, 18);
+
+  edFiltroCrud := TEdit.Create(Self);
+  edFiltroCrud.Parent := pnlCrudGrade;
+  edFiltroCrud.SetBounds(14, 24, 250, 24);
+  edFiltroCrud.TextHint := 'Pesquisar (Enter)';
+  edFiltroCrud.OnKeyPress := @FiltroCrudKeyPress;
+
+  btnBuscarCrud := TButton.Create(Self);
+  btnBuscarCrud.Parent := pnlCrudGrade;
+  btnBuscarCrud.Caption := 'Buscar';
+  btnBuscarCrud.SetBounds(270, 23, 74, 26);
+  btnBuscarCrud.OnClick := @BuscarCrudClick;
+
+  btnMarcarTodos := TButton.Create(Self);
+  btnMarcarTodos.Parent := pnlCrudGrade;
+  btnMarcarTodos.Caption := 'Marcar Todos';
+  btnMarcarTodos.SetBounds(354, 23, 104, 26);
+  btnMarcarTodos.OnClick := @MarcarTodosCrudClick;
+
+  btnDesmarcarTodos := TButton.Create(Self);
+  btnDesmarcarTodos.Parent := pnlCrudGrade;
+  btnDesmarcarTodos.Caption := 'Desmarcar Todos';
+  btnDesmarcarTodos.SetBounds(464, 23, 118, 26);
+  btnDesmarcarTodos.OnClick := @DesmarcarTodosCrudClick;
+
+  lblContagemCrud := TLabel.Create(Self);
+  lblContagemCrud.Parent := pnlCrudGrade;
+  lblContagemCrud.Font.Style := [fsBold];
+  lblContagemCrud.Font.Color := clNavy;
+  lblContagemCrud.SetBounds(592, 27, 308, 18);
+
+  FGrid := TStringGrid.Create(Self);
+  FGrid.Parent := pnlCrudGrade;
+  FGrid.SetBounds(14, 54, 886, 200);
+  FGrid.Anchors := [akLeft, akTop, akRight, akBottom];
+  FGrid.Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goColSizing];
+  FGrid.FixedCols := 0;
+  FGrid.FixedRows := 1;
+  FGrid.OnMouseDown := @GridCrudMouseDown;
+  FGrid.OnDblClick := @GridCrudDblClick;
+  FGrid.OnKeyDown := @GridCrudKeyDown;
+
+  lblModoEmissao := TLabel.Create(Self);
+  lblModoEmissao.Parent := tsPasso2;
+  lblModoEmissao.Font.Size := 10;
+  lblModoEmissao.Font.Style := [fsBold];
+  lblModoEmissao.Font.Color := clNavy;
+  lblModoEmissao.Caption := 'Modo 1 a 1: preencha os campos acima e clique em "Avançar >" para pré-visualizar e imprimir.';
+  lblModoEmissao.SetBounds(14, 276, 880, 24);
+  lblModoEmissao.Visible := False;
+
+  { ================= PASSO 3: Preview e Impressão ================= }
+  lblResumoPrevia := TLabel.Create(Self);
+  lblResumoPrevia.Parent := tsPasso3;
+  lblResumoPrevia.Font.Style := [fsBold];
+  lblResumoPrevia.SetBounds(16, 12, 880, 20);
+  lblResumoPrevia.Caption := 'Pré-visualização dos dados que serão impressos:';
+
+  mmoPrevia := TMemo.Create(Self);
+  mmoPrevia.Parent := tsPasso3;
+  mmoPrevia.SetBounds(16, 38, 880, 466);
+  mmoPrevia.Anchors := [akLeft, akTop, akRight, akBottom];
+  mmoPrevia.ReadOnly := True;
+  mmoPrevia.ScrollBars := ssBoth;
+  mmoPrevia.Font.Name := 'Consolas';
+  mmoPrevia.Font.Size := 10;
+
+  pcWizard.ActivePageIndex := 0;
+  AtualizarInterface(nil);
+  AtualizarWizardUI;
 end;
 
 procedure TfrmEtiquetasSetoriais.ObterValoresBanco(out Valores: TStringArray);
@@ -657,6 +962,7 @@ end;
 procedure TfrmEtiquetasSetoriais.AtualizarInterface(Sender: TObject);
 var
   W, H: Double;
+  UsaCrud: Boolean;
 begin
   FModo := TModoImpressoraEtiqueta(cbModoImpressora.ItemIndex);
   if Sender = cbModoImpressora then
@@ -664,14 +970,31 @@ begin
   if (cbModeloEtiqueta.ItemIndex >= 0) and (cbModeloEtiqueta.ItemIndex < cbModeloEtiqueta.Items.Count) then
     FModelo := TModeloEtiquetaSetorial(PtrInt(cbModeloEtiqueta.Items.Objects[cbModeloEtiqueta.ItemIndex]));
   DimensoesPapelSetorial(FModo, FModelo, W, H);
-  lblDimensao.Caption := Format('Dimensão configurada para este modo: %.1f x %.1f mm | Motor: FortesReport + TAIPOSPrinter (CHATGPT)', [W, H]);
+  lblDimensao.Caption := Format('Dimensão configurada: %.1f x %.1f mm | Motor: FortesReport + TAIPOSPrinter', [W, H]);
 
   btnGerarEANBalanca.Visible := (FModelo = msSupBalancaPadaria);
   btnFotoCracha.Visible := (FModelo in [msCrachaVisitanteHosp, msCrachaFuncionario]);
   chkFotoPB.Visible := btnFotoCracha.Visible;
 
-  if Assigned(FPainelBanco) then
-    FPainelBanco.DefinirFinalidade(ChaveTabelaSetorial(Ord(FModelo)));
+  UsaCrud := ModeloUsaCrudLista(FModelo);
+  FIdEdicao := '';
+  if UsaCrud then
+  begin
+    FSpecValido := ObterTabelaFinalidade(ChaveTabelaSetorial(Ord(FModelo)), FSpec);
+    lblModoResumo.Caption := 'Modo: CRUD / Lista de múltiplos itens (Passo 2 terá cadastro, alteração e seleção para impressão).';
+  end
+  else
+  begin
+    FSpecValido := False;
+    lblModoResumo.Caption := 'Modo: Emissão 1 a 1 (preenchimento direto do item no Passo 2, sem lista CRUD).';
+  end;
+
+  pnlCrudBotoes.Visible := UsaCrud;
+  pnlCrudGrade.Visible := UsaCrud;
+  lblModoEmissao.Visible := not UsaCrud;
+
+  if UsaCrud then
+    CarregarTabelaCrud;
 
   case FModelo of
     msLabTuboColeta:
@@ -1222,87 +1545,459 @@ begin
   end;
 end;
 
-procedure TfrmEtiquetasSetoriais.ExecutarWizardSetorial(
-  const OpcaoPapel: TOpcaoPapelWizard; Modo: TModoImpressaoWizard;
-  Repeticoes: Integer; const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
+procedure TfrmEtiquetasSetoriais.AtualizarWizardUI;
 var
-  ModeloAlvo: TModeloEtiquetaSetorial;
-  Itens: array of TCamposSetoriais;
-  Fotos: array of string;
-  I, J, Qtd: Integer;
-  Dlg: TPrintDialog;
+  Passo: Integer;
 begin
-  ModeloAlvo := TModeloEtiquetaSetorial(StrToIntDef(OpcaoPapel.Codigo, Ord(FModelo)));
-  if ModeloAlvo <> FModelo then
+  Passo := pcWizard.ActivePageIndex;
+  lblIndicador.Caption := Format('%d / 3', [Passo + 1]);
+  btnVoltar.Enabled := Passo > 0;
+  btnAvancar.Visible := Passo < 2;
+  btnPreviaGrafica.Visible := Passo = 2;
+  btnImprimirGrafico.Visible := Passo = 2;
+  btnImprimirPOS.Visible := Passo = 2;
+
+  case Passo of
+    0:
+    begin
+      lblPassoTitulo.Caption := 'Passo 1 de 3 — Impressora e Tamanho da Etiqueta';
+      lblPassoSub.Caption := 'Selecione o tipo de impressora, o modelo/tamanho da etiqueta e a quantidade de cópias.';
+    end;
+    1:
+    begin
+      lblPassoTitulo.Caption := 'Passo 2 de 3 — Dados, Cadastro (CRUD) e Seleção de Itens';
+      if ModeloUsaCrudLista(FModelo) then
+        lblPassoSub.Caption := 'Cadastre, altere ou exclua registros e marque [X] os itens que serão impressos.'
+      else
+        lblPassoSub.Caption := 'Emissão 1 a 1: preencha os campos do item para gerar a etiqueta.';
+    end;
+    2:
+    begin
+      lblPassoTitulo.Caption := 'Passo 3 de 3 — Pré-visualização e Impressão';
+      lblPassoSub.Caption := 'Confira os dados do lote e escolha pré-visualizar no FortesReport ou imprimir.';
+      AtualizarResumoPrevia;
+    end;
+  end;
+end;
+
+procedure TfrmEtiquetasSetoriais.VoltarClick(Sender: TObject);
+begin
+  if pcWizard.ActivePageIndex > 0 then
   begin
-    PopularModelosCompativeis(FModo, ModeloAlvo);
-    AtualizarInterface(nil);
+    pcWizard.ActivePageIndex := pcWizard.ActivePageIndex - 1;
+    AtualizarWizardUI;
+  end;
+end;
+
+procedure TfrmEtiquetasSetoriais.AvancarClick(Sender: TObject);
+var
+  I, Marcados: Integer;
+begin
+  if pcWizard.ActivePageIndex = 1 then
+  begin
+    if ModeloUsaCrudLista(FModelo) then
+    begin
+      Marcados := 0;
+      for I := 0 to High(FMarcados) do
+        if FMarcados[I] then Inc(Marcados);
+      if Marcados = 0 then
+      begin
+        if MessageDlg('Nenhum item marcado',
+          'Nenhum item está marcado com [X] na grade.' + sLineBreak +
+          'Deseja avançar usando os dados preenchidos nos campos acima?',
+          mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+          Exit;
+      end;
+    end;
   end;
 
-  if Modo = miwUmRegistroNVezes then
+  if pcWizard.ActivePageIndex < 2 then
   begin
-    Qtd := Max(1, Repeticoes);
-    SetLength(Itens, Qtd);
-    SetLength(Fotos, Qtd);
-    for I := 0 to Qtd - 1 do
+    pcWizard.ActivePageIndex := pcWizard.ActivePageIndex + 1;
+    AtualizarWizardUI;
+  end;
+end;
+
+procedure TfrmEtiquetasSetoriais.FecharClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfrmEtiquetasSetoriais.CarregarTabelaCrud;
+begin
+  SetLength(FLinhas, 0);
+  SetLength(FMarcados, 0);
+  if FSpecValido and (GConexaoFinalidade <> nil) and GConexaoFinalidade.Connected then
+    FLinhas := CarregarRegistrosTabela(GConexaoFinalidade, FSpec, Trim(edFiltroCrud.Text));
+  SetLength(FMarcados, Length(FLinhas));
+  RenderizarGradeCrud;
+end;
+
+procedure TfrmEtiquetasSetoriais.RenderizarGradeCrud;
+var
+  I, J, ColsTotal: Integer;
+begin
+  ColsTotal := 2 + Length(FSpec.Campos);
+  FGrid.ColCount := Max(2, ColsTotal);
+  FGrid.RowCount := Max(2, Length(FLinhas) + 1);
+  FGrid.Cells[0, 0] := 'Imp.';
+  FGrid.ColWidths[0] := 42;
+  FGrid.Cells[1, 0] := 'ID';
+  FGrid.ColWidths[1] := 48;
+  for J := 0 to High(FSpec.Campos) do
+  begin
+    FGrid.Cells[2 + J, 0] := FSpec.Campos[J].Rotulo;
+    FGrid.ColWidths[2 + J] := 130;
+  end;
+
+  if Length(FLinhas) = 0 then
+  begin
+    for J := 0 to FGrid.ColCount - 1 do
+      FGrid.Cells[J, 1] := '';
+    FGrid.Cells[2, 1] := '(Nenhum registro na tabela)';
+    AtualizarContagemCrud;
+    Exit;
+  end;
+
+  for I := 0 to High(FLinhas) do
+  begin
+    if FMarcados[I] then
+      FGrid.Cells[0, I + 1] := '[X]'
+    else
+      FGrid.Cells[0, I + 1] := '[ ]';
+    FGrid.Cells[1, I + 1] := FLinhas[I].Id;
+    for J := 0 to High(FSpec.Campos) do
     begin
-      for J := 0 to 7 do
-        if J <= High(Registros[0].Valores) then
-          Itens[I][J] := Trim(Registros[0].Valores[J])
-        else
-          Itens[I][J] := '';
-      if (ModeloAlvo = msEnvioDespachoVolumes) and (Qtd > 1) then
-        Itens[I][5] := Format('VOLUME: %d/%d (Lote de %d volumes)', [I + 1, Qtd, Qtd]);
-      if (ModeloAlvo = msCrachaFuncionario) and (Length(Registros[0].Valores) > 8) and (Registros[0].Valores[8] <> '') then
-        Fotos[I] := Registros[0].Valores[8]
+      if J <= High(FLinhas[I].Valores) then
+        FGrid.Cells[2 + J, I + 1] := FLinhas[I].Valores[J]
       else
-        Fotos[I] := FCaminhoFoto;
+        FGrid.Cells[2 + J, I + 1] := '';
+    end;
+  end;
+  AtualizarContagemCrud;
+end;
+
+procedure TfrmEtiquetasSetoriais.AtualizarContagemCrud;
+var
+  I, Marcados: Integer;
+begin
+  Marcados := 0;
+  for I := 0 to High(FMarcados) do
+    if FMarcados[I] then Inc(Marcados);
+  lblContagemCrud.Caption := Format('%d registro(s) | %d marcado(s) p/ imprimir',
+    [Length(FLinhas), Marcados]);
+end;
+
+procedure TfrmEtiquetasSetoriais.AlternarMarcacaoCrud(RowIdx: Integer);
+begin
+  if (RowIdx < 0) or (RowIdx > High(FMarcados)) then Exit;
+  FMarcados[RowIdx] := not FMarcados[RowIdx];
+  if FMarcados[RowIdx] then
+    FGrid.Cells[0, RowIdx + 1] := '[X]'
+  else
+    FGrid.Cells[0, RowIdx + 1] := '[ ]';
+  AtualizarContagemCrud;
+end;
+
+procedure TfrmEtiquetasSetoriais.CarregarLinhaParaEdicao(RowIdx: Integer);
+var
+  J: Integer;
+begin
+  if (RowIdx < 0) or (RowIdx > High(FLinhas)) then Exit;
+  FIdEdicao := FLinhas[RowIdx].Id;
+  for J := 0 to 7 do
+  begin
+    if J <= High(FLinhas[RowIdx].Valores) then
+      edCampo[J].Text := FLinhas[RowIdx].Valores[J]
+    else
+      edCampo[J].Text := '';
+  end;
+  if (FModelo = msCrachaFuncionario) and (Length(FLinhas[RowIdx].Valores) > 8) then
+    FCaminhoFoto := FLinhas[RowIdx].Valores[8];
+end;
+
+procedure TfrmEtiquetasSetoriais.CrudNovoClick(Sender: TObject);
+var
+  I: Integer;
+begin
+  FIdEdicao := '';
+  for I := 0 to 7 do
+    edCampo[I].Text := '';
+  FCaminhoFoto := '';
+  if edCampo[0].CanFocus then
+    edCampo[0].SetFocus;
+end;
+
+procedure TfrmEtiquetasSetoriais.CrudSalvarClick(Sender: TObject);
+var
+  Valores: TStringArray;
+  Msg: string;
+begin
+  if (not FSpecValido) or (GConexaoFinalidade = nil) or (not GConexaoFinalidade.Connected) then
+  begin
+    MessageDlg('Banco de Dados', 'Banco de dados não conectado.', mtWarning, [mbOK], 0);
+    Exit;
+  end;
+  ObterValoresBanco(Valores);
+  try
+    if FIdEdicao <> '' then
+    begin
+      AtualizarRegistroTabela(GConexaoFinalidade, FSpec, FIdEdicao, Valores);
+      Msg := 'registro #' + FIdEdicao + ' atualizado';
+    end
+    else
+      Msg := 'registro #' + IntToStr(InserirRegistroTabela(GConexaoFinalidade, FSpec, Valores)) + ' incluído';
+    FIdEdicao := '';
+    CarregarTabelaCrud;
+    { Confirmação discreta, sem janela a cada gravação }
+    lblContagemCrud.Caption := lblContagemCrud.Caption + ' | ' + Msg + ' às ' + FormatDateTime('hh:nn', Now);
+  except
+    on E: Exception do
+      MessageDlg('Erro ao salvar', E.Message, mtError, [mbOK], 0);
+  end;
+end;
+
+procedure TfrmEtiquetasSetoriais.CrudExcluirClick(Sender: TObject);
+var
+  RowIdx: Integer;
+  IdAlvo: string;
+begin
+  RowIdx := FGrid.Row - 1;
+  if (RowIdx < 0) or (RowIdx > High(FLinhas)) then
+  begin
+    MessageDlg('Excluir', 'Selecione um registro na grade.', mtInformation, [mbOK], 0);
+    Exit;
+  end;
+  IdAlvo := FLinhas[RowIdx].Id;
+  if MessageDlg('Confirmar Exclusão', 'Excluir o registro #' + IdAlvo + '?',
+    mtConfirmation, [mbYes, mbNo], 0) <> mrYes then Exit;
+  try
+    ExcluirRegistroTabela(GConexaoFinalidade, FSpec, IdAlvo);
+    if FIdEdicao = IdAlvo then FIdEdicao := '';
+    CarregarTabelaCrud;
+  except
+    on E: Exception do
+      MessageDlg('Erro ao excluir', E.Message, mtError, [mbOK], 0);
+  end;
+end;
+
+procedure TfrmEtiquetasSetoriais.CrudCancelarClick(Sender: TObject);
+begin
+  FIdEdicao := '';
+  AtualizarInterface(nil);
+end;
+
+procedure TfrmEtiquetasSetoriais.CrudAtualizarClick(Sender: TObject);
+begin
+  CarregarTabelaCrud;
+end;
+
+procedure TfrmEtiquetasSetoriais.CrudImportarClick(Sender: TObject);
+begin
+  if ExecutarImportarCSVDialog(Self, FSpec) then
+    CarregarTabelaCrud;
+end;
+
+procedure TfrmEtiquetasSetoriais.CrudExportarClick(Sender: TObject);
+begin
+  ExecutarExportarCSVDialog(Self, FSpec);
+end;
+
+procedure TfrmEtiquetasSetoriais.BuscarCrudClick(Sender: TObject);
+begin
+  CarregarTabelaCrud;
+end;
+
+procedure TfrmEtiquetasSetoriais.FiltroCrudKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+  begin
+    Key := #0;
+    CarregarTabelaCrud;
+  end;
+end;
+
+procedure TfrmEtiquetasSetoriais.MarcarTodosCrudClick(Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := 0 to High(FMarcados) do
+  begin
+    FMarcados[I] := True;
+    FGrid.Cells[0, I + 1] := '[X]';
+  end;
+  AtualizarContagemCrud;
+end;
+
+procedure TfrmEtiquetasSetoriais.DesmarcarTodosCrudClick(Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := 0 to High(FMarcados) do
+  begin
+    FMarcados[I] := False;
+    FGrid.Cells[0, I + 1] := '[ ]';
+  end;
+  AtualizarContagemCrud;
+end;
+
+procedure TfrmEtiquetasSetoriais.GridCrudMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  ACol, ARow: Integer;
+begin
+  FGrid.MouseToCell(X, Y, ACol, ARow);
+  if (ARow >= 1) and (ACol = 0) then
+    AlternarMarcacaoCrud(ARow - 1);
+end;
+
+procedure TfrmEtiquetasSetoriais.GridCrudDblClick(Sender: TObject);
+begin
+  if FGrid.Row >= 1 then
+    CarregarLinhaParaEdicao(FGrid.Row - 1);
+end;
+
+procedure TfrmEtiquetasSetoriais.GridCrudKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_SPACE) and (FGrid.Row >= 1) then
+  begin
+    AlternarMarcacaoCrud(FGrid.Row - 1);
+    Key := 0;
+  end
+  else if (Key = VK_RETURN) and (FGrid.Row >= 1) then
+  begin
+    CarregarLinhaParaEdicao(FGrid.Row - 1);
+    Key := 0;
+  end;
+end;
+
+procedure TfrmEtiquetasSetoriais.MontarLoteImpressao(
+  out Itens: TCamposSetoriaisArray; out Fotos: TStringArray);
+var
+  I, J, K, Copias, Total, Idx: Integer;
+  C: TCamposSetoriais;
+  TemMarcado: Boolean;
+begin
+  Copias := Max(1, seCopias.Value);
+  TemMarcado := False;
+  if ModeloUsaCrudLista(FModelo) then
+    for I := 0 to High(FMarcados) do
+      if FMarcados[I] then
+      begin
+        TemMarcado := True;
+        Break;
+      end;
+
+  if TemMarcado then
+  begin
+    Total := 0;
+    for I := 0 to High(FMarcados) do
+      if FMarcados[I] then Inc(Total, Copias);
+    SetLength(Itens, Total);
+    SetLength(Fotos, Total);
+    Idx := 0;
+    for I := 0 to High(FLinhas) do
+    begin
+      if not FMarcados[I] then Continue;
+      for K := 0 to Copias - 1 do
+      begin
+        for J := 0 to 7 do
+          if J <= High(FLinhas[I].Valores) then
+            Itens[Idx][J] := Trim(FLinhas[I].Valores[J])
+          else
+            Itens[Idx][J] := '';
+        if (FModelo = msEnvioDespachoVolumes) and (Copias > 1) then
+          Itens[Idx][5] := Format('VOLUME: %d/%d (Lote de %d volumes)', [K + 1, Copias, Copias]);
+        if (FModelo = msCrachaFuncionario) and (Length(FLinhas[I].Valores) > 8) and (FLinhas[I].Valores[8] <> '') then
+          Fotos[Idx] := FLinhas[I].Valores[8]
+        else
+          Fotos[Idx] := FCaminhoFoto;
+        Inc(Idx);
+      end;
     end;
   end
   else
   begin
-    Qtd := Length(Registros);
-    SetLength(Itens, Qtd);
-    SetLength(Fotos, Qtd);
-    for I := 0 to Qtd - 1 do
+    for J := 0 to 7 do
+      C[J] := Trim(edCampo[J].Text);
+    SetLength(Itens, Copias);
+    SetLength(Fotos, Copias);
+    for K := 0 to Copias - 1 do
     begin
-      for J := 0 to 7 do
-        if J <= High(Registros[I].Valores) then
-          Itens[I][J] := Trim(Registros[I].Valores[J])
-        else
-          Itens[I][J] := '';
-      if (ModeloAlvo = msCrachaFuncionario) and (Length(Registros[I].Valores) > 8) and (Registros[I].Valores[8] <> '') then
-        Fotos[I] := Registros[I].Valores[8]
-      else
-        Fotos[I] := FCaminhoFoto;
+      Itens[K] := C;
+      if (FModelo = msEnvioDespachoVolumes) and (Copias > 1) then
+        Itens[K][5] := Format('VOLUME: %d/%d (Lote de %d volumes)', [K + 1, Copias, Copias]);
+      Fotos[K] := FCaminhoFoto;
     end;
   end;
+end;
 
-  if Length(Itens) = 0 then Exit;
-
+procedure TfrmEtiquetasSetoriais.AtualizarResumoPrevia;
+var
+  Itens: TCamposSetoriaisArray;
+  Fotos: TStringArray;
+  I, J, Limite: Integer;
+  W, H: Double;
+begin
+  MontarLoteImpressao(Itens, Fotos);
+  DimensoesPapelSetorial(FModo, FModelo, W, H);
+  mmoPrevia.Lines.BeginUpdate;
   try
-    if FWizardPOS and (not ApenasPrevia) then
+    mmoPrevia.Lines.Clear;
+    mmoPrevia.Lines.Add('====================================================================');
+    mmoPrevia.Lines.Add('IMPRESSORA : ' + cbModoImpressora.Text);
+    mmoPrevia.Lines.Add('MODELO     : ' + NomesModelosSetoriais[FModelo]);
+    mmoPrevia.Lines.Add(Format('DIMENSÃO   : %.1f x %.1f mm', [W, H]));
+    mmoPrevia.Lines.Add(Format('CÓPIAS/ITEM: %d | TOTAL DE ETIQUETAS: %d', [seCopias.Value, Length(Itens)]));
+    mmoPrevia.Lines.Add('====================================================================');
+    mmoPrevia.Lines.Add('');
+    Limite := Min(High(Itens), 49);
+    for I := 0 to Limite do
     begin
-      ImprimirLotePOS(ModeloAlvo, FModo, Itens);
-      Exit;
+      mmoPrevia.Lines.Add(Format('--- Etiqueta #%d ---', [I + 1]));
+      for J := 0 to 7 do
+        if Trim(Itens[I][J]) <> '' then
+          mmoPrevia.Lines.Add('  ' + lblCampo[J].Caption + ': ' + Itens[I][J]);
+      if (FModelo in [msCrachaVisitanteHosp, msCrachaFuncionario]) and (Fotos[I] <> '') then
+        mmoPrevia.Lines.Add('  Foto: ' + ExtractFileName(Fotos[I]));
+      mmoPrevia.Lines.Add('');
     end;
+    if Length(Itens) > 50 then
+      mmoPrevia.Lines.Add(Format('... e mais %d etiqueta(s) no lote.', [Length(Itens) - 50]));
+  finally
+    mmoPrevia.Lines.EndUpdate;
+  end;
+end;
 
-    if ApenasPrevia then
-    begin
-      ImprimirItemGrafico(ModeloAlvo, Itens[0], Fotos[0], True);
-      Exit;
-    end;
+procedure TfrmEtiquetasSetoriais.PreviaGraficaClick(Sender: TObject);
+var
+  Itens: TCamposSetoriaisArray;
+  Fotos: TStringArray;
+begin
+  MontarLoteImpressao(Itens, Fotos);
+  if Length(Itens) = 0 then Exit;
+  ImprimirItemGrafico(FModelo, Itens[0], Fotos[0], True);
+end;
 
-    Dlg := TPrintDialog.Create(Self);
-    try
-      if not Dlg.Execute then Exit;
-    finally
-      Dlg.Free;
-    end;
-
+procedure TfrmEtiquetasSetoriais.ImprimirGraficoClick(Sender: TObject);
+var
+  Itens: TCamposSetoriaisArray;
+  Fotos: TStringArray;
+  I: Integer;
+  Dlg: TPrintDialog;
+begin
+  MontarLoteImpressao(Itens, Fotos);
+  if Length(Itens) = 0 then Exit;
+  Dlg := TPrintDialog.Create(Self);
+  try
+    if not Dlg.Execute then Exit;
+  finally
+    Dlg.Free;
+  end;
+  try
     for I := 0 to High(Itens) do
-      ImprimirItemGrafico(ModeloAlvo, Itens[I], Fotos[I], False);
-
+      ImprimirItemGrafico(FModelo, Itens[I], Fotos[I], False);
     ShowMessage(Format('%d etiqueta(s) enviada(s) para impressão.', [Length(Itens)]));
   except
     on E: Exception do
@@ -1310,53 +2005,19 @@ begin
   end;
 end;
 
-procedure TfrmEtiquetasSetoriais.AbrirWizardImpressao(SaidaPOS: Boolean);
+procedure TfrmEtiquetasSetoriais.ImprimirPOSClick(Sender: TObject);
 var
-  Opcoes: TOpcoesPapelWizard;
-  M: TModeloEtiquetaSetorial;
-  Count, IdxInicial: Integer;
-  ValoresAtuais: TStringArray;
-  Wiz: TfrmWizardImpressao;
+  Itens: TCamposSetoriaisArray;
+  Fotos: TStringArray;
 begin
-  FWizardPOS := SaidaPOS;
-  Count := 0;
-  IdxInicial := 0;
-  SetLength(Opcoes, 0);
-  for M := Low(TModeloEtiquetaSetorial) to High(TModeloEtiquetaSetorial) do
-  begin
-    if ModeloCompativelComImpressora(FModo, M) then
-    begin
-      SetLength(Opcoes, Count + 1);
-      Opcoes[Count].Codigo := IntToStr(Ord(M));
-      Opcoes[Count].Descricao := NomesModelosSetoriais[M];
-      Opcoes[Count].ChaveFinalidade := ChaveTabelaSetorial(Ord(M));
-      if M = FModelo then
-        IdxInicial := Count;
-      Inc(Count);
-    end;
-  end;
-
-  ObterValoresBanco(ValoresAtuais);
-  Wiz := TfrmWizardImpressao.CreateWizard(Self, ChaveTabelaSetorial(Ord(FModelo)),
-    Opcoes, IdxInicial, ValoresAtuais, seCopias.Value);
+  MontarLoteImpressao(Itens, Fotos);
+  if Length(Itens) = 0 then Exit;
   try
-    Wiz.OnExecutarImpressao := @ExecutarWizardSetorial;
-    Wiz.ShowModal;
-  finally
-    Wiz.Free;
+    ImprimirLotePOS(FModelo, FModo, Itens);
+  except
+    on E: Exception do
+      MessageDlg('Etiqueta Setorial', E.Message, mtError, [mbOK], 0);
   end;
-  if Assigned(FPainelBanco) then
-    FPainelBanco.AtualizarLista;
-end;
-
-procedure TfrmEtiquetasSetoriais.VisualizarGraficoClick(Sender: TObject);
-begin
-  AbrirWizardImpressao(False);
-end;
-
-procedure TfrmEtiquetasSetoriais.EnviarPOSDiretoClick(Sender: TObject);
-begin
-  AbrirWizardImpressao(True);
 end;
 
 end.
