@@ -23,11 +23,15 @@ type
     Titulo, Detalhe, Categoria: string;
     Ilustracao: Integer;
     Impressora, Selecionado: Boolean;
+    Compacto: Boolean; { printer card in the left column: icon left, text right }
     constructor Create(AOwner: TComponent); override;
   end;
 
-  TInicio = class(TScrollBox)
+  { Left column: printer types (stacked vertically). Client area: what to print. }
+  TInicio = class(TPanel)
   private
+    FColuna: TScrollBox;
+    FConteudo: TScrollBox;
     FArea: TPanel;
     FCabecalho, FPasso1, FPasso2, FResumo, FVazio, FRodape: TLabel;
     FBusca: TEdit;
@@ -41,7 +45,9 @@ type
     procedure Organizar(Sender: TObject);
     procedure Popular;
     procedure Modelo(const Nome, Info, Grupo: string; Icone, Codigo: Integer);
-    function Rotulo(const Texto: string; Tam: Integer; Negrito: Boolean): TLabel;
+    function Rotulo(const Texto: string; Tam: Integer; Negrito: Boolean;
+      APai: TWinControl = nil): TLabel;
+    procedure OrganizarColuna(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -58,6 +64,8 @@ const
   Suave = $796B60;
   Azul = $C66A26;
   Borda = $E9E2DA;
+  LarguraColuna = 270;
+  AlturaCartaoImp = 116;
   NomesImp: array[0..3] of string = ('Zebra / Ribbon (rolo)', 'Térmica 80 mm (80 col)',
     'Térmica 55 / 58 mm', 'Convencional · Papel A4');
   InfoImp: array[0..3] of string = ('Etiquetas adesivas com ou sem ribbon', 'Bobina térmica 80 mm (PDV / balcão)',
@@ -140,6 +148,11 @@ begin
   Canvas.RoundRect(2, 2, Width - 2, Height - 2, 16, 16);
   X := (Width - 92) div 2;
   Y := 16;
+  if Compacto then
+  begin
+    X := 4;
+    Y := (Height - 78) div 2;
+  end;
   Canvas.Pen.Width := 2;
   Canvas.Pen.Color := Azul;
   if Impressora then
@@ -230,6 +243,27 @@ begin
   Estilo.SingleLine := False;
   Canvas.Font.Color := Tinta;
   Canvas.Font.Style := [fsBold];
+  if Compacto then
+  begin
+    Estilo.Alignment := taLeftJustify;
+    Estilo.Layout := tlTop;
+    Canvas.TextRect(Rect(102, 10, Width - 10, 52), 102, 10, Titulo, Estilo);
+    Canvas.Font.Style := [];
+    Canvas.Font.Size := 8;
+    Canvas.Font.Color := Suave;
+    Canvas.TextRect(Rect(102, 52, Width - 10, Height - 26), 102, 52, Detalhe, Estilo);
+    Canvas.Font.Size := 9;
+    Canvas.Font.Color := Azul;
+    if Selecionado then
+    begin
+      Canvas.Font.Style := [fsBold];
+      Canvas.TextRect(Rect(102, Height-24, Width-10, Height-6), 102, Height-24, 'SELECIONADA', Estilo);
+    end
+    else
+      Canvas.TextRect(Rect(102, Height-24, Width-10, Height-6), 102, Height-24, 'Selecionar', Estilo);
+    Canvas.Brush.Style := bsSolid;
+    Exit;
+  end;
   Canvas.TextRect(Rect(12, 98, Width - 12, 142), 12, 98, Titulo, Estilo);
   Canvas.Font.Style := [];
   Canvas.Font.Size := 9;
@@ -252,10 +286,12 @@ begin
   Canvas.Brush.Style := bsSolid;
 end;
 
-function TInicio.Rotulo(const Texto: string; Tam: Integer; Negrito: Boolean): TLabel;
+function TInicio.Rotulo(const Texto: string; Tam: Integer; Negrito: Boolean;
+  APai: TWinControl): TLabel;
 begin
   Result := TLabel.Create(Self);
-  Result.Parent := FArea;
+  if APai = nil then APai := FArea;
+  Result.Parent := APai;
   Result.AutoSize := False;
   Result.Caption := Texto;
   Result.Font.Size := Tam;
@@ -268,26 +304,47 @@ constructor TInicio.Create(AOwner: TComponent);
 var I: Integer;
 begin
   inherited Create(AOwner);
-  BorderStyle := bsNone;
+  BevelOuter := bvNone;
+  Caption := '';
   Color := Fundo;
   Font.Name := 'Segoe UI';
   Font.Size := 10;
-  HorzScrollBar.Visible := False;
   FModelos := TList.Create;
+
+  { Coluna esquerda fixa: tipos de impressora empilhados verticalmente. }
+  FColuna := TScrollBox.Create(Self);
+  FColuna.Parent := Self;
+  FColuna.Align := alLeft;
+  FColuna.Width := LarguraColuna;
+  FColuna.BorderStyle := bsNone;
+  FColuna.Color := $F3EEE8;
+  FColuna.HorzScrollBar.Visible := False;
+  FColuna.OnResize := @OrganizarColuna;
+
+  { Painel cliente: o que imprimir (busca, finalidade e modelos). }
+  FConteudo := TScrollBox.Create(Self);
+  FConteudo.Parent := Self;
+  FConteudo.Align := alClient;
+  FConteudo.BorderStyle := bsNone;
+  FConteudo.Color := Fundo;
+  FConteudo.HorzScrollBar.Visible := False;
+  FConteudo.OnResize := @Organizar;
   FArea := TPanel.Create(Self);
-  FArea.Parent := Self;
+  FArea.Parent := FConteudo;
   FArea.BevelOuter := bvNone;
   FArea.Color := Fundo;
   FArea.SetBounds(0, 0, 1000, 1000);
-  FCabecalho := Rotulo('Etiquetas', 26, True);
-  FPasso1 := Rotulo('1  Escolha o tipo de impressora', 15, True);
+
+  FCabecalho := Rotulo('Etiquetas', 22, True, FColuna);
+  FPasso1 := Rotulo('1  Tipo de impressora', 13, True, FColuna);
   for I := 0 to 3 do
   begin
     FImpressoras[I] := TCartaoInicio.Create(Self);
     with FImpressoras[I] do
     begin
-      Parent := FArea;
+      Parent := FColuna;
       Impressora := True;
+      Compacto := True;
       Ilustracao := I;
       Titulo := NomesImp[I];
       Detalhe := InfoImp[I];
@@ -297,7 +354,7 @@ begin
       AccessibleDescription := Detalhe;
     end;
   end;
-  FResumo := Rotulo('', 10, False);
+  FResumo := Rotulo('', 9, False, FColuna);
   FResumo.Font.Color := Suave;
   FPasso2 := Rotulo('2  O que você quer imprimir?', 15, True);
   FBusca := TEdit.Create(Self);
@@ -313,7 +370,6 @@ begin
   FVazio := Rotulo('Nenhum modelo encontrado. Altere a busca ou a finalidade.', 12, False);
   FRodape := Rotulo('3  Preencha o conteúdo, visualize e imprima. Selecione o dispositivo e o papel na janela de impressão.', 10, False);
   FRodape.Font.Color := Suave;
-  OnResize := @Organizar;
   SelecionarImpressora(0);
 end;
 
@@ -439,8 +495,9 @@ begin
     FImpressoras[I].Selecionado := I = Tipo;
     FImpressoras[I].Invalidate;
   end;
-  FResumo.Caption := NomesImp[Tipo] + ' selecionada. Os modelos abaixo serão abertos neste formato.';
+  FResumo.Caption := NomesImp[Tipo] + ' selecionada. Os modelos ao lado serão abertos neste formato.';
   Popular;
+  OrganizarColuna(Self);
   Organizar(Self);
 end;
 
@@ -454,26 +511,31 @@ begin
   Organizar(Self);
 end;
 
+procedure TInicio.OrganizarColuna(Sender: TObject);
+var W, I, Y: Integer;
+begin
+  if not Assigned(FResumo) then Exit;
+  W := Max(160, FColuna.ClientWidth - 32);
+  FCabecalho.SetBounds(16, 16, W, 40);
+  FPasso1.SetBounds(16, 66, W, 26);
+  Y := 100;
+  for I := 0 to 3 do
+  begin
+    FImpressoras[I].SetBounds(16, Y, W, AlturaCartaoImp);
+    Inc(Y, AlturaCartaoImp + 10);
+  end;
+  FResumo.SetBounds(16, Y + 4, W, 64);
+end;
+
 procedure TInicio.Organizar(Sender: TObject);
-var W, Colunas, CW, I, N, Y, PY, PH: Integer;
+var W, Colunas, CW, I, N, Y, PY: Integer;
   C: TCartaoInicio;
   Busca, Grupo: string;
 begin
   if not Assigned(FRodape) then Exit;
-  W := Max(300, ClientWidth - 48);
-  FArea.Width := ClientWidth;
-  FCabecalho.SetBounds(24, 20, W, 48);
-  FPasso1.SetBounds(24, 85, W, 30);
-  if W >= 850 then Colunas := 4
-  else if W >= 420 then Colunas := 2
-  else Colunas := 1;
-  CW := (W - (Colunas - 1) * 16) div Colunas;
-  PH := 214;
-  for I := 0 to 3 do
-    FImpressoras[I].SetBounds(24 + (I mod Colunas) * (CW + 16),
-      128 + (I div Colunas) * (PH + 16), CW, PH);
-  PY := 128 + ((4 + Colunas - 1) div Colunas) * (PH + 16);
-  FResumo.SetBounds(24, PY, W, 44);
+  W := Max(300, FConteudo.ClientWidth - 48);
+  FArea.Width := FConteudo.ClientWidth;
+  PY := -28; { título do passo 2 no topo do painel cliente }
   FPasso2.SetBounds(24, PY + 52, W, 32);
   FBusca.SetBounds(24, PY + 96, Max(140, W - 240), 32);
   FFiltro.SetBounds(24 + Max(140, W - 240) + 12, PY + 96, 228, 32);
