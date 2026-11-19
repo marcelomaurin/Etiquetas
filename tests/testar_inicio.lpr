@@ -4,7 +4,8 @@ program testar_inicio;
 
 uses
   Interfaces, Forms, Classes, SysUtils, Graphics, Controls, StdCtrls,
-  ExtCtrls, inicio, qrmidia, enviosarquivo, zipper, mercadolivre;
+  ExtCtrls, inicio, qrmidia, enviosarquivo, zipper, mercadolivre,
+  ZConnection, tabelafinalidade, crudfinalidade, wizardimpressao, etiquetasnovas;
 
 var
   Log: TStringList;
@@ -114,6 +115,38 @@ begin
               SalvarImagem(P.Picture.Bitmap, 'qr-' + IntToStr(I) + '-fundo-' + IntToStr(K));
             end;
         end;
+      { Imagem de fundo (cobre a etiqueta inteira; QR sobre retângulo branco). }
+      C := TComboBox(F.FindComponent('ImagemFundo'));
+      Check(Assigned(C) and (C.Items.Count = 11), 'Lista de imagens de fundo ' + IntToStr(I));
+      Check(TComboBox(F.FindComponent('ImagemTopo')).Items[0] = 'Nenhuma', 'Imagem de topo aceita Nenhuma ' + IntToStr(I));
+      for K := 1 to 9 do
+      begin
+        C.ItemIndex := K;
+        C.OnChange(C);
+        Check(C.ItemIndex = K, 'Imagem de fundo ' + IntToStr(K) + ' encontrada ' + IntToStr(I));
+        SalvarImagem(P.Picture.Bitmap, 'qr-' + IntToStr(I) + '-bg-' + IntToStr(K));
+      end;
+      C.ItemIndex := 0;
+      C.OnChange(C);
+      if I = 0 then
+      begin
+        C := TComboBox(F.FindComponent('ImagemTopo'));
+        C.ItemIndex := 1;
+        C.OnChange(C);
+        C := TComboBox(F.FindComponent('ImagemFundo'));
+        C.ItemIndex := 1;
+        C.OnChange(C);
+        SalvarImagem(P.Picture.Bitmap, 'qr-0-topo-e-fundo');
+        Capturar(F, 'editor-qr-fundo');
+        C.ItemIndex := 4;
+        C.OnChange(C);
+        SalvarImagem(P.Picture.Bitmap, 'qr-0-teatro');
+        C.ItemIndex := 0;
+        C.OnChange(C);
+        C := TComboBox(F.FindComponent('ImagemTopo'));
+        C.ItemIndex := 0;
+        C.OnChange(C);
+      end;
       if I = 0 then
       begin
         for J := 0 to F.ComponentCount - 1 do
@@ -214,6 +247,82 @@ begin
   end;
 end;
 
+{ Banco de teste (cópia do modelo): migração da coluna imagem_fundo,
+  gravação/recarga do fundo e capturas das telas de cadastro e do assistente. }
+procedure TestarBancoETelas;
+var
+  Conn: TZConnection;
+  Spec: TTabelaFinalidade;
+  Linhas: TListaLinhasTabela;
+  Valores: array of string;
+  G: TfrmGerenciadorTabelas;
+  Crud: TfrmCrudFinalidade;
+  Wiz: TfrmWizardImpressao;
+  Setorial: TfrmEtiquetasSetoriais;
+  Opcoes: TOpcoesPapelWizard;
+  Banco: string;
+  I: Integer;
+  Achou: Boolean;
+begin
+  Banco := Saida + 'teste.db';
+  DeleteFile(Banco);
+  with TMemoryStream.Create do
+  try
+    LoadFromFile(ExpandFileName(ExtractFilePath(ParamStr(0)) + '../db/etiqueta.db'));
+    SaveToFile(Banco);
+  finally Free; end;
+  Conn := TZConnection.Create(nil);
+  try
+    Conn.Protocol := 'sqlite';
+    Conn.Database := Banco;
+    Conn.LibraryLocation := ExpandFileName(ExtractFilePath(ParamStr(0)) + '../src/sqlite3.dll');
+    Conn.Connect;
+    GConexaoFinalidade := Conn;
+    CriarTodasTabelasFinalidade(Conn);
+    Check(ObterTabelaFinalidade('qr_midia', Spec), 'Tabela qr_midia registrada');
+    Check(Spec.Campos[High(Spec.Campos)].Coluna = 'imagem_fundo', 'Coluna imagem_fundo no fim da lista');
+    SetLength(Valores, 11);
+    Valores[0] := '0';
+    Valores[1] := 'https://example.com/manual?produto=123';
+    Valores[2] := 'Manual de instruções';
+    Valores[3] := 'Leia antes de usar o equipamento.';
+    Valores[4] := 'Aponte a câmera e acesse o manual';
+    Valores[5] := '1';
+    Valores[6] := '0';
+    Valores[7] := '90';
+    Valores[8] := '120';
+    Valores[9] := '';
+    Valores[10] := 'teatro';
+    InserirRegistroTabela(Conn, Spec, Valores);
+    Valores[2] := 'Assista ao vídeo';
+    Valores[5] := '3';
+    Valores[10] := 'logistica';
+    InserirRegistroTabela(Conn, Spec, Valores);
+    Linhas := CarregarRegistrosTabela(Conn, Spec);
+    Achou := False;
+    for I := 0 to High(Linhas) do
+      if (Length(Linhas[I].Valores) > 10) and (Linhas[I].Valores[10] = 'teatro') then Achou := True;
+    Check(Achou, 'Imagem de fundo gravada e relida do banco');
+
+    G := TfrmGerenciadorTabelas.CreateGerenciador(nil, 'qr_midia');
+    try Capturar(G, 'cadastros'); finally G.Free; end;
+    Crud := TfrmCrudFinalidade.CreateComFinalidade(nil, 'qr_midia', False);
+    try Capturar(Crud, 'gerenciar-registros'); finally Crud.Free; end;
+    SetLength(Opcoes, 1);
+    Opcoes[0].Codigo := 'qr_midia';
+    Opcoes[0].Descricao := 'QR Code (90 x 120 mm)';
+    Opcoes[0].ChaveFinalidade := 'qr_midia';
+    Wiz := TfrmWizardImpressao.CreateWizard(nil, 'qr_midia', Opcoes, 0, Valores, 1);
+    try Capturar(Wiz, 'assistente-registros-passo1'); finally Wiz.Free; end;
+    Setorial := TfrmEtiquetasSetoriais.CreateSetorial(nil, miZebraRolo, msLabTuboColeta);
+    try Capturar(Setorial, 'assistente-passo1'); finally Setorial.Free; end;
+    Check(True, 'Telas de cadastro e assistente capturadas');
+  finally
+    GConexaoFinalidade := nil;
+    Conn.Free;
+  end;
+end;
+
 begin
   Application.Initialize;
   Saida := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'output' + PathDelim;
@@ -225,6 +334,7 @@ begin
       TestarInicio;
       TestarQR;
       TestarJanelaEnvios;
+      TestarBancoETelas;
       Log.Add('PASSOU');
     except
       on E: Exception do

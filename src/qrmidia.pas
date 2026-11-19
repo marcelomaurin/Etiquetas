@@ -16,16 +16,20 @@ type
     FTipo: Integer;
     FLink, FTitulo, FChamada: TEdit;
     FTexto: TMemo;
-    FFinalidade, FFundo, FFormato: TComboBox;
+    FFinalidade, FFundo, FFundoImg, FFormato: TComboBox;
     FLargura, FAltura: TSpinEdit;
     FPreview: TImage;
-    FImagem, FArte: TPicture;
+    FImagem, FArte, FPapel: TPicture;
     FQR: TQRCodeImpressao;
     FImprimir, FSalvar: TButton;
     FAviso: TLabel;
     FErro: string;
     FAtualizando: Boolean;
     FCaminhoImagem: string;
+    { Imagem de fundo: '' (branco), chave do segmento (ex.: 'saude') ou
+      caminho de um arquivo escolhido pelo usuário. }
+    FFundoValor: string;
+    FFundoIdxAnterior: Integer;
     FPainelBanco: TPainelBancoFinalidade;
     { Relatório Windows (FortesReport): uma página por etiqueta renderizada. }
     FPaginasRel: TList;
@@ -35,6 +39,9 @@ type
     procedure BandaBeforePrint(Sender: TObject; var PrintIt: Boolean);
     procedure ImprimirRelatorio(ApenasPrevia: Boolean);
     function PastaFundos: string;
+    function PastaBackground(const Sub: string): string;
+    procedure FundoImgChange(Sender: TObject);
+    procedure AplicarFundoValor(const Valor: string);
     procedure ExecutarWizardQR(const OpcaoPapel: TOpcaoPapelWizard;
       Modo: TModoImpressaoWizard; Repeticoes: Integer;
       const Registros: TListaLinhasTabela; ApenasPrevia: Boolean);
@@ -63,12 +70,18 @@ const
   PontosMM = 8; // 203 dpi: native resolution of common thermal printers.
   ArquivosFundos: array[1..4] of string = ('saude-clinica.png', 'saude-laboratorio.png',
     'varejo-mercado.png', 'varejo-loja.png');
+  { Imagens de fundo padrão (background\fundos\fundo-<chave>.png). }
+  ChavesFundo: array[1..9] of string = ('saude', 'logistica', 'empresa', 'teatro',
+    'educacao', 'alimentacao', 'tecnologia', 'eventos', 'neutro');
+  NomesFundo: array[1..9] of string = ('Saúde', 'Logística', 'Empresa', 'Teatro',
+    'Educação', 'Alimentação', 'Tecnologia', 'Eventos', 'Neutro');
+  IdxFundoEscolher = 10;
 
 constructor TfrmQRMidia.CreateParaImpressora(AOwner: TComponent; Tipo: Integer);
 var
   Campos: TScrollBox;
   Direita, Rodape: TPanel;
-  Y: Integer;
+  Y, Y2: Integer;
   procedure Legenda(const S: string);
   var L: TLabel;
   begin
@@ -119,6 +132,9 @@ begin
   Color := $FAF8F5;
   FImagem := TPicture.Create;
   FArte := TPicture.Create;
+  FPapel := TPicture.Create;
+  FFundoValor := '';
+  FFundoIdxAnterior := 0;
   FQR := TQRCodeImpressao.Create(Self);
   FQR.Visible := False;
   Campos := TScrollBox.Create(Self);
@@ -194,12 +210,22 @@ begin
   FChamada := Entrada;
   FChamada.MaxLength := 80;
   FChamada.Text := 'Aponte a câmera e acesse o manual';
-  Legenda('Fundo ilustrado');
+  Legenda('Imagem de topo');
   FFundo := Lista;
-  FFundo.Items.AddStrings(['Sem fundo ilustrado', 'Saúde · clínica', 'Saúde · laboratório',
+  FFundo.Name := 'ImagemTopo';
+  FFundo.Items.AddStrings(['Nenhuma', 'Saúde · clínica', 'Saúde · laboratório',
     'Varejo · supermercado', 'Varejo · loja e entregas']);
   FFundo.ItemIndex := 0;
   FFundo.OnChange := @FundoChange;
+  Legenda('Imagem de fundo');
+  FFundoImg := Lista;
+  FFundoImg.Name := 'ImagemFundo';
+  FFundoImg.Items.Add('Nenhum (branco)');
+  for Y2 := Low(NomesFundo) to High(NomesFundo) do
+    FFundoImg.Items.Add(NomesFundo[Y2]);
+  FFundoImg.Items.Add('Escolher imagem...');
+  FFundoImg.ItemIndex := 0;
+  FFundoImg.OnChange := @FundoImgChange;
   Botao(Campos, 'Adicionar imagem / logo', 20, Y, 222, @CarregarImagem);
   Botao(Campos, 'Remover', 250, Y, 120, @RemoverImagem);
   Inc(Y, 50);
@@ -236,14 +262,102 @@ destructor TfrmQRMidia.Destroy;
 begin
   FImagem.Free;
   FArte.Free;
+  FPapel.Free;
   inherited Destroy;
+end;
+
+function TfrmQRMidia.PastaBackground(const Sub: string): string;
+begin
+  Result := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName)) + 'background' + PathDelim + Sub + PathDelim;
+  if not DirectoryExists(Result) then
+    Result := ExpandFileName(ExtractFilePath(Application.ExeName) + '..' + PathDelim + 'background' + PathDelim + Sub + PathDelim);
 end;
 
 function TfrmQRMidia.PastaFundos: string;
 begin
-  Result := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName)) + 'background' + PathDelim + 'qrcode' + PathDelim;
-  if not DirectoryExists(Result) then
-    Result := ExpandFileName(ExtractFilePath(Application.ExeName) + '..' + PathDelim + 'background' + PathDelim + 'qrcode' + PathDelim);
+  Result := PastaBackground('qrcode');
+end;
+
+{ Carrega a imagem de fundo a partir do valor salvo: '' = branco, chave de
+  segmento = background\fundos\fundo-<chave>.png, ou caminho de arquivo. }
+procedure TfrmQRMidia.AplicarFundoValor(const Valor: string);
+var
+  I, Idx: Integer;
+  Caminho: string;
+begin
+  FPapel.Clear;
+  FFundoValor := '';
+  Idx := 0;
+  if Trim(Valor) <> '' then
+  begin
+    Caminho := '';
+    for I := Low(ChavesFundo) to High(ChavesFundo) do
+      if SameText(Trim(Valor), ChavesFundo[I]) then
+      begin
+        Idx := I;
+        Caminho := PastaBackground('fundos') + 'fundo-' + ChavesFundo[I] + '.png';
+      end;
+    if Idx = 0 then
+    begin
+      Idx := IdxFundoEscolher;
+      Caminho := Valor;
+    end;
+    if FileExists(Caminho) then
+    begin
+      try
+        FPapel.LoadFromFile(Caminho);
+        if Idx = IdxFundoEscolher then FFundoValor := Caminho
+        else FFundoValor := ChavesFundo[Idx];
+      except
+        FPapel.Clear;
+        Idx := 0;
+      end;
+    end
+    else
+      Idx := 0;
+  end;
+  FFundoImg.OnChange := nil;
+  FFundoImg.ItemIndex := Idx;
+  FFundoImg.OnChange := @FundoImgChange;
+  FFundoIdxAnterior := Idx;
+end;
+
+procedure TfrmQRMidia.FundoImgChange(Sender: TObject);
+var
+  D: TOpenPictureDialog;
+  Caminho: string;
+begin
+  if FFundoImg.ItemIndex = IdxFundoEscolher then
+  begin
+    D := TOpenPictureDialog.Create(Self);
+    try
+      D.Title := 'Escolher imagem de fundo';
+      D.Filter := 'Imagens (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|Todos os arquivos|*.*';
+      if not D.Execute then
+      begin
+        FFundoImg.OnChange := nil;
+        FFundoImg.ItemIndex := FFundoIdxAnterior;
+        FFundoImg.OnChange := @FundoImgChange;
+        Exit;
+      end;
+      Caminho := D.FileName;
+    finally
+      D.Free;
+    end;
+    AplicarFundoValor(Caminho);
+    if FFundoValor = '' then
+      ShowMessage('Não foi possível abrir a imagem de fundo: ' + Caminho);
+  end
+  else if FFundoImg.ItemIndex <= 0 then
+    AplicarFundoValor('')
+  else
+  begin
+    Caminho := ChavesFundo[FFundoImg.ItemIndex];
+    AplicarFundoValor(Caminho);
+    if FFundoValor = '' then
+      ShowMessage('Imagem de fundo não encontrada: ' + PastaBackground('fundos') + 'fundo-' + Caminho + '.png');
+  end;
+  Atualizar(Self);
 end;
 
 procedure TfrmQRMidia.Validar;
@@ -291,6 +405,17 @@ begin
   B.SetSize(W, H);
   B.Canvas.Brush.Color := clWhite;
   B.Canvas.FillRect(0, 0, W, H);
+  { Imagem de fundo cobrindo a etiqueta inteira (cover: mantém a proporção
+    e corta o excesso), desenhada por baixo de todo o conteúdo. }
+  if Assigned(FPapel.Graphic) and not FPapel.Graphic.Empty
+    and (FPapel.Width > 0) and (FPapel.Height > 0) then
+  begin
+    Escala := Max(W / FPapel.Width, H / FPapel.Height);
+    IW := Ceil(FPapel.Width * Escala);
+    IH := Ceil(FPapel.Height * Escala);
+    B.Canvas.StretchDraw(Rect((W-IW) div 2, (H-IH) div 2,
+      (W-IW) div 2 + IW, (H-IH) div 2 + IH), FPapel.Graphic);
+  end;
   B.Canvas.Font.Name := 'Arial';
   B.Canvas.Font.Color := clBlack;
   Y := M;
@@ -496,6 +621,8 @@ begin
       FImagem.Clear;
       FCaminhoImagem := '';
     end;
+    if Length(Valores) > 10 then AplicarFundoValor(Valores[10])
+    else AplicarFundoValor('');
   finally
     FAtualizando := False;
   end;
@@ -504,7 +631,7 @@ end;
 
 procedure TfrmQRMidia.ObterValoresBanco(out Valores: TStringArray);
 begin
-  SetLength(Valores, 10);
+  SetLength(Valores, 11);
   Valores[0] := IntToStr(FFinalidade.ItemIndex);
   Valores[1] := Trim(FLink.Text);
   Valores[2] := Trim(FTitulo.Text);
@@ -515,6 +642,7 @@ begin
   Valores[7] := IntToStr(FLargura.Value);
   Valores[8] := IntToStr(FAltura.Value);
   Valores[9] := FCaminhoImagem;
+  Valores[10] := FFundoValor;
 end;
 
 procedure TfrmQRMidia.AbrirLink(Sender: TObject);

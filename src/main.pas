@@ -11,7 +11,7 @@ uses
   etiquetasnovas, etiquetaspimaco, inicio, qrmidia, mercadolivre;
 
 const
-  versao = '0121';
+  versao = '0122';
 
 type
 

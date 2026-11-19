@@ -6,6 +6,34 @@ O projeto nasceu para facilitar a criação, seleção, importação e impressã
 
 ![Painel inicial com seleção visual de impressora](img/screens/inicio-visual.png)
 
+## Novidades da versão 0122
+
+Instalador: [`bin/setup_etiquetas_0122.exe`](bin/setup_etiquetas_0122.exe) ·
+histórico completo no [CHANGELOG](CHANGELOG.md).
+
+- **Menu Cadastros e gerenciador de tabelas:** todas as tabelas de apoio das
+  etiquetas num só lugar, agrupadas por segmento, com contagem de registros,
+  abertura dos registros e importação/exportação CSV.
+- **Protocolo de comunicação + impressora do Windows:** o Passo 1 do assistente
+  começa pelo protocolo (ZPL, EPL, ESC/POS, Padrão Windows...) e mostra só os
+  campos da conexão escolhida — serial, rede ou a impressora do Windows por nome.
+- **Início em coluna:** tipos de impressora numa coluna à esquerda e os modelos
+  no painel principal, com busca e filtro por finalidade.
+- **QR Code com imagem de topo e imagem de fundo:** ilustração no topo
+  (opcional) e um fundo que cobre a etiqueta inteira — nove fundos padrão
+  (Saúde, Logística, Empresa, Teatro, Educação, Alimentação, Tecnologia,
+  Eventos, Neutro) ou uma imagem sua. O QR fica sempre sobre um quadro branco
+  para continuar legível.
+- **Impressão como relatório do Windows:** o QR Code é impresso pelo
+  FortesReport, uma etiqueta por página, com pré-visualização e escolha da
+  impressora instalada (inclui Cartaz A4).
+
+| Editor de QR Code com imagem de topo e fundo | Fundos padrão |
+|---|---|
+| <img src="img/screens/editor-qr-fundo.png" alt="Editor de QR Code com imagem de topo de clínica e fundo de saúde" width="520"> | <img src="img/screens/qr-fundo-teatro.png" alt="Etiqueta QR com fundo de teatro" width="200"> |
+
+![Os nove fundos padrão do QR Code](img/screens/fundos-padrao.png)
+
 ## Novidades da interface
 
 O início usa cartões ilustrados para escolher **Zebra/rolo**, **térmica de 80 mm**,
@@ -13,7 +41,8 @@ O início usa cartões ilustrados para escolher **Zebra/rolo**, **térmica de 80
 ajudam a encontrar os modelos; a grade se reorganiza ao redimensionar a janela.
 
 - **Manuais e vídeos · QR Code:** link, título, texto de apoio, imagem/logotipo,
-  quatro fundos de saúde e varejo, prévia, exportação PNG e impressão.
+  imagem de topo (saúde e varejo), imagem de fundo (nove segmentos ou uma
+  imagem própria), prévia, exportação PNG e impressão.
 - **Mercado Livre · envios:** importação de etiquetas originais PDF, ZIP, ZPL,
   TXT e PRN. PDF abre no leitor instalado; ZPL pode ser enviado diretamente a
   uma Zebra compatível no Windows.
@@ -47,7 +76,9 @@ Com ele, o usuário pode manter uma base local de produtos e endereços, importa
 - Impressão de etiquetas de mala direta com remetente e destinatário.
 - Impressão de etiquetas de laboratório com código de barras.
 - Geração e impressão de QR Code PIX a partir de uma string informada.
-- QR Codes para manuais, vídeos e páginas, com textos, imagens e fundos ilustrados.
+- QR Codes para manuais, vídeos e páginas, com textos, imagem de topo e imagem de fundo.
+- Menu **Cadastros** com gerenciador de todas as tabelas de apoio e importação/exportação CSV.
+- Saída de impressão por protocolo (ZPL, EPL, ESC/POS, Padrão Windows) via serial, rede ou impressora do Windows.
 - Importação de etiquetas de envio do Mercado Livre, preservando o arquivo original.
 - Configuração de banco SQLite e biblioteca `sqlite3.dll`.
 - Configuração dos dados da empresa usados em etiquetas de mala direta.
@@ -109,11 +140,73 @@ A documentação principal está na pasta [`doc`](doc/README.md):
 | `sqlite/` | Bibliotecas SQLite utilizadas pela aplicação. |
 | `csv/` | Modelos ou arquivos de importação CSV. |
 | `img/` | Imagens, ícones e capturas de tela. |
-| `background/qrcode/` | Fundos ilustrados de saúde e varejo usados no editor de QR Code. |
+| `background/qrcode/` | Imagens de topo (saúde e varejo) do editor de QR Code. |
+| `background/fundos/` | Imagens de fundo padrão do QR Code (`fundo-<segmento>.png`, 90 × 120 mm a 300 dpi). |
+| `tools/gerar_fundos.py` | Gera os fundos padrão (requer Pillow). |
 | `tests/` | Verificação do painel, importação e leitura dos QR Codes. |
 | `install/win/` | Arquivos relacionados à instalação no Windows. |
 | `tools/SQLiteStudio/` | Ferramenta auxiliar para inspeção/manutenção do SQLite. |
 | `doc/` | Documentação de instalação, uso e suporte. |
+
+---
+
+## Exemplos de uso
+
+### 1. Emitir etiqueta de gôndola
+
+1. No início, escolha **Zebra / Ribbon (rolo)** na coluna da esquerda (ou outra
+   impressora compatível).
+2. No cartão **Preços e gôndola**, clique em **Criar etiqueta**.
+3. **Passo 1:** confira o modelo/tamanho, escolha o **protocolo de
+   comunicação** (por exemplo ZPL para Zebra ou **Padrão Windows** para usar a
+   impressora instalada pelo nome) e preencha a conexão pedida.
+4. **Passo 2:** informe descrição, preço e preço por kg/litro — ou selecione
+   produtos já cadastrados.
+5. **Passo 3:** confira a prévia, a quantidade de cópias e imprima.
+
+![Passo 1 do assistente com protocolo de comunicação](img/screens/assistente-passo1.png)
+
+### 2. Importar etiqueta do Mercado Livre
+
+1. No início, abra o cartão **Mercado Livre · envios** → **Importar etiqueta**.
+2. Selecione o arquivo baixado do Mercado Livre (PDF, ZIP, ZPL, TXT ou PRN).
+   O conteúdo original é preservado, sem regerar a etiqueta.
+3. PDF abre no leitor instalado; ZPL pode ser enviado direto para uma Zebra
+   compatível. Etiquetas 100 × 150 mm exigem impressora de rolo.
+
+![Importação de etiquetas do Mercado Livre](img/screens/mercado-livre.png)
+
+### 3. Criar QR Code de manual ou vídeo com fundo
+
+1. No início, abra **Manuais e vídeos · QR Code** → **Personalizar QR Code**.
+2. Escolha o conteúdo (manual, vídeo, saúde, livre), cole o link público
+   `https://...` e ajuste título, texto de apoio e chamada.
+3. Em **Imagem de topo**, escolha uma ilustração (ou **Nenhuma**).
+4. Em **Imagem de fundo**, escolha um dos segmentos (Saúde, Logística, Empresa,
+   Teatro, Educação, Alimentação, Tecnologia, Eventos, Neutro) ou
+   **Escolher imagem...** para usar um PNG/JPG/BMP seu. O fundo cobre a
+   etiqueta inteira, sem distorcer; o QR fica sobre um quadro branco.
+5. Use **Salvar imagem PNG** ou **Escolher impressora e imprimir** (relatório
+   do Windows com pré-visualização). Clique em **Salvar na tabela** para
+   guardar a etiqueta, inclusive o fundo escolhido.
+
+| Saúde (topo + fundo) | Teatro |
+|---|---|
+| <img src="img/screens/qr-fundo-saude.png" alt="Etiqueta QR com topo de clínica e fundo de saúde" width="240"> | <img src="img/screens/qr-fundo-teatro.png" alt="Etiqueta QR com fundo de teatro" width="240"> |
+
+### 4. Gerenciar registros e CSV
+
+1. Abra o menu **Cadastros → Gerenciar todas as tabelas...**.
+2. Localize a tabela pelo nome ou navegue pelos grupos; o painel à direita
+   mostra quantos registros ela tem.
+3. **Abrir registros** abre a lista: **Novo**, **Salvar**, **Excluir**,
+   pesquisa e edição lateral (atalhos Ctrl+N, Ctrl+S, Del, Ctrl+F, Esc).
+4. **Importar CSV...** e **Exportar CSV...** trocam dados com planilhas; para
+   apagar tudo, use **Mais ▾ → Limpar tabela** na lista de registros.
+
+| Cadastros | Gerenciar registros |
+|---|---|
+| <img src="img/screens/cadastros.png" alt="Gerenciador de tabelas do menu Cadastros" width="420"> | <img src="img/screens/gerenciar-registros.png" alt="Lista e edição de registros da tabela de QR Code" width="420"> |
 
 ---
 
@@ -138,15 +231,19 @@ O projeto está funcional como aplicação desktop de etiquetas, com módulos es
 
 ## Screenshots
 
-Editor de QR Code para manuais, vídeos e orientações, com fundo de saúde:
+Painel inicial com os tipos de impressora em coluna:
 
-![Editor de QR Code com prévia e opções de impressão](img/screens/editor-qr.png)
+![Painel inicial](img/screens/inicio-visual.png)
+
+Editor de QR Code com imagem de topo e imagem de fundo:
+
+![Editor de QR Code com imagem de topo, imagem de fundo e prévia](img/screens/editor-qr-fundo.png)
 
 Importação de etiquetas de envio:
 
 ![Importação de etiquetas originais do Mercado Livre](img/screens/mercado-livre.png)
 
-Exemplos de etiquetas com os novos fundos:
+Exemplos de etiquetas com imagem de topo (versão 0120):
 
 | Saúde | Varejo |
 |---|---|

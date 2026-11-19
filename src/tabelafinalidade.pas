@@ -482,11 +482,12 @@ begin
     Campo('titulo', 'Título'),
     Campo('texto', 'Texto de Apoio'),
     Campo('chamada', 'Chamada Abaixo do QR Code'),
-    Campo('fundo', 'Fundo Ilustrado (Índice)'),
+    Campo('fundo', 'Imagem de Topo (Índice)'),
     Campo('formato', 'Formato de Impressão (Índice)'),
     Campo('largura_mm', 'Largura (mm)'),
     Campo('altura_mm', 'Altura (mm)'),
-    Campo('caminho_imagem', 'Caminho da Imagem / Logo')
+    Campo('caminho_imagem', 'Caminho da Imagem / Logo'),
+    Campo('imagem_fundo', 'Imagem de Fundo (segmento ou arquivo)')
   ]);
 
   RegistrarTabela('pix', 'etq_pix',
@@ -654,6 +655,38 @@ begin
   Result := Result + ')';
 end;
 
+{ Bancos criados por versões anteriores: acrescenta ao final as colunas
+  novas da especificação que ainda não existem na tabela. }
+procedure GarantirColunasTabela(Q: TZQuery; const Spec: TTabelaFinalidade);
+var
+  I: Integer;
+  Faltando: array of string;
+begin
+  { Tabelas clássicas têm esquema próprio; só as genéricas são migradas. }
+  if SameText(Spec.Tabela, 'product') or SameText(Spec.Tabela, 'endereco') or
+     SameText(Spec.Tabela, 'etqlab') then
+    Exit;
+  SetLength(Faltando, 0);
+  try
+    Q.SQL.Text := 'SELECT * FROM "' + Spec.Tabela + '" WHERE 1=0';
+    Q.Open;
+    for I := 0 to High(Spec.Campos) do
+      if Q.FindField(Spec.Campos[I].Coluna) = nil then
+      begin
+        SetLength(Faltando, Length(Faltando) + 1);
+        Faltando[High(Faltando)] := Spec.Campos[I].Coluna;
+      end;
+    Q.Close;
+    for I := 0 to High(Faltando) do
+    begin
+      Q.SQL.Text := 'ALTER TABLE "' + Spec.Tabela + '" ADD COLUMN "' + Faltando[I] + '" TEXT';
+      Q.ExecSQL;
+    end;
+  except
+    if Q.Active then Q.Close;
+  end;
+end;
+
 procedure CriarTodasTabelasFinalidade(Conn: TZConnection);
 var
   I: Integer;
@@ -670,6 +703,7 @@ begin
     begin
       Q.SQL.Text := GerarSQLCriarTabela(GRegistroTabelas[I]);
       Q.ExecSQL;
+      GarantirColunasTabela(Q, GRegistroTabelas[I]);
     end;
   finally
     Q.Free;

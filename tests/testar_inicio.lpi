@@ -10,11 +10,14 @@
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
     </BuildModes>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="7">
       <Item1><PackageName Value="Printer4Lazarus"/></Item1>
       <Item2><PackageName Value="lazbarcodes"/></Item2>
       <Item3><PackageName Value="zcomponent"/></Item3>
-      <Item4><PackageName Value="LCL"/></Item4>
+      <Item4><PackageName Value="fortes324forlaz"/></Item4>
+      <Item5><PackageName Value="lnetvisual"/></Item5>
+      <Item6><PackageName Value="FCL"/></Item6>
+      <Item7><PackageName Value="LCL"/></Item7>
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
@@ -26,7 +29,8 @@
   <CompilerOptions>
     <Version Value="11"/>
     <SearchPaths>
-      <OtherUnitFiles Value="../src"/>
+      <IncludeFiles Value="$(ProjOutDir);../../CHATGPT/pacote/AI Output;../../CHATGPT/pacote/AI Input/AISerial;../../CHATGPT/pacote/AI Image"/>
+      <OtherUnitFiles Value="../src;../../CHATGPT/pacote/AI Output;../../CHATGPT/pacote/AI Input/AISerial;../../CHATGPT/pacote/AI Image"/>
       <UnitOutputDirectory Value="lib"/>
     </SearchPaths>
     <Target><Filename Value="testar_inicio"/></Target>

@@ -75,7 +75,7 @@ Versão declarada no fonte:
 
 ```pascal
 const
-  versao = '0121';
+  versao = '0122';
 ```
 
 ---

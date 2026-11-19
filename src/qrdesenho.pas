@@ -29,6 +29,13 @@ begin
     raise Exception.Create('Link muito longo para este tamanho. Use um link mais curto ou aumente a etiqueta.');
   Scale := Fator;
   Generate; // also invalidates cached rendering after resizing
+  { Retângulo branco com a zona de silêncio (quiet zone): mantém o QR
+    legível mesmo sobre uma imagem de fundo. }
+  X := Area.Left + ((Area.Right - Area.Left) - (W + 8) * Fator) div 2;
+  Y := Area.Top + ((Area.Bottom - Area.Top) - (H + 8) * Fator) div 2;
+  ACanvas.Brush.Style := bsSolid;
+  ACanvas.Brush.Color := clWhite;
+  ACanvas.FillRect(Rect(X, Y, X + (W + 8) * Fator, Y + (H + 8) * Fator));
   X := Area.Left + ((Area.Right - Area.Left) - W * Fator) div 2;
   Y := Area.Top + ((Area.Bottom - Area.Top) - H * Fator) div 2;
   PaintOnCanvas(ACanvas, Rect(X, Y, X + W * Fator, Y + H * Fator));
