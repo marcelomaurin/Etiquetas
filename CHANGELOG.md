@@ -1,5 +1,12 @@
 # Histórico de versões — Etiquetas
 
+## 0123 — 19/11/2026
+
+Instalador: `bin/setup_etiquetas_0123.exe`.
+
+- Nova compilação e empacotamento da versão 0123 (1.23.0.0), incluindo todas as
+  funcionalidades e recursos da versão 0122.
+
 ## 0122 — 19/11/2026
 
 Instalador: `bin/setup_etiquetas_0122.exe`.

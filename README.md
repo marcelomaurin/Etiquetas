@@ -6,9 +6,9 @@ O projeto nasceu para facilitar a criação, seleção, importação e impressã
 
 ![Painel inicial com seleção visual de impressora](img/screens/inicio-visual.png)
 
-## Novidades da versão 0122
+## Novidades da versão 0123
 
-Instalador: [`bin/setup_etiquetas_0122.exe`](bin/setup_etiquetas_0122.exe) ·
+Instalador: [`bin/setup_etiquetas_0123.exe`](bin/setup_etiquetas_0123.exe) ·
 histórico completo no [CHANGELOG](CHANGELOG.md).
 
 - **Menu Cadastros e gerenciador de tabelas:** todas as tabelas de apoio das
